@@ -14,3 +14,8 @@ html, body{
 img {
   vertical-align: baseline;
 }
+
+#chartDiv{
+  overflow-y: auto
+}
+
