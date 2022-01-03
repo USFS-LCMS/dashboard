@@ -1,0 +1,204 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <!--
+     ArcGIS API for JavaScript, https://js.arcgis.com
+     For more information about the featurefilter-attributes sample,
+     read the original sample description at developers.arcgis.com.
+     https://developers.arcgis.com/javascript/latest/sample-code/featurefilter-attributes/index.html
+     -->
+    <title>
+      Filter features by attribute | Sample | ArcGIS API for JavaScript 4.19
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.19/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.19/"></script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      #seasons-filter {
+        height: 160px;
+        width: 160px;
+        visibility: hidden;
+      }
+
+      .season-item {
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+        vertical-align: baseline;
+        cursor: pointer;
+        height: 40px;
+      }
+
+      .season-item:focus {
+        background-color: dimgrey;
+      }
+
+      .season-item:hover {
+        background-color: dimgrey;
+      }
+
+      #titleDiv {
+        padding: 10px;
+      }
+
+      #titleText {
+        font-size: 20pt;
+        font-weight: 60;
+        padding-bottom: 10px;
+      }
+    </style>
+    <script>
+      require([
+        "esri/views/MapView",
+        "esri/Map",
+        "esri/layers/GeoJSONLayer",
+        "esri/widgets/Expand"
+      ], (MapView, Map, GeoJSONLayer, Expand) => {
+        let floodLayerView;
+
+        const url =
+          "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
+
+        const template = {
+          title: "Earthquake Info",
+          content: "Magnitude {mag} {type} hit {place} on {time}",
+          fieldInfos: [
+            {
+              fieldName: "time",
+              format: {
+                dateFormat: "short-date-short-time"
+              }
+            }
+          ]
+        };
+
+        const renderer = {
+          type: "simple",
+          field: "mag",
+          symbol: {
+            type: "simple-marker",
+            color: "orange",
+            outline: {
+              color: "white"
+            }
+          },
+          visualVariables: [
+            {
+              type: "size",
+              field: "mag",
+              stops: [
+                {
+                  value: 2.5,
+                  size: "4px"
+                },
+                {
+                  value: 8,
+                  size: "40px"
+                }
+              ]
+            }
+          ]
+        };
+
+        const geojsonLayer = new GeoJSONLayer({
+          url: url,
+          copyright: "USGS Earthquakes",
+          popupTemplate: template,
+          renderer: renderer //optional
+        });
+
+        const map = new Map({
+          basemap: "gray-vector",
+          layers: [geojsonLayer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          center: [-168, 46],
+          zoom: 2,
+          map: map
+        });
+
+        const seasonsNodes = document.querySelectorAll(`.season-item`);
+        const seasonsElement = document.getElementById("seasons-filter");
+
+        // click event handler for seasons choices
+        seasonsElement.addEventListener("click", filterBySeason);
+
+        // User clicked on Winter, Spring, Summer or Fall
+        // set an attribute filter on flood warnings layer view
+        // to display the warnings issued in that season
+        function filterBySeason(event) {
+          const selectedSeason = parseInt(
+            event.target.getAttribute("data-season")
+          );
+          floodLayerView.filter = {
+            where: `mag >= ${selectedSeason}`
+          };
+        }
+
+        view.whenLayerView(geojsonLayer).then((layerView) => {
+          // flash flood warnings layer loaded
+          // get a reference to the flood warnings layerview
+          floodLayerView = layerView;
+
+          // set up UI items
+          seasonsElement.style.visibility = "visible";
+          const seasonsExpand = new Expand({
+            view: view,
+            content: seasonsElement,
+            expandIconClass: "esri-icon-filter",
+            group: "top-left"
+          });
+          //clear the filters when user closes the expand widget
+          seasonsExpand.watch("expanded", () => {
+            if (!seasonsExpand.expanded) {
+              floodLayerView.filter = null;
+            }
+          });
+          view.ui.add(seasonsExpand, "top-left");
+          view.ui.add("titleDiv", "top-right");
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="seasons-filter" class="esri-widget">
+      <div class="season-item visible-season" data-season="3">
+        greater than 3
+      </div>
+      <div class="season-item visible-season" data-season="4">
+        greater than 4
+      </div>
+      <div class="season-item visible-season" data-season="5">
+        greater than 5
+      </div>
+      <div class="season-item visible-season" data-season="6">
+        greater than 6
+      </div>
+    </div>
+    <div id="viewDiv"></div>
+    <div id="titleDiv" class="esri-widget">
+      <div id="titleText">Flash Floods by Season</div>
+      <div>Flash Flood Warnings (2002 - 2012)</div>
+    </div>
+  </body>
+</html>
