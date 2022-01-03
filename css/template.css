@@ -14,20 +14,3 @@ html, body{
 img {
   vertical-align: baseline;
 }
-#viewDiv{
-	height: 100vh;
-}
-#chartDiv{
-  height: 100vh;
-  overflow-y: scroll
-}
-
-.esri-view-width-xlarge .esri-popup__main-container {
-width: 700px;
-}
-.esri-view-height-less-than-medium  .esri-popup__main-container {
-    max-height: 600px;
-}
-.esri-feature__content-element{
-      padding-bottom: 0px;
-}
