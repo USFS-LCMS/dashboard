@@ -18,4 +18,45 @@ img {
 #chartDiv{
   overflow-y: auto
 }
+#selected-area-div{
+  width:200px;
+  max-height:150px;
+  overflow-y:auto;
+  overflow-x:auto;
+  background-color: #242424;
+  padding:5px;
+}
+.selected-area-name{
+  font-size: 8pt;
+  margin-top:0px;
+  margin-bottom:0px;
+  margin-left:1px;
+  margin-right:1px;
+  padding:0px;
+  background-color: #242424;
+  color:#00897B;
+}
+.selected-areas-title{
+  margin-left:2px;
+  margin-bottom:2px;
+  margin-top:2px;
+  color:#D6D1CA;
+}
+hr{margin:1px;}
+li{margin:1px;}
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #242424; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #6F6259; 
+}
 

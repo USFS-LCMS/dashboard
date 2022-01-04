@@ -22,6 +22,10 @@ var layerNumber = 1;
 var layerList = [];
 var runGEE;
 var outstandingGEEServiceCount = 0;
+
+var viewWatched = false;
+var stillComputing = false;
+var pastExtent;
 ///////////////////////////////////////////////////////////////////////
 // Function to authenticate to GEE and run it when ready
  function initialize(){
@@ -183,7 +187,7 @@ require([
       url: './geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson',
       title:"USFS Districts",
       copyright: "USDA USFS GTAC",
-      popupTemplate: template,
+      // popupTemplate: template,
       legendEnabled:true,
       renderer: renderer, //optional
       labelingInfo: [labelClass]
@@ -239,9 +243,14 @@ require([
       // Since ESRI js api doesn't have a good drag-end or zoom-end listener, need to create one in order to not 
       // crash the browser
       // This method tries to ensure the user is finished panning/zooming before tabulating the graphs
-      var viewWatched = false;
-      var stillComputing = false;
-      var pastExtent = view.extent;
+      function updateSelectionList(selectedFeatures){
+        $('#selected-area-list').empty();
+        $('#selected-area-list').append(`<p class = 'selected-areas-title'>Charted Areas</p><hr>`);
+        var i = 1
+        selectedFeatures.map((f)=>{$('#selected-area-list').append(`<li  class = "selected-area-name list-group-item list-group-item-action list-group-item-dark">${i}: ${f.attributes[titleField]}</li>`);i++});
+        
+      }
+      pastExtent = view.extent;
        view.watch('extent',function(evt){
         if(!stillComputing){
           viewWatched = true;
@@ -260,7 +269,7 @@ require([
                   console.log(results.features.length);
                  stillComputing = true;
                 if(results.features.length>0){
-                  
+                   updateSelectionList(results.features);
                    chartWhich.map((w) => setContentInfo(results,w));
                    $('.lcms-icon').removeClass('fa-spin');
                    stillComputing = false;
@@ -286,6 +295,7 @@ require([
           console.log(results.features.length);
           if(results.features.length>0){
             $('.lcms-icon').addClass('fa-spin');
+            updateSelectionList(results.features);
             chartWhich.map((w) => setContentInfo(results,w));
             $('.lcms-icon').removeClass('fa-spin');
           }
@@ -478,6 +488,19 @@ require([
       // Add the expand instance to the ui
       view.ui.add(bgExpand, "top-left");
 
+
+      //Expand widget
+      const selectedBox = document.getElementById("selected-area-div");
+      selectedBox.style.display = "block";
+      // $('#legend-div').show();
+      selectionExpand = new Expand({
+          expandIconClass: "esri-icon-chart",
+          expandTooltip: "Areas being charted",
+          expanded: true,
+          view: view,
+          content: selectedBox
+      });
+       view.ui.add(selectionExpand, "top-right");
       // Zoom map to the extent of the geojson layer
       geojsonLayer.when(()=>{
         console.log('setting extent');
