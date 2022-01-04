@@ -5,8 +5,13 @@ html, body{
     width: 100%;
     background-color: #242424;
     color:#00897B;
-    overflow: hidden;
+
   }
+.top{width:100%;height:45px;}
+.left{width:50%;
+      float:left;}
+.right{width:50%;
+      float:right;}
 .container-fluid {
     margin: 0;
     padding: 0;
@@ -19,12 +24,16 @@ img {
   overflow-y: auto
 }
 #selected-area-div{
-  width:200px;
-  max-height:150px;
-  overflow-y:auto;
-  overflow-x:auto;
+  
   background-color: #242424;
   padding:5px;
+  width:200px;
+}
+#selected-area-list{
+  max-height:150px;
+  overflow-y:auto;
+  overflow-x:hidden;
+
 }
 .selected-area-name{
   font-size: 8pt;
@@ -60,3 +69,13 @@ li{margin:1px;}
   background: #6F6259; 
 }
 
+.legend-title { text-align: left; margin-bottom: 5px; margin-left:5px;font-weight: bold; font-size: 90%; width: 100%; }
+.legend-scale ul { margin: 5px; padding: 0px; list-style: none; width: 90%; }
+.legend-scale ul li { font-size: 80%; list-style: none; margin-left: 0px; line-height: 18px; margin-bottom: 2px; }
+ul.legend-labels li span { display: block; float: left; height: 14px; width: 25px; margin-right: 5px; margin-left: 0px; }
+.legend-source { font-size: 70%; color: rgb(153, 153, 153); clear: both; }
+a { color: rgb(119, 119, 119); border-radius: 10px; }
+.legend-box {display:none;background: #222;width: 130px;border-radius: 3px;}
+
+#legend-list{max-height: 150px;
+            overflow-y: auto;}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <title>Layout</title>
+  <style type="text/css">
+    .top{width:100%;height:25px;background-color: #FF0;}
+    .left{background-color: #F00;
+          width:50%;
+          float:left;}
+    .right{background-color: #0000FF;
+          width:50%;
+          float:right;}
+  
+  </style>
+</head>
+<body>
+  <div class = 'top' id = 'topDiv'>Top</div>
+  <div class = 'left' id = 'viewDiv'>Hello</div>
+  <div class = 'right' id = 'chartDiv'>There</div> 
+</body>
+
+<script type="text/javascript">
+  
+  function resizeWindow(){
+    console.log('resized')
+    var h = window.innerHeight;
+    var w = window.innerWidth;
+    var headerHeight = $('#topDiv').innerHeight()
+    if(w>h){
+      $("#viewDiv").height(window.innerHeight-(headerHeight*1.5));
+      $("#chartDiv").height(window.innerHeight-(headerHeight*1.5));
+      $('.left').css({'float':'left','width':'50%'});
+      $('.right').css({'float':'right','width':'50%'});
+
+    }else{
+      $("#viewDiv").height((window.innerHeight-(headerHeight*1.5))/2);
+      $("#chartDiv").height((window.innerHeight-(headerHeight*1.5))/2);
+      $('.left').css({'float':'top','width':'100%'});
+      $('.right').css({'float':'bottom','width':'100%'});
+    }
+    
+
+    // $('#chartDiv').css('overflow-y','visible');
+  }
+///////////////////////////////////////////////////////////////////////
+$(document).ready(function() {
+    window.addEventListener('resize',resizeWindow)
+  resizeWindow();
+});
+</script>
+</html>

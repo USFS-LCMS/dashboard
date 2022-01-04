@@ -1,11 +1,25 @@
 //Function to handle resizing the windows properly
 function resizeWindow(){
     console.log('resized')
-    var headerHeight = $('#headerDiv').innerHeight()
+    var h = window.innerHeight;
+    var w = window.innerWidth;
+    var headerHeight = $('#headerDiv').height()
+    if(w>h){
+      
+      $('.left').css({'float':'left','width':'50%'});
+      $('.right').css({'float':'right','width':'50%'});
+      $("#viewDiv").height(window.innerHeight-(headerHeight*1.2));
+      $("#chartDiv").height(window.innerHeight-(headerHeight*1.2));
 
-    $("#viewDiv").height(window.innerHeight-(headerHeight*1.2));
-    $("#chartDiv").height(window.innerHeight-(headerHeight*1.2));
+    }else{
+      $("#viewDiv").height((window.innerHeight-(headerHeight*1.2))/2);
+      $("#chartDiv").height((window.innerHeight-(headerHeight*1.2))/2);
+      $('.left').css({'float':'top','width':'100%'});
+      $('.right').css({'float':'bottom','width':'100%'});
+    }
     $('#lcms-icon').height($('#dashboard-title').innerHeight()*0.6);
+
+    // $('#chartDiv').css('overflow-y','visible');
   }
 ///////////////////////////////////////////////////////////////////////
 $(document).ready(function() {
@@ -70,7 +84,7 @@ require([
       if(vizParams.labelEnding === undefined || vizParams.labelEnding === null){vizParams.labelEnding = ''}
       if(vizParams.title === undefined || vizParams.title === null){vizParams.title = ''}
       var palette = vizParams.palette;
-      var ramp = palette.split(',').map(function(i){return '#'+i}).join(',');
+      var ramp = palette.map(function(i){return '#'+i}).join(',');
       // console.log(ramp)
       $('#legend-list').append(`<ul class='legend-labels' title = '${vizParams.title}'>
                                 <li><span style = 'width:100%;'>${name}</span></li>
@@ -140,9 +154,9 @@ require([
       var mostRecentSlowLossYear = slowLossYears.max();
       var mostRecentFastLossYear = fastLossYears.max();
       var mostRecentGainYear = gainYears.max();
-      addLayer(mostRecentGainYear,{min:startYear,max:endYear,palette:gainYearPalette},'Gain Year',false);
-      addLayer(mostRecentSlowLossYear,{min:startYear,max:endYear,palette:lossYearPalette},'Slow Loss Year');
-      addLayer(mostRecentFastLossYear,{min:startYear,max:endYear,palette:lossYearPalette},'Fast Loss Year');
+      addLayer(mostRecentGainYear,{min:startYear,max:endYear,palette:gainYearPalette,addRampToLegend :true},'Gain Year',false);
+      addLayer(mostRecentSlowLossYear,{min:startYear,max:endYear,palette:lossYearPalette,addRampToLegend :true},'Slow Loss Year');
+      addLayer(mostRecentFastLossYear,{min:startYear,max:endYear,palette:lossYearPalette,addRampToLegend :true},'Fast Loss Year');
      }
 
     initialize();
@@ -245,7 +259,7 @@ require([
       // This method tries to ensure the user is finished panning/zooming before tabulating the graphs
       function updateSelectionList(selectedFeatures){
         $('#selected-area-list').empty();
-        $('#selected-area-list').append(`<p class = 'selected-areas-title'>Charted Areas</p><hr>`);
+       
         var i = 1
         selectedFeatures.map((f)=>{$('#selected-area-list').append(`<li  class = "selected-area-name list-group-item list-group-item-action list-group-item-dark">${i}: ${f.attributes[titleField]}</li>`);i++});
         
@@ -501,6 +515,20 @@ require([
           content: selectedBox
       });
        view.ui.add(selectionExpand, "top-right");
+
+       //Expand widget
+      const legend = document.getElementById("legend-div");
+      legend.style.display = "block";
+      // $('#legend-div').show();
+      legendExpand = new Expand({
+          expandIconClass: "esri-icon-key",
+          expandTooltip: "Legend",
+          expanded: true,
+          view: view,
+          content: legend
+      });
+       view.ui.add(legendExpand, "bottom-left");
+
       // Zoom map to the extent of the geojson layer
       geojsonLayer.when(()=>{
         console.log('setting extent');

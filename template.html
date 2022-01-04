@@ -29,23 +29,44 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./js/ee_api_js.js"></script>
     
+
+    <div id='legend-div' class='my-legend legend-box' >
+      <div class='legend-title'>Class Key</div>
+
+        <div class='legend-scale' id = 'legend-list'>
+          <ul class='legend-labels'>
+              <li><span title = 'District boundaries used for summary areas.' style = 'width:100%;'>District Boundaries</span></li>
+              <li ><span style='background:#00897B;'></span></li>
+              <br>
+          </ul>
+        </div>
+
+
+      <div class='legend-source'><a href="#link to source"></a></div>
+
+    </div>
+
     <div id = 'selected-area-div' style = 'display:none;'>
+        <div class='legend-title'>ChartedAreas</div>
+        <hr>
         <ul class="list-group" id = 'selected-area-list'>
         </ul>
     </div>
 </head>
 <body>
-    <div class="container-fluid m-0">
-        <div class = 'row' id = 'headerDiv'>
-            <span class = 'text-center'>
-                <h2 id = 'dashboard-title'><img class = 'lcms-icon'  src="./images/lcms-icon.png" height= "25px"> LCMS Dashboard <img class = 'lcms-icon'  src="./images/lcms-icon.png" height= "25px"></h2>
-            </span>
-        </div> 
-        <div class = 'row panel-body'>
-            <div class="col-md-6" id="viewDiv"></div>
-            <div class="chart-container col-md-6 " id="chartDiv" ></div>
-        </div>
+
+
+
+    <div class = 'top' id = 'headerDiv'>
+        <span class = 'text-center'>
+            <h2 id = 'dashboard-title'><img class = 'lcms-icon'  src="./images/lcms-icon.png" height= "25px"> LCMS Dashboard <img class = 'lcms-icon'  src="./images/lcms-icon.png" height= "25px"></h2>
+        </span>
     </div>
+    <div class = 'left' id = 'viewDiv'></div>
+    <div class = 'right' id = 'chartDiv'></div> 
+
+ 
+  
 </body>
 <script src="./js/template.js"></script>
 </html>
