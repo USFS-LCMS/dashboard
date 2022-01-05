@@ -7,7 +7,9 @@ html, body{
     color:#00897B;
 
   }
-.top{width:100%;height:45px;}
+button,input{color:#242424;background-color:#6F6259;}
+.top{width:100%;height:7%;}
+.bottom{width:100%;height:5%;background-color: #242424}
 .left{width:50%;
       float:left;}
 .right{width:50%;
@@ -69,7 +71,7 @@ li{margin:1px;}
   background: #6F6259; 
 }
 
-.legend-title { text-align: left; margin-bottom: 5px; margin-left:5px;font-weight: bold; font-size: 90%; width: 100%; }
+.legend-title { text-align: left; margin-top:3px;margin-left:5px;font-weight: bold; font-size: 90%; width: 100%; }
 .legend-scale ul { margin: 5px; padding: 0px; list-style: none; width: 90%; }
 .legend-scale ul li { font-size: 80%; list-style: none; margin-left: 0px; line-height: 18px; margin-bottom: 2px; }
 ul.legend-labels li span { display: block; float: left; height: 14px; width: 25px; margin-right: 5px; margin-left: 0px; }

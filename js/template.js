@@ -3,13 +3,15 @@ function resizeWindow(){
     console.log('resized')
     var h = window.innerHeight;
     var w = window.innerWidth;
-    var headerHeight = $('#headerDiv').height()
+    var headerHeight = $('#headerDiv').height();
+    var bottomHeight = $('#bottomDiv').height();
     if(w>h){
       
       $('.left').css({'float':'left','width':'50%'});
       $('.right').css({'float':'right','width':'50%'});
-      $("#viewDiv").height(window.innerHeight-(headerHeight*1.2));
-      $("#chartDiv").height(window.innerHeight-(headerHeight*1.2));
+      $('.bottom').css({'position': 'absolute','bottom': '0'});
+      $("#viewDiv").height(window.innerHeight-(headerHeight*1.2)-(bottomHeight*1.2));
+      $("#chartDiv").height(window.innerHeight-(headerHeight*1.2)-(bottomHeight*1.2));
 
     }else{
       $("#viewDiv").height((window.innerHeight-(headerHeight*1.2))/2);
@@ -25,7 +27,9 @@ function resizeWindow(){
 $(document).ready(function() {
     window.addEventListener('resize',resizeWindow)
   resizeWindow();
+
 });
+
 ///////////////////////////////////////////////////////////////////////
 //Set up GEE objects and variables
 var authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
@@ -34,9 +38,10 @@ var addLayer;var map;var view;
 var mapper = new Object();
 var layerNumber = 1;
 var layerList = [];
+var selectedAreaNameList = [];
 var runGEE;
 var outstandingGEEServiceCount = 0;
-
+var downloadPDF;
 var viewWatched = false;
 var stillComputing = false;
 var pastExtent;
@@ -260,8 +265,12 @@ require([
       function updateSelectionList(selectedFeatures){
         $('#selected-area-list').empty();
        
-        var i = 1
-        selectedFeatures.map((f)=>{$('#selected-area-list').append(`<li  class = "selected-area-name list-group-item list-group-item-action list-group-item-dark">${i}: ${f.attributes[titleField]}</li>`);i++});
+        var i = 1;
+        selectedAreaNameList = [];
+        selectedFeatures.map((f)=>{var nm = f.attributes[titleField];
+          selectedAreaNameList.push(nm);
+          $('#selected-area-list').append(`<li  class = "selected-area-name list-group-item list-group-item-action list-group-item-dark">${i}: ${nm}</li>`);
+          i++});
         
       }
       pastExtent = view.extent;
@@ -315,6 +324,43 @@ require([
           }
          });
        });
+      ///////////////////////////////////////////////////////////////////////
+      //Function to download a pdf report
+      downloadPDF = function(){
+        console.log('Downloading PDF');
+        var outFilename = 'LCMS-Summaries'
+        if($('#pdfFilename').val() !== ''){
+          outFilename = $('#pdfFilename').val()
+        }  
+       
+        // Add area names
+        var doc = new jspdf.jsPDF('portrait');
+        var h = doc.internal.pageSize.height;
+        var w = doc.internal.pageSize.width;
+        var margin = 10;
+        doc.setFontSize(20);
+        doc.text(margin, margin, "The following areas are included in this summary:");
+        doc.setFontSize(5);
+        doc.text(margin, margin*2, selectedAreaNameList.join(', '),{ maxWidth: doc.internal.pageSize.width-margin*2});
+        doc.addPage();
+
+        //Add charts
+        var currentY = margin;
+        var chartW = w - margin*2;
+        var chartH = chartW*0.5;
+        ['Change','Land_Cover','Land_Use'].map((w)=>{
+          
+          if(currentY + chartH > h){
+            doc.addPage();
+            currentY = margin;
+          }
+          var canvas = document.querySelector('#chart-canvas-'+w);
+          doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH );
+          currentY = currentY+ chartH + margin;
+        })
+        
+        doc.save(outFilename+'.pdf');
+        }
       ///////////////////////////////////////////////////////////////////////
       // Function to tabulate results and create graphs
       function setContentInfo(results,whichOne){
@@ -533,5 +579,6 @@ require([
       geojsonLayer.when(()=>{
         console.log('setting extent');
         view.extent = geojsonLayer.fullExtent;
-      })
+      });
 });
+
