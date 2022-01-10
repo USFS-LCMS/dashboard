@@ -1,18 +1,25 @@
 //Function to handle resizing the windows properly
 function resizeWindow(){
-    console.log('resized')
-    var h = window.innerHeight;
+    console.log('resized');
+    var margin = 5;
+    var h = window.innerHeight-margin;
     var w = window.innerWidth;
     var headerHeight = $('#headerDiv').height();
     var bottomHeight = $('#bottomDiv').height();
+    // $('#selected-area-list').css({'height':h/3*2-100});
+    // $('#selected-area-div').css({'height':h/3*2-100});
+    
     if(w>h){
-      
-      $('.left').css({'float':'left','width':'50%'});
-      $('.right').css({'float':'right','width':'50%'});
-      $('.bottom').css({'position': 'absolute','bottom': '0'});
-      $("#viewDiv").height(window.innerHeight-(headerHeight*1.2)-(bottomHeight*1.2));
-      $("#chartDiv").height(window.innerHeight-(headerHeight*1.2)-(bottomHeight*1.2));
-
+      $('#headerDiv').css({'left':$('#nameDiv').width()+$('.esri-zoom').width()+20})
+      $('.entire').css({'float':'left','width':'45%'});
+      $('.left').css({'float':'left','width':'10%'});
+      $('.right').css({'float':'right','width':'45%'});
+      // $('.bottom').css({'position': 'absolute','bottom': '0'});
+      $("#viewDiv").height(h);
+      $("#chartDiv").height(h);
+      $("#nameDiv").height(h);
+      // $('#legend-div').css({'float':'top','max-height':h/3});
+      // $('#selected-area-div').css({'float':'bottom','height':h-$('#legend-div').height()-100});
     }else{
       $("#viewDiv").height((window.innerHeight-(headerHeight*1.2))/2);
       $("#chartDiv").height((window.innerHeight-(headerHeight*1.2))/2);
@@ -233,7 +240,7 @@ require([
     ///////////////////////////////////////////////////////////////////////
     // Once the view is loaded, do this
     view.when(()=>{
-
+      resizeWindow();
       // Range function taken from: https://dev.to/ycmjason/how-to-create-range-in-javascript-539i
       function range(start, end) {
           if(start === end) return [start];
@@ -347,14 +354,20 @@ require([
         //Add charts
         var currentY = margin;
         var chartW = w - margin*2;
-        var chartH = chartW*0.5;
+        
+
         ['Change','Land_Cover','Land_Use'].map((w)=>{
           
+          
+          var canvas = document.querySelector('#chart-canvas-'+w);
+          var chartHeight = $('#chart-canvas-'+w).height();
+          var chartWidth = $('#chart-canvas-'+w).width();
+          var aspectRatio = chartHeight/chartWidth;
+          var chartH = chartW*aspectRatio;
           if(currentY + chartH > h){
             doc.addPage();
             currentY = margin;
           }
-          var canvas = document.querySelector('#chart-canvas-'+w);
           doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH );
           currentY = currentY+ chartH + margin;
         })
@@ -362,6 +375,20 @@ require([
         doc.save(outFilename+'.pdf');
         }
       ///////////////////////////////////////////////////////////////////////
+      Chart.pluginService.register({
+          beforeDraw: function (chart, easing) {
+              if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+                  var helpers = Chart.helpers;
+                  var ctx = chart.chart.ctx;
+                  var chartArea = chart.chartArea;
+
+                  ctx.save();
+                  ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+                  ctx.fillRect(chartArea.left-90, chartArea.top-40, chartArea.right - chartArea.left+190, chartArea.bottom - chartArea.top+350);
+                  ctx.restore();
+              }
+          }
+      });
       // Function to tabulate results and create graphs
       function setContentInfo(results,whichOne){
       
@@ -426,7 +453,7 @@ require([
       $(`#${chartID}`).remove(); 
 
       //Add new chart
-      $('#chartDiv').append(`<canvas id="${chartID}"><canvas>`);
+      $('#chartDiv').append(`<canvas class = "chart" id="${chartID}"><canvas>`);
       // $('#chartDiv').append('<hr>');
       //Set up chart object
       var chartJSChart = new Chart($(`#${chartID}`),{
@@ -435,6 +462,8 @@ require([
         "datasets":t},
         options:{
           responsive: true,
+          maintainAspectRatio: true,
+          aspectRatio: 1/0.6,
            title: {
                 display: true,
                 position:'top',
@@ -450,12 +479,16 @@ require([
                 usePointStyle: true
               }
             },
+            chartArea: {
+                backgroundColor: '#D6D1CA'
+            },
             scales: {
               yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'% Area'}}],
               xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
             }
           }
         });
+      // $(`#${chartID}`).height(350);
       };
     })
     ///////////////////////////////////////////////////////////////////////
@@ -550,30 +583,30 @@ require([
 
 
       //Expand widget
-      const selectedBox = document.getElementById("selected-area-div");
-      selectedBox.style.display = "block";
-      // $('#legend-div').show();
-      selectionExpand = new Expand({
-          expandIconClass: "esri-icon-chart",
-          expandTooltip: "Areas being charted",
-          expanded: true,
-          view: view,
-          content: selectedBox
-      });
-       view.ui.add(selectionExpand, "top-right");
+      // const selectedBox = document.getElementById("selected-area-div");
+      // selectedBox.style.display = "block";
+      // // $('#legend-div').show();
+      // selectionExpand = new Expand({
+      //     expandIconClass: "esri-icon-chart",
+      //     expandTooltip: "Areas being charted",
+      //     expanded: true,
+      //     view: view,
+      //     content: selectedBox
+      // });
+      //  view.ui.add(selectionExpand, "top-right");
 
        //Expand widget
-      const legend = document.getElementById("legend-div");
-      legend.style.display = "block";
-      // $('#legend-div').show();
-      legendExpand = new Expand({
-          expandIconClass: "esri-icon-key",
-          expandTooltip: "Legend",
-          expanded: true,
-          view: view,
-          content: legend
-      });
-       view.ui.add(legendExpand, "bottom-left");
+      // const legend = document.getElementById("legend-div");
+      // legend.style.display = "block";
+      // // $('#legend-div').show();
+      // legendExpand = new Expand({
+      //     expandIconClass: "esri-icon-key",
+      //     expandTooltip: "Legend",
+      //     expanded: true,
+      //     view: view,
+      //     content: legend
+      // });
+      //  view.ui.add(legendExpand, "bottom-right");
 
       // Zoom map to the extent of the geojson layer
       geojsonLayer.when(()=>{

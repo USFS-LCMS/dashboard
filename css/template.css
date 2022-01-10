@@ -7,13 +7,19 @@ html, body{
     color:#00897B;
 
   }
-button,input{color:#242424;background-color:#6F6259;}
-.top{width:100%;height:7%;}
-.bottom{width:100%;height:5%;background-color: #242424}
-.left{width:50%;
-      float:left;}
-.right{width:50%;
-      float:right;}
+button,input{color:#242424;background-color:#ACA199;}
+.entire{float:left;width:100%;height:70%;}
+.top{left:5%;top:15px;position:absolute;z-index:99;padding:2px;background-color:#242424;opacity:0.8;}
+.bottom{right:5px;bottom:5px;z-index:99;position:absolute;background-color: #242424}
+
+.left,.right{
+      width:10%;
+      background-color: #242424;}
+.left{float:left;
+  overflow-y:auto;
+overflow-x:hidden;}
+.right{float:right;}
+
 .container-fluid {
     margin: 0;
     padding: 0;
@@ -21,7 +27,9 @@ button,input{color:#242424;background-color:#6F6259;}
 img {
   vertical-align: baseline;
 }
-
+.chart{
+  height:400!important;
+}
 #chartDiv{
   overflow-y: auto
 }
@@ -29,14 +37,10 @@ img {
   
   background-color: #242424;
   padding:5px;
-  width:200px;
-}
-#selected-area-list{
-  max-height:150px;
-  overflow-y:auto;
-  overflow-x:hidden;
 
+  /*width:200px;*/
 }
+
 .selected-area-name{
   font-size: 8pt;
   margin-top:0px;
@@ -74,10 +78,9 @@ li{margin:1px;}
 .legend-title { text-align: left; margin-top:3px;margin-left:5px;font-weight: bold; font-size: 90%; width: 100%; }
 .legend-scale ul { margin: 5px; padding: 0px; list-style: none; width: 90%; }
 .legend-scale ul li { font-size: 80%; list-style: none; margin-left: 0px; line-height: 18px; margin-bottom: 2px; }
-ul.legend-labels li span { display: block; float: left; height: 14px; width: 25px; margin-right: 5px; margin-left: 0px; }
+ul.legend-labels li span { display: block; float: left; height: 14px; width: 25px; margin-bottom:5px;margin-right: 5px; margin-left: 0px; }
 .legend-source { font-size: 70%; color: rgb(153, 153, 153); clear: both; }
 a { color: rgb(119, 119, 119); border-radius: 10px; }
-.legend-box {display:none;background: #222;width: 130px;border-radius: 3px;}
+/*.legend-box {border-radius: 3px;}*/
 
-#legend-list{max-height: 150px;
-            overflow-y: auto;}
+#legend-list{overflow-y: auto;}
