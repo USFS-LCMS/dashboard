@@ -1,0 +1,260 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+
+    <title>
+      Charting in arcgis online
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.22/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script>
+      const options = {
+          // tell Dojo where to load other packages
+          dojoConfig: {
+              async: true,
+          packages: [
+              {
+                  location: 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js',
+                  name: 'Chart'
+              }
+          ]
+          }
+      };
+  </script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <script>
+      require([
+          "esri/Map",
+          "esri/views/MapView",
+          "esri/PopupTemplate",
+          "esri/layers/GeoJSONLayer",
+          "esri/widgets/Popup",
+          "esri/tasks/support/Query",
+          "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js",
+          "dojo/domReady!"
+        ],
+        function (Map, MapView, PopupTemplate, GeoJSONLayer, Popup, Query, Chart) {
+        const layer = new GeoJSONLayer({
+          url: '../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson',
+          popupTemplate: {
+            title: "test popup",
+            content: setContentInfo
+          }
+        });
+        
+        const map = new Map({
+          basemap: "hybrid",
+          layers: [layer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 5,
+          center: [-100,40],
+          popup: {
+            dockEnabled: true,
+            visible: false,
+            dockOptions: {
+              buttonEnabled: true,
+              breakpoint: false
+            }
+          }
+        });
+
+        // // Create a query to get data from the feature layer
+        // var query = new Query();
+        // query.returnGeometry = true;
+        // query.outFields = null;
+        // query.where = "1=1";
+        // query.num = 50;
+
+        // // On view click, query the feature layer and pass the results to setContentInfo function.
+        // view.on("click", (e) => {
+        //   query.geometry = e.mapPoint;
+        //   layer.queryFeatures(query).then((results) =>{
+            
+        //       view.popup.visible = true;
+        //       view.popup.open({
+        //           title: "Test Chart",
+        //           content: setContentInfo(results) // originally also had .features[0].attributes appended
+        //       });
+            
+        //   });
+        // });
+
+        // function range(start, end) {
+        //   if(start === end) return [start];
+        //   return [start, ...range(start + 1, end)];
+        // };
+        // // Set up everything to handle the LCMS data
+        // var years = range(1985,2020).map(i => i.toString());
+
+      //   function setContentInfo(results){
+      //     var canvas = document.createElement('canvas');
+      //     canvas.id = "myChart";
+
+      //     const fieldNames = ["Change---Gain"];
+      //   ////////////
+      //   //Iterate across each field name and add up totals 
+      //   //First get 2-d array of all areas for each then sum the columns and divide by total area
+      //     var t = fieldNames.map(function(k){
+      //       var total_area = 0;
+      //       var total = [];
+      //       results.features.map(function(f){
+      //         var total_areaF = parseFloat(f.attributes['total_area']);
+      //         total_area = total_area + total_areaF;
+      //         total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
+      //       })
+            
+      //       var colSums = [];
+      //       for(var col = 0;col < total[0].length;col++){
+      //         var colSum = 0;
+      //         for(var row = 0;row < total.length;row++){
+      //           colSum = colSum + total[row][col];
+      //         }
+      //         colSums.push(colSum);
+      //       };
+      //       //Convert back to pct
+      //       colSums = colSums.map((n)=>n/total_area*100)
+      //       ///////////////////////////////////////////////////////////////////////
+      //       //Set up chart object
+      //     });
+
+      //     var data = {
+      //       labels: yr_list,
+      //       datasets:[
+      //         {
+      //           label: 'Change---Gain',
+      //           data: t,
+      //           fill: false,
+      //           borderColor: 'rgb(75, 192, 192)',
+      //           tension: 0.1
+      //         }
+      //       ]
+      //     };
+
+      //     var myLineChart = new Chart(canvas,{
+      //       type: 'line',
+      //       data: data
+      //     });
+          
+      //     return canvas;
+      // // $(`#${chartID}`).height(350);
+      // };
+
+      
+        function setContentInfo(results){
+          // Create a new canvas element, this is where the graph will be placed.
+          var canvas = document.createElement('canvas');
+          canvas.id = "myChart";
+
+          // a = results.graphic;
+          // return `${Object.keys(a)}`; // returns nothing...
+          
+          // return `${Object.keys(results)}`; //returns "graphic"
+
+          // //// In general: get x-y elements that you'll be feeding to the dictionary > then the chart
+          // // Get element containing forest cover -- RETURNS STRING
+
+          // // Get element containing dates -- RETURNS STRING
+          // const forest_cover = results["Change---Gain"];
+          // const years = results["years"];
+          // const yrs = `{years}`;
+          // const years = results.graphic.attributes['years'];
+          // var total_area = 0;
+          // var total = [];
+          // results.features.map(function(f){
+          //   var total_areaF = parseFloat(f.attributes['total_area']);
+          //   total_area = total_area + total_areaF;
+          //   total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
+          // });          
+          
+          // const change_gain = results.features.map((c)=>{
+
+          //   return c.attributes["Change---Gain"].split(",").map(n => parseFloat(n));
+
+          // })
+          
+          // const yrs = results.features.map((y)=>{
+
+          //   return y.attributes["years"].split(",").map(n => parseInt(n));
+
+          // })
+
+          // return "{results.years}";
+
+          // const testres = typeof forest_cover;
+
+          // const fc_list_obj = forest_cover.split(",");
+          // const yr_list_obj = years.split(",");
+
+          // const fc_list = [];
+          // const yr_list = [];
+
+          // fc_list_obj.forEach((fc)=>{
+          //   fc_list.push(parseFloat(fc));
+          // });
+          // yr_list_obj.forEach((yr)=>{
+          //   yr_list.push(parseInt(yr));
+          // });
+
+          // return `New test: ${typeof yr_list_obj}`;
+
+          // Create a data object, this will include the data from the feature layer and other information like color or labels.
+
+          // return years;
+
+          var data = {
+            labels: [1,2,3],//yrs,
+            datasets:[
+              {
+                label: 'Change---Gain',
+                data: [1,2,3],//change_gain,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+              }
+            ]
+          };
+
+          // return "test";
+
+          // Create a new Chart and hook it to the canvas and then return the canvas.
+          var myLineChart = new Chart(canvas,{
+            type: 'line',
+            data: data
+          });
+          
+          return canvas;
+        }
+
+      });
+      // });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+    
+  </body>
+</html>
