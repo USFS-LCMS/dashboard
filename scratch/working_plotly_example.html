@@ -1,0 +1,36 @@
+<head>
+	<!-- Load plotly.js into the DOM -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src='https://cdn.plot.ly/plotly-2.8.3.min.js'></script>
+
+</head>
+
+<body>
+
+	<div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+	<script type="text/javascript">
+
+		// Below works but I hate it.
+		
+		fetch("./test.json").then(
+       		function(u){ return u.json();}
+      	).then(
+        	function(json){
+
+				x = json['x'];
+				y = json['y'];
+				let trace = {
+					x: x,
+					y: y,
+					type: 'scatter' }
+			const mydata = [trace]
+			Plotly.newPlot('myDiv', mydata)
+        	}
+      	)
+		////////////////////
+
+		
+
+	</script>
+	
+</body>

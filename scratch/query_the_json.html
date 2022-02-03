@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>JavaScript - read JSON from URL</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div class="mypanel"></div>
+    <div class="panel2"></div>
+    <div class="panel3"></div>
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
+
+            const text = `type: ${data['type']}`
+
+            const ftrs = `features keys: ${
+                Object.keys( data.features[0].properties )
+            }`
+
+            const forest_cover = `forest cover of feature: ${
+                data['features'][1]['properties']['Land_Cover---Trees']
+            }`
+
+            console.log(ftrs);
+
+            $(".mypanel").html(ftrs);
+            // $(".mypanel").html(forest_cover);
+        });
+    </script>
+
+    <!-- <script>
+        $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
+
+        })
+    </script> -->
+
+    <!-- The script below creates a dictionary: keys are STR years, values are FLOAT forest change values -->
+    <!-- <script>
+        $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
+
+            //// In general: get x-y elements that you'll be feeding to the dictionary > then the chart
+            // Get element containing forest cover -- RETURNS STRING
+            const forest_cover = `${data['features'][0]['properties']['Change---Gain']}`
+            const change_fastloss = `${data['features'][0]['properties']['Change---Fast Loss']}`
+            // Get element containing dates -- RETURNS STRING
+            const years = `${data['features'][0]['properties']['years']}`
+
+            //// Parse strings to make lists -- RETURNS OBJECT
+            const fc_list_obj = forest_cover.split(",").map((fc) => parseFloat(fc));
+            const yr_list_obj = years.split(",").map((yr) => parseInt(yr));
+
+            const test_dict = {};
+            for(var i = 0; i < yr_list_obj.length; i++){
+                test_dict[yr_list_obj[i]] = fc_list_obj[i];
+            };
+            
+            
+            // try making chart...
+
+            const ctx = document.getElementById('myChart');
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: yr_list_obj,
+                    datasets: [
+                    {
+                        label: 'Change---Gain',
+                        data: fc_list_obj,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Fast Loss',
+                        data: change_fastloss,
+                        fill: false,
+                        borderColor: 'rgb(75, 200, 100)',
+                        tension: 0.1
+                    }
+
+                ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            ////
+
+            // $(".mypanel").html(`${fc_list_obj}`);
+            
+            // Find out what type each of these elements are.
+
+
+        });
+    </script> -->
+
+</body>
+</html>
