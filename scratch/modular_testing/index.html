@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Load a basic WebMap | Sample | ArcGIS API for JavaScript 4.22</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #chartDiv {
+        background: #fff;
+        bottom: 30px;
+        color: #444;
+        position: absolute;
+        font-family: arial;
+        height: 200px;
+        left: 140px;
+        margin: 5px;
+        padding: 10px;
+        width: 300px;
+        z-index: 40;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css"/>
+
+    <!-- Use JS trickery to get modules in as regular paths -->
+    <script>
+      var dojoConfig = { paths: { modules: location.pathname.replace(/\/[^/]+$/, "") + "/modules" } };
+    </script>
+
+    <script>
+      const options = {
+          // tell Dojo where to load other packages
+          dojoConfig: {
+              async: true,
+              
+          packages: [
+              {
+                  location: 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js',
+                  name: 'Chart'
+              }
+          ]
+          }
+      };
+    </script>
+
+    <script src="https://js.arcgis.com/4.22/"></script>
+    
+
+    <script src="./main.js"></script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+    <div id="chartDiv"></div>
+  </body>
+</html>
