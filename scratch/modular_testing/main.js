@@ -18,7 +18,7 @@ require([
       ) => {
 
     const layer = new GeoJSONLayer({
-        url: "./geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson"
+        url: "../../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson"
     });
 
     const map = new Map({
