@@ -18,21 +18,20 @@ define([
             // this.returnEvents = lang.hitch(this, this.returnEvents);
         },
 
-        // Added parms: names
-        // References the following: whichOne goes back to either change, land cover, or land use
-        // var chartWhich = ['Change','Land_Cover','Land_Use'];
-        setContentInfo: function(results){
+        // Use the class properties to display a chart object in hardcoded div.
+        outputChart: function(results, div_name){
 
-            // const lineName = "Change---Fast Loss";
+            years = results.features[0].attributes["years"].split(",");
+            fastLoss = results.features[0].attributes["Change---Fast Loss"].split(",").map(f => parseFloat(f));
 
-            this.featuresLen = results.features.length; /// This works! When clicked, returns one!
-
-            this.totalArea = results.features[0].attributes["total_area"];//.split(",").map(n => parseFloat(n)); // When I put [0]th feature, doesn't halt process...
-            
-            this.fastlossStr = results.features[0].attributes["Change---Fast Loss"];
-
-            this.yearStr = results.features[0].attributes["years"]
-
-          }
+            x = years;
+            y = fastLoss;
+            let trace = {
+              x: x,
+              y: y,
+              type: 'scatter' }
+            const mydata = [trace]
+            Plotly.newPlot(div_name, mydata) // Wow! That worked. Ok, let's use Plotly. I like it better anyway. 
+        }
     })
 });

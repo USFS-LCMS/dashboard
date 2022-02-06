@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>JavaScript - read JSON from URL</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src='https://cdn.plot.ly/plotly-2.8.3.min.js'></script>
+</head>
+
+<body>
+    <div id="mypanel"></div>
+    <!-- <div class="panel2"></div>
+    <div class="panel3"></div> -->
+
+    <!-- <script>
+        $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
+
+        })
+    </script> -->
+
+    <!-- The script below creates a dictionary: keys are STR years, values are FLOAT forest change values -->
+    <script type="text/javascript">
+        fetch('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson').then(
+            function(u){ return u.json();}
+        ).then(
+            function(data){
+
+                const q_fields = ["Change---Fast Loss","Change---Stable","Change---Non-Processing Area Mask","Change---Gain","Change---Slow Loss"];
+
+                const myData = [];
+                for(f in q_fields){
+
+                    const years = data.features[0].properties['years'].split(",").map(f=>parseInt(f));
+
+                    // document.write(years); // returns list of strings
+                    // document.write(f); // returns 0,1,2,3,4 as expected
+                    
+                    // const fieldvals = data.features[0].properties[q_fields[f]]; // 
+                    // document.write(fieldvals); // returns a large num of what should be strings
+
+                    const yvals = data.features[0].properties[q_fields[f]].split(",").map(f=>parseFloat(f));
+                    // document.write(yvals); // Writes a long line of nums. again, not sure
+                    
+
+                    let trace = {
+                        x: years,
+                        y: yvals,
+                        type: 'scatter' };
+
+                    myData[f] = trace;
+                    
+                };
+
+                // document.write(myData[0].y);
+                Plotly.newPlot("mypanel", myData);
+
+            }
+        )
+        // $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
+
+
+        // });
+    </script>
+
+</body>
+</html>
