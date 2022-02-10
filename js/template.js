@@ -401,7 +401,7 @@ require([
         }else{
           var area_names = results.features.map((f)=>f.attributes[titleField]).join(', ');
         }
-      
+        
         console.log(area_names)
         var name =area_names + ' - '+whichOne.replace('_',' ');
         ///////////////////////////////////////////////////////////////////////

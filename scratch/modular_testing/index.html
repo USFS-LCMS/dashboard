@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Load a basic WebMap | Sample | ArcGIS API for JavaScript 4.22</title>
+
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css"/>
+    <!-- <link rel="stylesheet" href="../../css/template.css"> -->
+    <link rel="stylesheet" href="./css/wm_template.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      
+      <div class="main" id="main-map">
+      </div>
+      <div class="aside aside-1">
+        <h2>LCMS Dashboard</h2>
+      </div>
+      <div class="aside aside-2" id="side-chart">
+        <h1>LCMS Outputs</h1>
+        <button id="pdf-button">Download PDF</button>
+      </div>
+      <!-- <div class="footer">
+        <button style="float:right" id="pdf-button">Download PDF</button> 
+        <input type="text" name="pdfName" id = 'pdfFilename' style = 'float:right;' placeholder="Enter pdf name">
+      </div> -->
+    </div>
+    <!-- <canvas id="side-test" width="200" height="100"></canvas> -->
+    
+
+    <!-- JS Files -->
+    <!-- <script src='https://cdn.plot.ly/plotly-2.8.3.min.js'></script> -->
+    <script src="./config.js"></script>
+    <script src="./options.js"></script>
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script src="./main.js"></script>
+    
+    
+
+  </body>
+</html>

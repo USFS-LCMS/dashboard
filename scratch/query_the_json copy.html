@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>JavaScript - read JSON from URL</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src='https://cdn.plot.ly/plotly-2.8.3.min.js'></script>
+</head>
+
+<body>
+    <div id="mypanel"></div>
+    <!-- <div class="panel2"></div>
+    <div class="panel3"></div> -->
+
+    <!-- <script>
+        $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
+
+        })
+    </script> -->
+
+    <!-- The script below creates a dictionary: keys are STR years, values are FLOAT forest change values -->
+    <script type="text/javascript">
+        fetch('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson').then(
+            function(u){ return u.json();}
+        ).then(
+            function(data){
+
+                const fieldNames = ["Change---Fast Loss","Change---Stable"];
+
+                // Create chart just pulling out values of feature properties and feeding them into chart traces ///////////////
+                // const myData = [];
+                // for(f in q_fields){
+
+
+                //     const years = data.features[0].properties['years'].split(",").map(f=>parseInt(f));
+
+                //     const yvals = data.features[0].properties[q_fields[f]].split(",").map(f=>parseFloat(f));
+
+                //     let trace = {
+                //         x: years,
+                //         y: yvals,
+                //         type: 'scatter' };
+
+                //     myData[f] = trace;
+                    
+                // };
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                // Employ Ian's function. 
+                //Iterate across each field name and add up totals 
+                //First get 2-d array of all areas for each then sum the columns and divide by total area
+                var t = fieldNames.map(function(k){
+                    var total_area = 0;
+                    var total = [];
+                    // document.write(total);
+                    data.features.map(function(f){
+                        var total_areaF = parseFloat(f.properties['total_area']);
+                        total_area = total_area + total_areaF;
+                        // document.write(total_area);
+                        total.push(f.properties[k].split(',').map(n => parseFloat(n)*total_areaF));
+                    })
+                    
+                    let colSums = [];
+                    for(var col = 0;col < total[0].length;col++){
+                        var colSum = 0;
+                        for(var row = 0;row < total.length;row++){
+                            colSum = colSum + total[row][col];
+                        }
+                        colSums.push(colSum);
+                    };
+                    //Convert back to pct
+                    colSums = colSums.map((n)=>n/total_area*100)
+                    const years = data.features[0].properties['years'].split(",").map(i => parseInt(i));
+                    ///////////////////////////////////////////////////////////////////////
+                    //Set up chart object
+                    var out = {
+                        x: years,
+                        y: colSums,
+                        type: 'scatter'
+                    }
+                        return out;
+                });
+
+                // document.write(t[0].y);
+                Plotly.newPlot("mypanel", t);
+
+            }
+        )
+        // $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
+
+
+        // });
+    </script>
+
+</body>
+</html>
