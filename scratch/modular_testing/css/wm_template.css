@@ -1,0 +1,46 @@
+html, body{
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #242424;
+  color:#00897B;
+
+}
+.wrapper {
+    display: flex;  
+    /* flex-flow: column wrap; */
+    flex-wrap: nowrap;
+    flex-direction: row;
+    font-weight: bold;
+    text-align: center; 
+    height: 100%;
+  }
+  
+  .main {
+    flex-grow: 2;
+    /* width: 60%; */
+    height: 100%;
+  }
+  
+  /* .aside-1 {
+    background: gold;
+  }
+  
+  .aside-2 {
+    background: hotpink;
+  } */
+  
+  @media all and (min-width: 600px) {
+    .aside { flex: 1 0; }
+  }
+  
+  @media all and (min-width: 800px) {
+    .main    { flex: 3 0px; }
+    .main    { order: 1; }
+    .aside-2 { order: 2; }
+  }
+  
+canvas {
+  background-color: rgb(224, 226, 212);
+}

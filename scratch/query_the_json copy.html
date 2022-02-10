@@ -24,34 +24,64 @@
         ).then(
             function(data){
 
-                const q_fields = ["Change---Fast Loss","Change---Stable","Change---Non-Processing Area Mask","Change---Gain","Change---Slow Loss"];
+                const fieldNames = ["Change---Fast Loss","Change---Stable"];
 
-                const myData = [];
-                for(f in q_fields){
+                // Create chart just pulling out values of feature properties and feeding them into chart traces ///////////////
+                // const myData = [];
+                // for(f in q_fields){
 
-                    const years = data.features[0].properties['years'].split(",").map(f=>parseInt(f));
 
-                    // document.write(years); // returns list of strings
-                    // document.write(f); // returns 0,1,2,3,4 as expected
+                //     const years = data.features[0].properties['years'].split(",").map(f=>parseInt(f));
+
+                //     const yvals = data.features[0].properties[q_fields[f]].split(",").map(f=>parseFloat(f));
+
+                //     let trace = {
+                //         x: years,
+                //         y: yvals,
+                //         type: 'scatter' };
+
+                //     myData[f] = trace;
                     
-                    // const fieldvals = data.features[0].properties[q_fields[f]]; // 
-                    // document.write(fieldvals); // returns a large num of what should be strings
+                // };
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    const yvals = data.features[0].properties[q_fields[f]].split(",").map(f=>parseFloat(f));
-                    // document.write(yvals); // Writes a long line of nums. again, not sure
+                // Employ Ian's function. 
+                //Iterate across each field name and add up totals 
+                //First get 2-d array of all areas for each then sum the columns and divide by total area
+                var t = fieldNames.map(function(k){
+                    var total_area = 0;
+                    var total = [];
+                    // document.write(total);
+                    data.features.map(function(f){
+                        var total_areaF = parseFloat(f.properties['total_area']);
+                        total_area = total_area + total_areaF;
+                        // document.write(total_area);
+                        total.push(f.properties[k].split(',').map(n => parseFloat(n)*total_areaF));
+                    })
                     
-
-                    let trace = {
+                    let colSums = [];
+                    for(var col = 0;col < total[0].length;col++){
+                        var colSum = 0;
+                        for(var row = 0;row < total.length;row++){
+                            colSum = colSum + total[row][col];
+                        }
+                        colSums.push(colSum);
+                    };
+                    //Convert back to pct
+                    colSums = colSums.map((n)=>n/total_area*100)
+                    const years = data.features[0].properties['years'].split(",").map(i => parseInt(i));
+                    ///////////////////////////////////////////////////////////////////////
+                    //Set up chart object
+                    var out = {
                         x: years,
-                        y: yvals,
-                        type: 'scatter' };
+                        y: colSums,
+                        type: 'scatter'
+                    }
+                        return out;
+                });
 
-                    myData[f] = trace;
-                    
-                };
-
-                // document.write(myData[0].y);
-                Plotly.newPlot("mypanel", myData);
+                // document.write(t[0].y);
+                Plotly.newPlot("mypanel", t);
 
             }
         )
