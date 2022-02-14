@@ -1,3 +1,5 @@
+// Require is an AMD - Asynchronous Module Definition - staple.
+// AMD is pretty much required when working with esri api and map views - and dashboards in general?
 require([
     "dojo/_base/array",
     "modules/CreatePlotlyObj",
@@ -17,29 +19,32 @@ require([
       Query
       ) => {
 
+    // Dictionary object that is supplied to the layer - visibility parameters.
     const renderer = {
-      type: "simple",  // autocasts as new SimpleRenderer()
+      type: "simple",  
       symbol: {
-        type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+        type: "simple-fill",  
         color: [ 75, 75, 75, 0.3 ],
-        outline: {  // autocasts as new SimpleLineSymbol()
+        outline: {  
           width: 1.3,
-          // color: '#1B1716',
           color:'#00897B'
         }
       }
     };
 
+    // Layer that is added to the map
     const layer = new GeoJSONLayer({
         url: "../../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson",
         renderer: renderer
     });
 
+    // Map supplying layers & basemap
     const map = new Map({
       basemap: "hybrid",
       layers: [layer]
     })
 
+    // Map view - visualize map and pass it to html div element.
     const view = new MapView({
       map: map,
       container: "main-map",

@@ -43,4 +43,5 @@ html, body{
   
 canvas {
   background-color: rgb(224, 226, 212);
+  display: flex;
 }
