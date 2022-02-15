@@ -4,6 +4,7 @@ require([
     "dojo/_base/array",
     "modules/CreatePlotlyObj",
     "modules/DownloadPDF",
+    "modules/UserQuestionSelection_01",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -13,11 +14,14 @@ require([
       arrayUtils,
       CreatePlotlyObj,
       DownloadPDF,
+      UserQuestionSelection,
       Map, 
       MapView, 
       GeoJSONLayer, 
       Query
       ) => {
+
+    // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
 
     // Dictionary object that is supplied to the layer - visibility parameters.
     const renderer = {
@@ -52,22 +56,27 @@ require([
       center: [-90, 37]
     });
 
+    // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
+
     view.when(()=>{
 
       // Create a new query instance, and set some default settings. Actually, what do these default settings mean?
       var query = new Query();
       query.returnGeometry = true;
-      query.outFields = null; //["total_area"]
+      query.outFields = null; 
       query.where = "1=1";
       query.num = 50;
 
-      // Put down fields that you will use to query.
-      q_fields = ["Change---Fast Loss","Change---Stable","Change---Gain","Change---Slow Loss"];
-
-      // CLASSES GET INSTANTIATED HERE, OUTSIDE OF THE ONCLICK FUNCIONALITY
+      // Instantiate classes / modules here. 
       const c = CreatePlotlyObj({});
       const d_pdf = DownloadPDF({});
+      const u_q = UserQuestionSelection({});
 
+      // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
+      document.getElementById("question-1").onclick = function() {u_q.pickChartType("question-1")};
+      document.getElementById("question-2").onclick = function() {u_q.pickChartType("question-2")};
+
+      
       ///////////////////////////////////////////////////////////////////////
       // Listen for user mouse click on a polygon.
       // This function will listen for user click, and then apply above query to features, activating our plotting class.
@@ -77,11 +86,9 @@ require([
         layer.queryFeatures(query).then((results) =>{
           
           if(results.features.length>0){
-
-            // document.getElementById("side-chart").innerHTML = ""; // Set inner html back to nothing before entering in new data.
-
-            c.createOutputObj(results, q_fields);
-
+            
+            c.createOutputObj(results, u_q.filt_val_list);
+            
           }
         });
       });
