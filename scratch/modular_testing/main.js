@@ -1,3 +1,14 @@
+/*
+Authors: 
+- Wyatt McCurdy
+- Claire Simpson
+- Ian Houseman
+
+Description: 
+  This is the main script called by the LCMS Viewer2 webpage (I don't actually know what it's called, so I'll just go with Viewer2 for now.)
+  It provides the user with a selection of questions and provides charts using LCMS data.
+*/
+
 // Require is an AMD - Asynchronous Module Definition - staple.
 // AMD is pretty much required when working with esri api and map views - and dashboards in general?
 require([
@@ -24,8 +35,6 @@ require([
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
-
-        //MAYBE HIGHLIGHT OPTION IN RENDERER AS WELL
 
     // Dictionary object that is supplied to the layer - visibility parameters.
     const renderer = {
@@ -64,14 +73,15 @@ require([
 
     view.when(()=>{
 
-      // Create a new query instance, and set some default settings. Actually, what do these default settings mean?
+      // Create a new query instance, and set some default settings. 
       var query = new Query();
       query.returnGeometry = true;
       query.outFields = null; 
       query.where = "1=1";
       query.num = 50;
 
-      // INSTANTIATE CLASSES
+      // *INSTANTIATE CLASSES*
+
       // Chart class
       const c = CreatePlotlyObj({});
       // PDF Download Class
@@ -83,16 +93,12 @@ require([
 
       // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
 
-      //get elements
-      // const dropdownTitle = document.querySelector('.dropdown .title');
-      // const dropdownOptions = document.querySelectorAll('.dropdown .option');
+      // * CREATE DROPDOWN MENU CONTROL FLOW *
 
-      //bind listeners to these elements
-      // dropdownTitle.addEventListener('click', drpdown.toggleMenuDisplay);
-      // dropdownOptions.forEach(option => option.addEventListener('click',drpdown.handleOptionSelected));
+      // Call CreateSimpleDropdown function to create a dropdown menu of questions
       drpdown.addDropElems();
       
-      // button relationships
+      // Create a dictionary of 
       const button_relationships = {
         "Q1": "Change---Fast Loss",
         "Q2": "Change---Slow Loss"
@@ -112,13 +118,8 @@ require([
         }
       }
 
-      // document.querySelector('.dropdown .title').addEventListener('change',drpdown.handleTitleChange);
-
-      ///////////////////////////////////////////////////////////////////////
-      // Listen for user mouse click on a polygon.
+      // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
       // This function will listen for user click, and then apply above query to features, activating our plotting class.
-
-      // SOMEWHERE IN ONCLICK, MAKE HIGHLIGHTING A THING
       view.on("click", (e) => {
         query.geometry = e.mapPoint;
         
@@ -126,9 +127,7 @@ require([
           
           if(results.features.length>0){
             
-
-              c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
-            
+            c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
             
           }
         });
