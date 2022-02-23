@@ -5,6 +5,7 @@ require([
     "modules/CreatePlotlyObj",
     "modules/DownloadPDF",
     "modules/UserQuestionSelection_01",
+    "modules/CreateSimpleDropdown",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -15,6 +16,7 @@ require([
       CreatePlotlyObj,
       DownloadPDF,
       UserQuestionSelection,
+      CreateDropdown,
       Map, 
       MapView, 
       GeoJSONLayer, 
@@ -22,6 +24,8 @@ require([
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
+
+        //MAYBE HIGHLIGHT OPTION IN RENDERER AS WELL
 
     // Dictionary object that is supplied to the layer - visibility parameters.
     const renderer = {
@@ -46,7 +50,7 @@ require([
     const map = new Map({
       basemap: "hybrid",
       layers: [layer]
-    })
+    });
 
     // Map view - visualize map and pass it to html div element.
     const view = new MapView({
@@ -67,19 +71,54 @@ require([
       query.where = "1=1";
       query.num = 50;
 
-      // Instantiate classes / modules here. 
+      // INSTANTIATE CLASSES
+      // Chart class
       const c = CreatePlotlyObj({});
+      // PDF Download Class
       const d_pdf = DownloadPDF({});
+      // Question input class
       const u_q = UserQuestionSelection({});
+      // Dropdown class
+      const drpdown = CreateDropdown({});
 
       // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
-      document.getElementById("question-1").onclick = function() {u_q.pickChartType("question-1")};
-      document.getElementById("question-2").onclick = function() {u_q.pickChartType("question-2")};
 
+      //get elements
+      // const dropdownTitle = document.querySelector('.dropdown .title');
+      // const dropdownOptions = document.querySelectorAll('.dropdown .option');
+
+      //bind listeners to these elements
+      // dropdownTitle.addEventListener('click', drpdown.toggleMenuDisplay);
+      // dropdownOptions.forEach(option => option.addEventListener('click',drpdown.handleOptionSelected));
+      drpdown.addDropElems();
       
+      // button relationships
+      const button_relationships = {
+        "Q1": "Change---Fast Loss",
+        "Q2": "Change---Slow Loss"
+      };
+
+      let div = document.getElementById("side-chart");
+      let p = document.createElement("p");
+      div.append(p);
+
+      document.getElementById("options-dropdown").onchange = () => {
+        if ( document.getElementById("options-dropdown").value == "" ){
+          p.textContent = "Please select a question.";
+        }
+        else {
+          // p.textContent = document.getElementById("options-dropdown").value;
+          p.textContent = c.createOutputObj(null, ["null"]);
+        }
+      }
+
+      // document.querySelector('.dropdown .title').addEventListener('change',drpdown.handleTitleChange);
+
       ///////////////////////////////////////////////////////////////////////
       // Listen for user mouse click on a polygon.
       // This function will listen for user click, and then apply above query to features, activating our plotting class.
+
+      // SOMEWHERE IN ONCLICK, MAKE HIGHLIGHTING A THING
       view.on("click", (e) => {
         query.geometry = e.mapPoint;
         
@@ -87,14 +126,14 @@ require([
           
           if(results.features.length>0){
             
-            c.createOutputObj(results, u_q.filt_val_list);
+
+              c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
+            
             
           }
         });
       });
-
       document.getElementById("pdf-button").onclick = function() {d_pdf.downloadPDF()};
-
     })
   }
 );
