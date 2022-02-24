@@ -1,7 +1,22 @@
+/*
+Authors: 
+- Wyatt McCurdy
+- Claire Simpson
+- Ian Houseman
+
+Description: 
+  This is the main script called by the LCMS Viewer2 webpage (I don't actually know what it's called, so I'll just go with Viewer2 for now.)
+  It provides the user with a selection of questions and provides charts using LCMS data.
+*/
+
+// Require is an AMD - Asynchronous Module Definition - staple.
+// AMD is pretty much required when working with esri api and map views - and dashboards in general?
 require([
     "dojo/_base/array",
     "modules/CreatePlotlyObj",
     "modules/DownloadPDF",
+    "modules/UserQuestionSelection_01",
+    "modules/CreateSimpleDropdown",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -11,35 +26,42 @@ require([
       arrayUtils,
       CreatePlotlyObj,
       DownloadPDF,
+      UserQuestionSelection,
+      CreateDropdown,
       Map, 
       MapView, 
       GeoJSONLayer, 
       Query
       ) => {
 
+    // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
+
+    // Dictionary object that is supplied to the layer - visibility parameters.
     const renderer = {
-      type: "simple",  // autocasts as new SimpleRenderer()
+      type: "simple",  
       symbol: {
-        type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+        type: "simple-fill",  
         color: [ 75, 75, 75, 0.3 ],
-        outline: {  // autocasts as new SimpleLineSymbol()
+        outline: {  
           width: 1.3,
-          // color: '#1B1716',
           color:'#00897B'
         }
       }
     };
 
+    // Layer that is added to the map
     const layer = new GeoJSONLayer({
         url: "../../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson",
         renderer: renderer
     });
 
+    // Map supplying layers & basemap
     const map = new Map({
       basemap: "hybrid",
       layers: [layer]
-    })
+    });
 
+    // Map view - visualize map and pass it to html div element.
     const view = new MapView({
       map: map,
       container: "main-map",
@@ -47,24 +69,56 @@ require([
       center: [-90, 37]
     });
 
+    // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
+
     view.when(()=>{
 
-      // Create a new query instance, and set some default settings. Actually, what do these default settings mean?
+      // Create a new query instance, and set some default settings. 
       var query = new Query();
       query.returnGeometry = true;
-      query.outFields = null; //["total_area"]
+      query.outFields = null; 
       query.where = "1=1";
       query.num = 50;
 
-      // Put down fields that you will use to query.
-      q_fields = ["Change---Fast Loss","Change---Stable","Change---Gain","Change---Slow Loss"];
+      // *INSTANTIATE CLASSES*
 
-      // CLASSES GET INSTANTIATED HERE, OUTSIDE OF THE ONCLICK FUNCIONALITY
+      // Chart class
       const c = CreatePlotlyObj({});
+      // PDF Download Class
       const d_pdf = DownloadPDF({});
+      // Question input class
+      const u_q = UserQuestionSelection({});
+      // Dropdown class
+      const drpdown = CreateDropdown({});
 
-      ///////////////////////////////////////////////////////////////////////
-      // Listen for user mouse click on a polygon.
+      // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
+
+      // * CREATE DROPDOWN MENU CONTROL FLOW *
+
+      // Call CreateSimpleDropdown function to create a dropdown menu of questions
+      drpdown.addDropElems();
+      
+      // Create a dictionary of 
+      const button_relationships = {
+        "Q1": "Change---Fast Loss",
+        "Q2": "Change---Slow Loss"
+      };
+
+      let div = document.getElementById("side-chart");
+      let p = document.createElement("p");
+      div.append(p);
+
+      document.getElementById("options-dropdown").onchange = () => {
+        if ( document.getElementById("options-dropdown").value == "" ){
+          p.textContent = "Please select a question.";
+        }
+        else {
+          // p.textContent = document.getElementById("options-dropdown").value;
+          p.textContent = c.createOutputObj(null, ["null"]);
+        }
+      }
+
+      // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
       // This function will listen for user click, and then apply above query to features, activating our plotting class.
       view.on("click", (e) => {
         query.geometry = e.mapPoint;
@@ -72,17 +126,13 @@ require([
         layer.queryFeatures(query).then((results) =>{
           
           if(results.features.length>0){
-
-            // document.getElementById("side-chart").innerHTML = ""; // Set inner html back to nothing before entering in new data.
-
-            c.createOutputObj(results, q_fields);
-
+            
+            c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
+            
           }
         });
       });
-
       document.getElementById("pdf-button").onclick = function() {d_pdf.downloadPDF()};
-
     })
   }
 );
