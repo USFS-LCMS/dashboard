@@ -23,11 +23,8 @@ html, body{
     height: 100%;
   }
   
-  /* .aside-1 {
-    background: gold;
-  }
-  
-  .aside-2 {
+
+  /*.aside-2 {
     background: hotpink;
   } */
   
@@ -55,8 +52,10 @@ canvas {
 
 .dropdown{
 border: 0.1em solid black;
-width: 10em;
+/*width: 10em;*/
+height: 2em;
 margin-bottom: 1em;
+float:center;
 }
 
 .dropdown .title{
