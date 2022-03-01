@@ -100,8 +100,8 @@ require([
       
       // Create a dictionary of button relationships.
       const button_relationships = {
-        "Q1": "Change---Fast Loss",
-        "Q2": "Change---Slow Loss"
+        "Question1": "Change---Fast Loss",
+        "Question2": "Change---Slow Loss"
       };
 
       // Create a div to populate 
@@ -112,11 +112,21 @@ require([
 
       // If there is a change in button status, do something
       document.getElementById("options-dropdown").onchange = () => {
+        if (document.getElementById("chart-canvas") != null){
+          document.getElementById("chart-canvas").remove();
+        };
+
+        p.textContent="Please Select a question.";
+        // document.getElementById("side-chart").innerHTML = "";
+        // p.innerHTML = "";
+
         if ( document.getElementById("options-dropdown").value == "" ){
+          
           // Ask user to select question if they have not yet.
           p.textContent = "Please select a question.";
         }
         else {
+          p.textContent = "";
           p.textContent = c.createOutputObj(null, ["null"]);
         }
       }

@@ -30,12 +30,15 @@ define([
             // Iterate over questions, adding them to the html string
 
             for (let i = 0; i < questions.length; i++){
-                html += `<option value=${questLabels[i]}>${questions[i]}`
+                html += `<option value=${questLabels[i]}>${questions[i]}</option>`
             }
 
             const select = document.querySelector("#options-dropdown");
             // Insert the html string into dropdown location
             select.innerHTML = html;
+
+            // Here, try and expand it out.
+
         }
     })
 });

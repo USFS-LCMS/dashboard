@@ -46,6 +46,15 @@ margin: auto;
 float:center;
 }
 
+#dropdown_elem {
+  text-align: center;
+  overflow: hidden;
+}
+
+#dropdown_elem:hover{
+  overflow: visible;
+}
+
 /* Make another id chunk for the new dropdown menu text*/
 
 
@@ -92,3 +101,4 @@ transform: rotate(90deg);
   .main    { order: 1; }
   .aside-2 { order: 2; }
 }
+
