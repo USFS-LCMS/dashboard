@@ -1,6 +1,6 @@
 define([
     "dojo/_base/declare",
-    "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js", // import chart js
 ], function(declare, Chart){
 
     return declare(null,{
@@ -8,15 +8,19 @@ define([
         outputObj: null,
 
         constructor: function(options){
-            // specify class defaults
 
         },
 
-        // Use the class properties to display a chart object in hardcoded div.
         // Pascal CASE.
         createOutputObj: function(results, fieldNames){
+            /*
+            Create a chart object and insert it into the chart div in main html
+            */
             
+            // Check whether the user has selected anything - more info in main js
             if ( results != null ){
+
+                // Create a x value list for the chart based on the 0th feature found
                 years = results.features[0].attributes["years"].split(",");
 
                 // Employ Ian's function. 
@@ -24,10 +28,13 @@ define([
                 //First get 2-d array of all areas for each then sum the columns and divide by total area
                 const colors = ["#e34a33", "#3182bd", "#31a354", "#dd1c77"];
                 let col_i = 0;
+
+                // Map over input field names - put in from main function.
                 var t = fieldNames.map(function(k){
                     var total_area = 0;
                     var total = [];
-                    // document.write(total);
+
+                    // Get total area for each feature selected.
                     results.features.map(function(f){
                         var total_areaF = parseFloat(f.attributes['total_area']);
                         total_area = total_area + total_areaF;
@@ -35,6 +42,7 @@ define([
                         total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
                     })
                     
+                    // Create 
                     let colSums = [];
                     for(var col = 0;col < total[0].length;col++){
                         var colSum = 0;
@@ -56,16 +64,16 @@ define([
                     col_i ++;
                         return out;
                 });
-                console.log(t);
-                // document.write(t[0].y);
-                // Plotly.newPlot(div, t);
 
-
+                // Replace existing chart canvas if exists
                 if (document.getElementById("chart-canvas") != null){
                     document.getElementById("chart-canvas").remove();
                 };
-                
+
+                // Assign self output object to dictionary of chart values
                 this.outputObj = t;
+
+
                 chart_loc = document.getElementById("side-chart");
                 let my_canvas = document.createElement("canvas");
                 my_canvas.setAttribute("id", "chart-canvas")

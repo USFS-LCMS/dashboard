@@ -13,10 +13,10 @@ Description:
 // AMD is pretty much required when working with esri api and map views - and dashboards in general?
 require([
     "dojo/_base/array",
-    "modules/CreatePlotlyObj",
+    "modules/CreateChart",
     "modules/DownloadPDF",
     "modules/UserQuestionSelection_01",
-    "modules/CreateSimpleDropdown",
+    "modules/CreateDropdown",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -98,22 +98,25 @@ require([
       // Call CreateSimpleDropdown function to create a dropdown menu of questions
       drpdown.addDropElems();
       
-      // Create a dictionary of 
+      // Create a dictionary of button relationships.
       const button_relationships = {
         "Q1": "Change---Fast Loss",
         "Q2": "Change---Slow Loss"
       };
 
+      // Create a div to populate 
       let div = document.getElementById("side-chart");
+      // Create a paragraph in the div
       let p = document.createElement("p");
       div.append(p);
 
+      // If there is a change in button status, do something
       document.getElementById("options-dropdown").onchange = () => {
         if ( document.getElementById("options-dropdown").value == "" ){
+          // Ask user to select question if they have not yet.
           p.textContent = "Please select a question.";
         }
         else {
-          // p.textContent = document.getElementById("options-dropdown").value;
           p.textContent = c.createOutputObj(null, ["null"]);
         }
       }
