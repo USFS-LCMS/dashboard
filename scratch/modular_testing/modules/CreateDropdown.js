@@ -16,8 +16,8 @@ define([
             */
             // Enumerate questions here.
             const questions = [
-                "For the Migration of trees and shrubs into alpine tundra and recently deglaciated habitats: we are asking what is the annual change in acres of trees and shrub communities into previously unoccupied alpine and recently deglaciated habitat?", 
-                "For annual snow coverage, we are asking what is the rate of change in snow and ice cover (acres) over time. I guess we could start at the same, ecoregion subsection level, but increase the zone coverage over time as it makes sense?"
+                "Migration: What is the annual change in acres of trees and shrub communities into previously unoccupied alpine and recently deglaciated habitat?", 
+                "Annual Snow Coverage: What is the rate of change in snow and ice cover (acres) over time?"
             ];
 
             const questLabels = [
