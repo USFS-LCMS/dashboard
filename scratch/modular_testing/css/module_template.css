@@ -7,6 +7,7 @@ html, body{
   color:#00897B;
 
 }
+
 .wrapper {
     display: flex;  
     /* flex-flow: column wrap; */
@@ -24,25 +25,10 @@ html, body{
   }
   
 
-  /*.aside-2 {
-    background: hotpink;
-  } */
-  
-  @media all and (min-width: 600px) {
-    .aside { flex: 1 0; }
-  }
-  
-  @media all and (min-width: 800px) {
-    .main    { flex: 3 0px; }
-    .main    { order: 1; }
-    .aside-2 { order: 2; }
-  }
-  
 canvas {
   background-color: rgb(224, 226, 212);
   display: flex;
 }
-
 
 
 /* dropdown stuff pasted from free code camp */
@@ -52,18 +38,23 @@ canvas {
 
 .dropdown{
 border: 0.1em solid black;
+/* border: 0.1em #242424; */
 /*width: 10em;*/
 height: 2em;
-margin-bottom: 1em;
+/* margin-bottom: 1em; */
+margin: auto;
 float:center;
 }
 
-.dropdown .title{
+/* Make another id chunk for the new dropdown menu text*/
+
+
+/* .dropdown .title{
 margin: .3em .3em .3em .3em;	
 width: 100%;
-}
+} */
 
-.dropdown .title .fa-angle-right{
+/* .dropdown .title .fa-angle-right{
 float: right;
 margin-right: .7em;
 transition: transform .3s;
@@ -73,9 +64,9 @@ transition: transform .3s;
 transition: max-height .5s ease-out;
 max-height: 20em;
 overflow: hidden;
-}
+} */
 
-.dropdown .menu .option{
+/* .dropdown .menu .option{
 margin: .3em .3em .3em .3em;
 margin-top: 0.3em;
 }
@@ -90,4 +81,14 @@ cursor: pointer;
 
 .rotate-90{
 transform: rotate(90deg);
+} */
+
+@media all and (min-width: 600px) {
+  .aside { flex: 1 0; }
+}
+
+@media all and (min-width: 800px) {
+  .main    { flex: 3 0px; }
+  .main    { order: 1; }
+  .aside-2 { order: 2; }
 }
