@@ -184,6 +184,7 @@ require([
 
       // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
       // This function will listen for user click, and then apply above query to features, activating our plotting class.
+      var storeResults =null;
       view.on("click", (e) => {
         query.geometry = e.mapPoint;
         
@@ -192,11 +193,11 @@ require([
           if(results.features.length>0){
             
             c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
-            
+            storeResults=results
           }
         });
       });
-      document.getElementById("pdf-button").onclick = function() {d_pdf.downloadPDF()};
+      document.getElementById("pdf-button").onclick = function() {d_pdf.downloadPDF(storeResults)};
     })
   }
 );
