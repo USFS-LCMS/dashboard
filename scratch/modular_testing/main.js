@@ -52,9 +52,10 @@ require([
     // Layer that is added to the map
     const layer = new GeoJSONLayer({
         url: "../../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson",
-        renderer: renderer
+        renderer: renderer,
+        outFields: ["EW_ID"]
     });
-
+    console.log(layer);
     // const layer_west = new GeoJSONLayer({
     //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_west.geojson",
     //   renderer: renderer
@@ -98,9 +99,14 @@ require([
 
     view.when(()=>{
 
+      console.log();
+      const selectorElement = document.getElementById("features-select");
 
+      // selectorElement.addEventListener("click", doSomething);
 
-      // // * CREATE LAYER SELECTION FUNCTION BELOW
+      
+      // * CREATE LAYER SELECTION FUNCTION BELOW
+
 
       // const fQuery = {
       //   "1": "EW_ID = '1'", 
@@ -115,8 +121,7 @@ require([
       //   })
       // }
 
-      // // * CREATE LAYER SELECTION FUNCTION ABOVE
-
+      // * CREATE LAYER SELECTION FUNCTION ABOVE
 
 
       // Create a new query instance, and set some default settings. 
