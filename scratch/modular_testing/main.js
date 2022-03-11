@@ -55,7 +55,32 @@ require([
         renderer: renderer
     });
 
+    // const layer_west = new GeoJSONLayer({
+    //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_west.geojson",
+    //   renderer: renderer
+    // });
+
+    // const layer_east = new GeoJSONLayer({
+    //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_east.geojson",
+    //   renderer: renderer
+    // });
+
     // Map supplying layers & basemap
+    
+
+    // Try querying features and only adding those to the map.
+
+    // let queryhalf = new Query();
+    // queryhalf.returnGeometry = true;
+    // queryhalf.outFields = null;
+    // queryhalf.where = "EW_ID = 1";
+
+    // half_layer = layer.queryFeatures(layerSelectQuery).then((response) => {
+    //   return response;
+    //   // returns a feature set with features containing the following attributes
+    //   // STATE_NAME, COUNTY_NAME, POPULATION, POP_DENSITY
+    // });
+
     const map = new Map({
       basemap: "hybrid",
       layers: [layer]
@@ -73,8 +98,29 @@ require([
 
     view.when(()=>{
 
+
+
+      // // * CREATE LAYER SELECTION FUNCTION BELOW
+
+      // const fQuery = {
+      //   "1": "EW_ID = '1'", 
+      //   "2": "EW_ID = '2'"
+      // }
+
+      // function showF(event) {
+      //   const fQuery = event.target.value;
+
+      //   view.layers.forEach((layer) => {
+      //     layer.definitionExpression = fQuery
+      //   })
+      // }
+
+      // // * CREATE LAYER SELECTION FUNCTION ABOVE
+
+
+
       // Create a new query instance, and set some default settings. 
-      var query = new Query();
+      let query = new Query();
       query.returnGeometry = true;
       query.outFields = null; 
       query.where = "1=1";
@@ -114,7 +160,7 @@ require([
       document.getElementById("options-dropdown").onchange = () => {
         if (document.getElementById("chart-canvas") != null){
           document.getElementById("chart-canvas").remove();
-        };
+      };
 
         p.textContent="Please Select a question.";
         // document.getElementById("side-chart").innerHTML = "";

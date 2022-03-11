@@ -12,7 +12,7 @@
     <div class="panel3"></div>
     <canvas id="myChart" width="400" height="200"></canvas>
 
-    <script>
+    <!-- <script>
         $.getJSON('../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson', function(data) {
 
             const text = `type: ${data['type']}`
@@ -30,6 +30,31 @@
             $(".mypanel").html(ftrs);
             // $(".mypanel").html(forest_cover);
         });
+    </script> -->
+
+    <script>
+        $.getJSON("../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_MERG.geojson", function(data) {
+
+            // const filtdata = $.grep( [data], function( n, i ) {
+            //     return n.features.properties.EW_ID===1;
+            // });
+
+            const text = `type: ${data['type']}`
+
+            const ftrs = `features keys: ${
+                Object.keys( data.features[0].properties )
+            }`
+
+            const forest_cover = `forest cover of feature: ${
+                data['features'][1]['properties']['Land_Cover---Trees']
+            }`
+
+            console.log(ftrs);
+
+            $(".mypanel").html(ftrs);
+            // $(".mypanel").html(forest_cover);
+        });
+
     </script>
 
     <!-- <script>
