@@ -25,17 +25,32 @@ define([
             let h = doc.internal.pageSize.height;
             let w = doc.internal.pageSize.width;
             let margin = 10;
+
+            //header 
+            var fontSize = 14
+            doc.setFontSize(fontSize);
+            doc.setFillColor(0,0,0);
+            doc.setTextColor(8,124,124);
+            doc.rect(0, 0, 600, 20, 'F'); //x, y, w, h, style
+            var headerTextHeight=18
+            doc.text(margin,headerTextHeight, "Region 10");
+            doc.setFont(undefined,'bold');
+            doc.text(margin+25, headerTextHeight, "LCMS");
+            doc.setFont(undefined,'normal');
+            doc.text(margin+42,headerTextHeight,'Report');
+
+            
             doc.setFontSize(20);
-            doc.text(margin, margin, "LCMS Summary:");
-            doc.text(margin*2, margin*2, "The following areas are included in this summary:");
+            doc.text(margin, margin*3, "LCMS Summary:");//x,y,text
+            doc.text(margin, margin*4, "The following areas are included in this summary:");
 
             doc.setFontSize(5);
             // // doc.text(margin, margin*2, selectedAreaNameList.join(', '),{ maxWidth: doc.internal.pageSize.width-margin*2});
             // doc.addPage();
 
             // //Add charts
-            let currentY = margin*3;
-            let chartW = w - margin*2;
+            let currentY = margin*5;
+            let chartW = w - margin*6;
 
             const canvas = document.getElementById("chart-canvas");
 
@@ -57,14 +72,14 @@ define([
             var total = 0;
             for (var i=0; i<fastLoss.length; i++){
                 total+=fastLoss[i]}
-            var meanFastLoss = total/fastLoss.length;
-            var forestName =results.features[0].attributes["FORESTNAME"]
-            var objectID =results.features[0].attributes["OBJECTID"]
-            var Region =results.features[0].attributes["REGION"]
-            var Area = results.features[0].attributes["GIS_ACRES"]
+            var meanFastLoss = parseFloat(String(total/fastLoss.length).slice(0,8));
+            var forestName =results.features[0].attributes["FORESTNAME"]; // ensure that fields are attributed with forest or just splice str(outID)[0]
+            var objectID =results.features[0].attributes["OBJECTID"];
+            var Region =results.features[0].attributes["REGION"];
+            var Area = results.features[0].attributes["GIS_ACRES"];
 
-            var head = [["ID","Forest", "Region", "Area (acres)", "Mean Fast Loss"]]
-            var body = [[objectID, forestName, Region, Area, meanFastLoss]] //will change this so that if user selects multiple polygons (???) theyll all populate in chart
+            var head = [["ID","Forest", "Region", "Area (acres)", "Mean Fast Loss"]];
+            var body = [[objectID, forestName, Region, Area, meanFastLoss]]; //will change this so that if user selects multiple polygons (???) theyll all populate in chart
             doc.autoTable({
                 head:head,
                 body:body,
@@ -76,7 +91,7 @@ define([
                 alternateRowStyles:[181, 231, 221],
                 tableLineColor:[8, 124, 124],//[0,0,0],//
                 tableLineWidth:0.1,
-                columnStyles:{1:{cellWidth:"wrap"}},            
+                columnStyles:{1:{cellWidth:"wrap"}},             
             })
                 // bodyStyles: { valign: "top" },
                 // columnStyles: { email: { columnWidth: "wrap" } },
@@ -104,6 +119,8 @@ define([
             
             
             doc.save(outFilename+'.pdf');
+            //doc.printout();
+            console.log('Finished Downloading PDF');
         }
     })
 });
