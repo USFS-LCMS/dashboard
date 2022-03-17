@@ -11,6 +11,7 @@ Description:
 
 // Require is an AMD - Asynchronous Module Definition - staple.
 // AMD is pretty much required when working with esri api and map views - and dashboards in general?
+
 require([
     "dojo/_base/array",
     "modules/CreateChart",
@@ -22,6 +23,7 @@ require([
     "esri/layers/GeoJSONLayer",
     "esri/tasks/support/Query",
     "dojo/domReady!"
+
     ], (
       arrayUtils,
       CreatePlotlyObj,
@@ -35,6 +37,7 @@ require([
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
+    
 
     // Dictionary object that is supplied to the layer - visibility parameters.
     const renderer = {
@@ -95,6 +98,9 @@ require([
       center: [-90, 37]
     });
 
+
+
+
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when(()=>{
@@ -141,6 +147,8 @@ require([
       const u_q = UserQuestionSelection({});
       // Dropdown class
       const drpdown = CreateDropdown({});
+
+
 
       // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
 

@@ -1,6 +1,12 @@
+
 define([
-    "dojo/_base/declare"
-], function(declare){
+    "dojo/_base/declare",
+    "dojo/_base/array",
+    "./CreateRobotoFont"
+], function(
+    declare,
+    arrayUtils,
+    CreateRobotoFont){
 
     return declare(null,{
 
@@ -12,45 +18,115 @@ define([
         },
         //Function to download a pdf report
         
-        downloadPDF: function(results){            
+        downloadPDF: function(results){  
             console.log('Downloading PDF');
 
             let outFilename = 'LCMS-Summaries'
             // if($('#pdfFilename').val() !== ''){
-            // outFilename = $('#pdfFilename').val()
+            // outFilename = $('#pdfFilename').val() 
             // }  
         
-            // Add area names
+            // Add area namess
             let doc = new jspdf.jsPDF('portrait');
             let h = doc.internal.pageSize.height;
             let w = doc.internal.pageSize.width;
             let margin = 10;
+           
+            // Robotofont class (contains text needed to read ttf files)
+            const robotoFontClass = CreateRobotoFont({});            
+            const robotoNormal = robotoFontClass.getRobotoNormal();
+            const robotoBold = robotoFontClass.getRobotoBold();  
+            doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
+            doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
+            doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
+            doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
+                   
+            doc.setFont('RobotoCondensed','normal'); 
 
             //header 
-            var fontSize = 14
+            //header color block
+            var fontSize = 12
             doc.setFontSize(fontSize);
-            doc.setFillColor(0,0,0);
-            doc.setTextColor(8,124,124);
+            doc.setFillColor(169,209,142);
+            //doc.setTextColor(8,124,124);
             doc.rect(0, 0, 600, 20, 'F'); //x, y, w, h, style
+
+            //header logo image
+            var fsLogo = new Image();
+            fsLogo.src = "../../images/usfslogo_black.png";
+            doc.addImage(fsLogo, 'PNG', 3, 3, 15,15);//x,y,w,h
+            var usdaLogo = new Image();
+            usdaLogo.src = "../../images/usda_logo_black.png";
+            doc.addImage(usdaLogo, 'PNG', 20,4, 17,13)//, 15);
+
+            //header text
             var headerTextHeight=18
-            doc.text(margin,headerTextHeight, "Region 10");
+            var widthPng = 34
+            doc.text(margin+widthPng,headerTextHeight, "Region 10");
             doc.setFont(undefined,'bold');
-            doc.text(margin+25, headerTextHeight, "LCMS");
+            doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
             doc.setFont(undefined,'normal');
-            doc.text(margin+42,headerTextHeight,'Report');
+            doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
 
+            //add title/unit info
+            var forestName =results.features[0].attributes["FORESTNAME"]; // ensure that fields are attributed with forest or just splice str(outID)[0]
+            var objectID =results.features[0].attributes["OBJECTID"];
+            var unitName ='LTA' //update this when we get the real data to be dynamic with what type of data (only allow user to select multiply polygons within one laeyr?? e.g. only LTAs OR only watersheds.. not one LTA and one watershed)
             
-            doc.setFontSize(20);
-            doc.text(margin, margin*3, "LCMS Summary:");//x,y,text
-            doc.text(margin, margin*4, "The following areas are included in this summary:");
 
-            doc.setFontSize(5);
+            doc.setFontSize(16);
+            doc.setTextColor(0,0,0);
+            doc.setFont(undefined,'bold')
+            var yPos = 30
+            doc.text(margin, yPos, "LANDSCAPE CHANGE MONITORING SYSTEM SUMMARY");//x,y,text
+            var lineHeight = doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM SUMMARY") / doc.internal.scaleFactor
+            var lines = 1//splittedText.length  // splitted text is a string array
+            var blockHeight = lines * lineHeight            
+            yPos+= blockHeight+5;
+            doc.setFont(undefined,'normal');
+
+            doc.setFontSize(26);
+            doc.setFont(undefined,'normal')
+            doc.setTextColor(8,124,124)
+            var question ="How does climate change...[This is the selected question of interest]?";
+            var wrapQuestion= doc.splitTextToSize(question, 180);
+            doc.text(margin, yPos, wrapQuestion);
+
+            var lineHeight = doc.getLineHeight(question) / doc.internal.scaleFactor
+            var lines = wrapQuestion.length  // splitted text is a string array
+            var blockHeight = lines * lineHeight
+            yPos+= blockHeight-18
+
+            doc.setFontSize(16)
+            doc.setTextColor(0,0,0);
+            doc.text(margin, yPos+= blockHeight, "The following areas are included in this summary:");
+            doc.setFontSize(16)
+            doc.setFont(undefined,'bold');
+            var lineHeight = doc.getLineHeight("The following areas are included in this summary:") / doc.internal.scaleFactor
+            var lines = 1//wrapQuestion.length  // splitted text is a string array
+            var blockHeight = lines * lineHeight
+            yPos+= blockHeight+1
+            doc.setTextColor(8,124,124)
+            doc.text(margin*2, yPos, unitName + ' '+objectID+',') //
+            yPos+=blockHeight
+            doc.text(margin*2, yPos,forestName )     
+            doc.setFont(undefined,'normal');       
+            doc.setFontSize(12);
+            doc.setTextColor(0,0,0);
+            yPos+=blockHeight+5;
+            var wrapParagraph = doc.splitTextToSize("This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc.",180);
+            doc.text(margin, yPos, wrapParagraph);
+            var lineHeight = doc.getLineHeight("The ") / doc.internal.scaleFactor
+            var lines = wrapParagraph.length  // splitted text is a string array
+            var blockHeight = lines * lineHeight
+            yPos+= blockHeight
+            //doc.setFontSize(5);
             // // doc.text(margin, margin*2, selectedAreaNameList.join(', '),{ maxWidth: doc.internal.pageSize.width-margin*2});
             // doc.addPage();
 
             // //Add charts
-            let currentY = margin*5;
-            let chartW = w - margin*6;
+            let currentY = yPos;
+            let chartW = w - margin*2;
 
             const canvas = document.getElementById("chart-canvas");
 
@@ -73,8 +149,6 @@ define([
             for (var i=0; i<fastLoss.length; i++){
                 total+=fastLoss[i]}
             var meanFastLoss = parseFloat(String(total/fastLoss.length).slice(0,8));
-            var forestName =results.features[0].attributes["FORESTNAME"]; // ensure that fields are attributed with forest or just splice str(outID)[0]
-            var objectID =results.features[0].attributes["OBJECTID"];
             var Region =results.features[0].attributes["REGION"];
             var Area = results.features[0].attributes["GIS_ACRES"];
 
@@ -117,7 +191,10 @@ define([
                 // }
 
             
-            
+            let finalY = doc.lastAutoTable.finalY; // The y position on the page
+            doc.setFontSize(12)
+            doc.text(margin, finalY+5, "Table 1. Summary of units analyzed")
+
             doc.save(outFilename+'.pdf');
             //doc.printout();
             console.log('Finished Downloading PDF');
