@@ -88,7 +88,7 @@ define([
             doc.setFontSize(26);
             doc.setFont(undefined,'normal')
             doc.setTextColor(8,124,124)
-            var question ="How does climate change...[This is the selected question of interest]?";
+            var question ="How does climate change...[This is the selected question of interest]?"; //change to document.getElementById("options-dropdown").value;//
             var wrapQuestion= doc.splitTextToSize(question, 180);
             doc.text(margin, yPos, wrapQuestion);
 
@@ -126,21 +126,39 @@ define([
 
             // //Add charts
             let currentY = yPos;
-            let chartW = w - margin*2;
+            let chartH = h - margin*2 - yPos;  //target height          
 
-            const canvas = document.getElementById("chart-canvas");
+            
+            const screenshotMap = document.getElementsByClassName(
+                "js-screenshot-image"
+              )[0];
+            //console.log(screenshotMap.src+"is screenshot map")
 
-            const chartHeight = canvas.height;
-            const chartWidth = canvas.width;
-            let aspectRatio = chartHeight/chartWidth;
-            var chartH = chartW*aspectRatio;
+            var chartHeight = screenshotMap.height;
+            var chartWidth = screenshotMap.width;
+            let aspectRatio = chartWidth/chartHeight;
+            let chartW = chartH*aspectRatio;
             // if(currentY + chartH > h){
             //     doc.addPage();
             //     currentY = margin;
             // }
-            doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
-            currentY = currentY+ chartH + margin;
+            doc.addImage(screenshotMap.src, 'png', margin, currentY, chartW, chartH );//,{compresion:'NONE'});
             
+            //new page
+            doc.addPage();
+
+            //add graph
+            currentY = margin;// currentY+ chartH + margin;
+            chartW = w - margin*2;
+            const canvas = document.getElementById("chart-canvas");
+            chartHeight = canvas.height;
+            chartWidth = canvas.width;
+            aspectRatio = chartHeight/chartWidth;
+            chartH = chartW*aspectRatio;
+
+            doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+
+            currentY = currentY+ chartH + margin;
             //draw table
             // ultimately want a table with 
             var years = results.features[0].attributes["years"].split(",");
@@ -192,8 +210,21 @@ define([
 
             
             let finalY = doc.lastAutoTable.finalY; // The y position on the page
+            console.log(finalY+'is final y of table')
             doc.setFontSize(12)
             doc.text(margin, finalY+5, "Table 1. Summary of units analyzed")
+
+            //add page numbers to bottom of each page
+            var pageCount = doc.internal.getNumberOfPages();
+            console.log(pageCount+'is page count'+h+'is height'+w+'is width')
+            for (i=0; i< pageCount; i++){
+                doc.setPage(i);
+                let pageCurrent = String(doc.internal.getCurrentPageInfo().pageNumber);
+                doc.setFontSize(12);
+                doc.text(pageCurrent,w-margin-pageCurrent.length, h-margin);
+                console.log(pageCurrent.length+'len pg cur')
+            }
+
 
             doc.save(outFilename+'.pdf');
             //doc.printout();

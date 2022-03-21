@@ -15,7 +15,37 @@
     <link rel="icon" type="image/gif/png" href="../../images/usfslogo.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
     <script src ="https://unpkg.com/jspdf-autotable"></script>   
-    
+    <style>
+      #screenshotDiv {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+      .hide {
+        display: none;
+      }
+      
+      .action-button {
+        padding: 0.6em;
+        border: 1px solid #f2f5f7;
+        text-align: center;
+        background-color: rgb(8,124,124);
+        cursor: pointer;
+        font:arial;
+      }
+
+      .action-button:hover,
+      .action-button:focus {
+        background: rgb(8,124,124, .5);
+        color: white;
+      }
+
+
+    </style>
   </head>
 
   <body>
@@ -42,9 +72,25 @@
       <div class="main" id="main-map">
       </div>
       
+
+      
       <div class="aside aside-2" id="side-chart">
         <h3>LCMS Outputs</h3>
-        <button id="pdf-button">Download PDF</button>
+        <div id="viewDiv" class="esri-widget">
+          <button
+            id="pdf-button"
+            class="action-button esri-widget"
+            aria-label="Download PDF"
+            title="Download PDF"
+          >
+            Download PDF
+          </button>
+        <div id="screenshotDiv" class="hide">
+          <img class="js-screenshot-image" />        
+          
+        </div>
+  
+        <!--<button id="pdf-button">Download PDF</button>-->
         
       </div>
       <!-- <div class="footer">

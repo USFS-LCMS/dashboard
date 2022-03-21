@@ -98,15 +98,13 @@ require([
       center: [-90, 37]
     });
 
-
-
-
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when(()=>{
 
       console.log();
       const selectorElement = document.getElementById("features-select");
+      //const screenshotDiv = document.getElementById("screenshotDiv");
 
       // selectorElement.addEventListener("click", doSomething);
 
@@ -193,6 +191,8 @@ require([
       // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
       // This function will listen for user click, and then apply above query to features, activating our plotting class.
       var storeResults =null;
+      // Take a screenshot at the same resolution of the current view  
+     
       view.on("click", (e) => {
         query.geometry = e.mapPoint;
         
@@ -202,10 +202,37 @@ require([
             
             c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
             storeResults=results
+            
           }
         });
       });
-      document.getElementById("pdf-button").onclick = function() {d_pdf.downloadPDF(storeResults)};
+
+     
+      
+
+      
+      document.getElementById("pdf-button").addEventListener("click",() => {//onclick = function() {
+        view.takeScreenshot({format:'png', width:2048,height:2048}).then(function(screenshot) {
+          //showPreview(screenshot);
+          //const viewCanvas = document.createElement("canvas");
+          //const viewCanvasImg = document.createElement("img").setAttribute('id',"my_screenshot_img");
+          //viewCanvasImg.src=screenshot.dataUrl;
+  
+          //var imageElement = document.getElementById("screenshotImage");
+          const imageElement = document.getElementsByClassName(
+            "js-screenshot-image"
+          )[0];
+          
+          imageElement.src = screenshot.dataUrl;
+          imageElement.height = screenshot.data.height;
+          imageElement.width = screenshot.data.width;
+          //screenshotDiv.classList.remove("hide");
+          d_pdf.downloadPDF(storeResults)
+          
+        });
+  
+        
+      });
     })
   }
 );
