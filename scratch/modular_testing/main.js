@@ -34,7 +34,7 @@ require([
 
     ], (
       arrayUtils,
-      CreatePlotlyObj,
+      CreateChart,
       DownloadPDF,
       UserQuestionSelection,
       CreateDropdown,
@@ -137,7 +137,7 @@ require([
     view.when(()=>{
 
       console.log();
-      const selectorElement = document.getElementById("features-select");
+      // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
 
       // selectorElement.addEventListener("click", doSomething);
@@ -172,13 +172,13 @@ require([
       // *INSTANTIATE CLASSES*
 
       // Chart class
-      const c = CreatePlotlyObj({});
+      const c = CreateChart({});
       // PDF Download Class
       const d_pdf = DownloadPDF({});
       // Question input class
       const u_q = UserQuestionSelection({});
       // Dropdown class
-      const drpdown = CreateDropdown({});
+      // const drpdown = CreateDropdown({});
 
 
       // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
@@ -186,7 +186,7 @@ require([
       // * CREATE DROPDOWN MENU CONTROL FLOW *
 
       // Call CreateSimpleDropdown function to create a dropdown menu of questions
-      drpdown.addDropElems();
+      // drpdown.addDropElems();
       
       // Create a dictionary of button relationships.
       const button_relationships = {
@@ -210,13 +210,16 @@ require([
         // document.getElementById("side-chart").innerHTML = "";
         // p.innerHTML = "";
 
-        if ( document.getElementById("options-dropdown").value == "" ){
+        // assumes that we have a blank dropdown menu 
+        if ( document.getElementById("tree-shrub-question").value == "" ){
           
           // Ask user to select question if they have not yet.
           p.textContent = "Please select a question.";
         }
         else {
+          // if no blank value, clear out the chart 
           p.textContent = "";
+
           p.textContent = c.createOutputObj(null, ["null"]);
         }
       }
@@ -264,7 +267,7 @@ require([
             })            
             view.goTo(results.features[0].geometry);
             
-            c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
+            c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
             storeResults=results
             
           }
