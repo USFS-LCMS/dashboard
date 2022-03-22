@@ -10,15 +10,15 @@ define([
             
         },
 
-        hamburgerToggle: function(){
+        hamburgerToggle: function(div1, div2){
             
             // $('#sidebar-left').toggle('collapse');
 
             // Grab the hamburger button.
-            const hamburger = document.getElementById("hamburger");
+            const hamburger = document.getElementById(div1);
 
             // Grab the list thing under the sidebar just in case...
-            const inside_sidebar_elem = document.getElementById("parameters-collapse-label-parameters-collapse-div");
+            const inside_sidebar_elem = document.getElementById(div2);
 
             // display: none;
             // overflow: hidden;

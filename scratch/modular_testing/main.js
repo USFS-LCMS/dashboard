@@ -150,11 +150,22 @@ require([
       // PDF Download Class
       const d_pdf = DownloadPDF({});
 
+
+      // TOGGLE SIDEBAR VISIBILITY ***
       // Create a function that let you toggle visibility based on mouse click.
       const toggleSidebar = ToggleSidebar({});
 
-      toggleSidebar.hamburgerToggle();
+      // TOGGLE HAMBURGER - QUESTION VISIBILITY
+      toggleSidebar.hamburgerToggle("hamburger", "parameters-collapse-label-parameters-collapse-div");
+      
 
+      // TOGGLE FOREST HEALTH SUBQUESTION VISIBILITY
+      toggleSidebar.hamburgerToggle("parameters-collapse-label-parameters-collapse-div", "r10-question-list");
+
+      // TOGGLE FOREST HEALTH QUESTIONS
+      toggleSidebar.hamburgerToggle("forest-health", "forest-health-questions");
+
+      // TOGGLE SIDEBAR VISIBILITY ***
 
       // Question input class
       // const u_q = UserQuestionSelection({});

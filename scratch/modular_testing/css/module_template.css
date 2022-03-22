@@ -183,6 +183,16 @@ canvas {
   cursor: pointer;
 }
 
+#r10-question-list {
+  cursor: pointer;
+  display: none;
+}
+
+#forest-health-questions {
+  cursor: pointer;
+  display: none;
+}
+
 /* Create a thing - hook thingy for button class="accordion" */
 /* .accordion {
   position: absolute;
