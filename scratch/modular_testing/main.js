@@ -20,6 +20,8 @@ require([
     "modules/DownloadPDF",
     "modules/UserQuestionSelection_01",
     "modules/CreateDropdown",
+    "modules/ACCORDION",
+    "modules/ToggleSidebar",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -36,6 +38,8 @@ require([
       DownloadPDF,
       UserQuestionSelection,
       CreateDropdown,
+      Accordion,
+      ToggleSidebar,
       Map, 
       MapView, 
       GeoJSONLayer, 
@@ -62,13 +66,19 @@ require([
       }
     };
 
-    // Layer that is added to the map
+
+    // LOAD IN LAYERS - look in template for layer list widget. 
+
     const layer = new GeoJSONLayer({
-        url: "../../geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson",
-        renderer: renderer,
-        outFields: ["EW_ID"]
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
+      renderer: renderer
     });
-    console.log(layer);
+
+    // const chugach_ecosections = new GeoJSONLayer({
+    //   url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
+    // })
+
+    // console.log(layer);
     // const layer_west = new GeoJSONLayer({
     //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_west.geojson",
     //   renderer: renderer
@@ -103,10 +113,24 @@ require([
     // Map view - visualize map and pass it to html div element.
     const view = new MapView({
       map: map,
-      container: "main-map",
-      zoom: 6,
-      center: [-90, 37]
+      container: "main-map"
+      // zoom: 6,
+      // center: [-90, 37]
+      // extent:
     });
+
+    // const basemaps = new BasemapGallery({
+    //   view
+    // })
+
+
+    // Zoom 2 ext of layer!
+    layer.when(()=>{
+      console.log('setting extent');
+      view.extent = layer.fullExtent;
+    });
+
+
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
@@ -157,7 +181,6 @@ require([
       const drpdown = CreateDropdown({});
 
 
-
       // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
 
       // * CREATE DROPDOWN MENU CONTROL FLOW *
@@ -178,7 +201,7 @@ require([
       div.append(p);
 
       // If there is a change in button status, do something
-      document.getElementById("options-dropdown").onchange = () => {
+      document.getElementById("tree-shrub-question").onclick = () => {
         if (document.getElementById("chart-canvas") != null){
           document.getElementById("chart-canvas").remove();
       };

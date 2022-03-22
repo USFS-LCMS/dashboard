@@ -1,0 +1,79 @@
+.cd-accordion__input { 
+    position: absolute;
+    opacity: 0;
+    background: black;
+    max-height: 708px;
+    left: 0;
+    width: 250px;
+    padding-right: 20px;
+  }
+  
+  .cd-accordion__label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    /* padding: var(--space-sm) var(--space-md); */
+    /* background: var(--cd-color-1); */
+    /* box-shadow: inset 0 -1px lightness(var(--cd-color-1), 1.2); */
+    color: var(--color-white);
+  }
+
+  .cd-accordion__sub {
+    display: none;
+  }
+  
+  .cd-accordion__input:checked ~ .cd-accordion__sub { 
+    display: block;
+  }
+
+
+  /* ************************************** */
+
+  
+  .sidebar-toggler {
+    width: 20px;
+    height: 5px;
+    background-color: var(--white);
+    margin: 6px 2px;
+  }
+  
+  /* This is the burger that triggers collapsible content! */
+  #hamburger:checked ~ #sidebar-left {
+    display: block;
+  }
+  
+
+
+  /* .active, #hamburger:hover {
+  
+  } */
+  
+  #title-banner {
+    font-weight: 100; 
+    font-family: Roboto; 
+    font-size: 30.3333px;
+  }
+  
+  .lcms-icon {
+    width: 1.0em;
+    height:0.9em;
+    margin-top:-0.2em;
+    margin-left:0.2em;
+  }
+  
+  .gray {
+    font-weight:1000;
+    font-family: 'Roboto Black', sans-serif;
+  }
+  
+  #sidebar-left {
+    display: block;
+  }
+  
+  .accordion-tab {
+    cursor: pointer;
+  }
+  
+  .user-question {
+    cursor: pointer;
+  }

@@ -69,7 +69,7 @@ define([
                 if (document.getElementById("chart-canvas") != null){
                     document.getElementById("chart-canvas").remove();
                 };
-
+                
                 // Assign self output object to dictionary of chart values
                 this.outputObj = t;
 

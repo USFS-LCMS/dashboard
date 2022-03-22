@@ -1,11 +1,85 @@
-html, body{
-  padding: 0;
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  background-color: #242424;
-  color:#00897B;
+@import "https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap";
+/*///////////////////////////////////////////////////////*/
+/*Set up pre-defined colors*/
+:root{
+  --teal-30:#B2ECE4;
+  --teal-50:#80DFD2;
+  --teal-80:#00BFA5;
+  --teal-100:#00897B;
 
+  --foo: true;
+
+  --deep-brown-10:#D6D1CA;
+  --deep-brown-20:#BFB7B0;
+  --deep-brown-30:#ACA199;
+  --deep-brown-50:#968B83;
+  --deep-brown-70:#847779;
+  --deep-brown-80:#6F6259;
+  --deep-brown-100:#372E2C;
+
+
+  --grayy:#6F6259;
+  --black:#1B1716DD;
+  --solid-black:#1B1716;
+  --black:rgba(27, 23, 22, 0.9);
+  --transparent:rgba(0,0,0,0);
+  --white:#FFF;
+  --almost-transparent:#BFB7B0DD;
+  --orange:#FF834C;
+  --transparent-teal:rgba(0, 137, 123, 0.3);
+
+  --slider-border-radius:2px;
+}
+
+html, body{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  font-size: 16px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 100;
+  color: white;
+}
+
+h1 {
+  background-color: var(--deep-brown-100);
+}
+
+@media only screen and (max-width: 1600px) {
+  html, body{
+    font-size: 14px!important;
+  }
+}
+@media only screen and (max-width: 1400px) {
+  html, body{
+    font-size: 12px!important;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  html, body{
+    font-size: 12px!important;
+  }
+}
+@media only screen and (max-width: 992) {
+  html, body{
+    font-size: 11px!important;
+  }
+}
+@media only screen and (max-width: 768) {
+  html, body{
+    font-size: 10px!important;
+  }
+}
+@media only screen and (max-width: 576px) {
+  html, body{
+    font-size: 10px!important;
+  }
+}
+@media only screen and (max-width: 400px) {
+  html, body{
+    font-size: 10px!important;
+  }
 }
 
 label {
@@ -22,7 +96,6 @@ select {
 
 .wrapper {
     display: flex;  
-    /* flex-flow: column wrap; */
     flex-wrap: nowrap;
     flex-direction: row;
     font-weight: bold;
@@ -30,85 +103,121 @@ select {
     height: 100%;
   }
   
+  /* works */
   .main {
     flex-grow: 2;
-    /* width: 60%; */
-    height: 90%;
+    /* height: 100%; */
   }
 
-  .header {
-    flex-grow: 2;
-    padding-bottom: 0.05%;
-  }
-  
-
+/* Canvas section/div hook */
 canvas {
   background-color: rgb(224, 226, 212);
   display: flex;
 }
 
-
-/* dropdown stuff pasted from free code camp */
-.hide {
-  max-height: 0 !important;
+#sidebar-left-container {
+  position: absolute;
+  max-height: 708px;
+  /* width: 1000px; */
+  left: 0;
+  background-color: var(--deep-brown-100);
+  padding-right: 20px;
 }
 
-.dropdown{
+.sidebar-toggler {
+  width: 20px;
+  height: 5px;
+  background-color: var(--white);
+  margin: 6px 2px;
+}
+
+/* This is the burger that triggers collapsible content! */
+#hamburger {
+  display: inline-block;
+  cursor: pointer;
+}
+/* 
+#hamburger:checked ~ #sidebar-left {
+  display: block;
+} */
+
+/* .active, #hamburger:hover {
+
+} */
+
+#title-banner {
+  font-weight: 100; 
+  font-family: Roboto; 
+  font-size: 30.3333px;
+}
+
+.lcms-icon {
+  width: 1.0em;
+  height:0.9em;
+  margin-top:-0.2em;
+  margin-left:0.2em;
+}
+
+.gray {
+  font-weight:1000;
+  font-family: 'Roboto Black', sans-serif;
+}
+
+#sidebar-left {
+  display: block;
+}
+
+.accordion-tab {
+  cursor: pointer;
+}
+
+.user-question {
+  cursor: pointer;
+}
+
+/* Create a thing - hook thingy for button class="accordion" */
+/* .accordion {
+  position: absolute;
+  top: 1;
+  left: 0;
+
+} */
+
+
+
+/* Put stuff that is not being used down here commented. */
+
+/* .dropdown{
 border: 0.1em solid black;
 /* border: 0.1em #242424; */
 /*width: 10em;*/
 /* height: 2em; */
 /* margin-bottom: 1em; */
-margin: auto;
+/* margin: auto;
 float:center;
-}
-
-
-
-/* Make another id chunk for the new dropdown menu text*/
-
-
-/* .dropdown .title{
-margin: .3em .3em .3em .3em;	
-width: 100%;
 } */
 
-/* .dropdown .title .fa-angle-right{
-float: right;
-margin-right: .7em;
-transition: transform .3s;
-}
-
-.dropdown .menu{
-transition: max-height .5s ease-out;
-max-height: 20em;
-overflow: hidden;
+/* 
+.dashboard-title{
+  font-weight: 100; 
+  font-family: Roboto; 
+  font-size: 30.25px;
+  color: grayy;
 } */
 
-/* .dropdown .menu .option{
-margin: .3em .3em .3em .3em;
-margin-top: 0.3em;
-}
-
-.dropdown .menu .option:hover{
-background: rgba(0,0,0,0.2);
-}
-
-.pointerCursor:hover{
-cursor: pointer;
-}
-
-.rotate-90{
-transform: rotate(90deg);
+/* dropdown stuff pasted from free code camp */
+/* .hide {
+  max-height: 0 !important;
 } */
 
-@media all and (min-width: 600px) {
-  .aside { flex: 1 0; }
-}
+  /* .header {
+    flex-grow: 2;
+    padding-bottom: 0.05%;
+  } */
 
-@media all and (min-width: 800px) {
-  .main    { flex: 3 0px; }
-  .main    { order: 1; }
-  .aside-2 { order: 2; }
-}
-
+  /* Accordion dropdown ID hook
+#accordion-in-map{
+  position: absolute;
+  top: 200px;
+  left: 15px;
+} */

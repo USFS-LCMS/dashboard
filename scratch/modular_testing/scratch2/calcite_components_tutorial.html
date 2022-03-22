@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+        <title>Calcite Components: Core concepts</title>
+        <style>
+            html,
+            body,
+            #viewDiv {
+                padding: 0;
+                margin: 0;
+                height: 100%;
+                width: 100%;
+            }
+        </style>
+
+        <script type="module" src="https://js.arcgis.com/calcite-components/1.0.0-beta.77/calcite.esm.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.0.0-beta.77/calcite.css" />
+
+        <script src="https://js.arcgis.com/4.21/"></script>
+        <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
+
+    </head>
+
+    <body>
+
+        <calcite-shell content-behind> <!-- Content will get to exist behind the map view! -->
+
+            <!-- Detached also helps the content sit behind the map view! -->
+            <calcite-shell-panel slot="primary-panel" detached>
+                <!-- See above! Primary panel shell panel helps add scaffolding! -->
+
+                <!-- See below! We add another calcite panel with a visible heading! -->
+                <calcite-panel heading="National Park Visitation"></calcite-panel>
+
+            </calcite-shell-panel>
+        
+            <div id="viewDiv"></div>
+        
+        </calcite-shell>
+        
+
+    </body>
+
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/symbols/WebStyleSymbol",
+            "esri/Basemap",
+            "esri/rest/support/TopFeaturesQuery",
+            "esri/rest/support/TopFilter",
+            "esri/widgets/Home",
+            "esri/config"
+        ], (Map, MapView, FeatureLayer, WebStyleSymbol, Basemap, TopFeaturesQuery, TopFilter, Home, esriConfig) => {
+        esriConfig.apiKey = "AAPK58328d0811c24287914e4afc4d595f8akkmY88fCQWZlnzRO0QJbMpetck4UROn_gWGdCu1aSHomzAJ1X0YdfBfBAiJbp8DT";
+
+        const layer = new FeatureLayer({
+            url:
+                "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/US_National_Parks_Annual_Visitation/FeatureServer/0",
+            outFields: ["*"],
+            renderer: await setRenderer(),
+            popupTemplate: createPopupTemplate()
+        });
+
+        const map = new Map({
+            basemap: "streets-navigation-vector",
+            layers: [layer]
+        });
+
+        const view = new MapView({
+            container: "viewDiv",
+            map: map,
+            center: [-120, 45],
+            zoom: 3
+        });
+
+        let homeWidget = new Home({
+            view: view
+        });
+
+        view.ui.add(homeWidget, "top-right");
+        view.ui.move("zoom", "top-right");
+        const layerView = await view.whenLayerView(layer);
+
+        async function setRenderer() {
+            const symbol = new WebStyleSymbol({
+                name: "park",
+                styleName: "Esri2DPointSymbolsStyle"
+            });
+
+            const cimSymbol = await symbol.fetchCIMSymbol();
+            cimSymbol.data.symbol.symbolLayers[0].size = 24;
+            cimSymbol.data.symbol.symbolLayers[1] = null;
+
+            return {
+                type: "simple",
+                symbol: cimSymbol
+            };
+        }
+
+        function createPopupTemplate() {
+        return {
+            title: "{Park}",
+            content: [{
+            type: "fields",
+            fieldInfos: [{
+                fieldName: "TOTAL",
+                label: "Total visits",
+                format: { digitSeparator: true }
+            }, {
+                fieldName: "F2018",
+                label: "2018",
+                format: { digitSeparator: true }
+            }, {
+                fieldName: "F2019",
+                label: "2019",
+                format: { digitSeparator: true }
+            }, {
+                fieldName: "F2020",
+                label: "2020",
+                format: { digitSeparator: true }
+            }]
+            }]
+        };
+        }
+
+
+        });
+    </script>
+
+</html>

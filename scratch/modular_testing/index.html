@@ -10,9 +10,12 @@
 
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css"/>
-    <!-- <link rel="stylesheet" href="../../css/template.css"> -->
     <link rel="stylesheet" href="./css/module_template.css">
+
+    <!-- Relative paths to images -->
     <link rel="icon" type="image/gif/png" href="../../images/usfslogo.png">
+
+    <!-- CDN References -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
     <script src ="https://unpkg.com/jspdf-autotable"></script>   
     <style>
@@ -49,27 +52,130 @@
   </head>
 
   <body>
-    <div class="header">
-      <h1 id = 'dashboard-title'> Region 10 LCMS Dashboard (Draft Version) <img src="../../images/usfslogo.png" align = "right" style="height:28px; position:relative; right:2%; margin-top:10px"></h1> <!-- ../../ means 2 directories backwards-->
-
+    <!-- <div class="header">
+      <h1 id = 'dashboard-title'> Region 10 LCMS Dashboard (Draft Version) <img src="../../images/usfslogo.png" align = "right" style="height:28px; position:relative; right:2%; margin-top:10px"></h1>  ../../ means 2 directories backwards
       <div class="dropdown">
 
         <label>Question of interest: </label>
         <select id="options-dropdown" class="dropdown">
-+
+
         </select>
-        <!-- <input list="options-dropdown" class="dropdown"> -->
+        <input list="options-dropdown" class="dropdown">
       </div>
-    </div>
+      </div> -->
+
+    <!-- The wrapper that everything else comes in! Not sure if it will stick around - a little artifactory -->
     <div class="wrapper">
-      <div class="aside aside-0">
+
+      <!-- <div class="aside aside-0">
         <h4>Legend</h4>
         <select id="features-select">
           <option value="EW_ID = '1'">1</option>
           <option value="EW_ID = '2'">2</option>
         </select>
-      </div>
+      </div> -->
+
+      <!-- This is the main map div - pretty sure everything sits right in here -->
       <div class="main" id="main-map">
+
+        <!-- This is the top left sidebar containing our Quasi-Accordion[??] -->
+        <nav id="sidebar-left-container">
+
+          <!-- Make a header element in which to throw the title,  -->
+          <header id="sidebar-left-header">
+
+            <!-- Heading for title -->
+            <h1 id="title-banner">
+
+            <!-- Insert Hamburger into heading! -->
+            <!-- Will need to change this into a hamburger dropdown by setting some onclick functionality - later -->
+            <span id="hamburger">
+              <div class="sidebar-toggler"></div>
+              <div class="sidebar-toggler"></div>
+              <div class="sidebar-toggler"></div>
+            </span>
+
+<!--               
+              <input type="button" class="sidebar-toggler" onclick="toggleSidebar()" title="Click to toggle sidebar visibility">
+              </button> -->
+
+              <!-- Insert the lcms logo into heading! -->
+              <img class="lcms-icon" alt="LCMS icon" src="../../images/lcms-icon.png">
+              LCMS
+
+              <!-- Insert emphasized bit! -->
+              <span class="gray">
+                DATA 
+              </span>
+              Explorer 
+            </h1>
+          </header>
+
+          <!-- Insert a list under the top bar! -->
+          <div role="list" id="sidebar-left">
+
+            <!-- This holds all of the collapsible elements! It is toggled by the hamburger! -->
+            <div role="listitem" id="parameters-collapse-label-parameters-collapse-div">
+
+              <!-- Insert header - will display a label and contain user questions -->
+              <header title="Display umbrella button for user questions" role="tab" id="parameters-collapse-label" class="accordion-tab">
+
+                <!-- Put in the question label -->
+                <h2> 
+                  <a class="collapse-title">
+                    <!-- <i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>  -->
+                      Change Impacts: R10 
+                  </a>
+                </h2>
+              
+              </header>
+
+              <div role="list" id="r10-question-list" class="accordion-tab-element-list">
+                <div role="listitem" id="accordion-tab-element-list-collapse-div" class="accordion-item">
+                  
+                    <h3 class="user-question" id="forest-health">Forest Health</h3>
+
+                    <div role="list" id="forest-health-questions">
+                      <div role="listitem" class="accordion-item" id="tree-shrub-question">
+                        <h2>What is the annual change in acres of trees<br> and shrub communities into previously unoccupied<br> alpine and recently deglaciated habitat?</h2>
+                      </div>
+                    </div>
+
+                </div>
+
+                
+                
+              </div>
+
+            </div>
+
+
+
+
+
+          </div>
+        </nav>
+
+        <!-- Input calcite accordion -->
+        <!-- <div id="accordion-in-map">
+
+          <calcite-accordion appearance="default" icon-position="start" icon-type="plus-minus" scale="l">
+            <img src="../../images/lcms-icon.png" alt="LCMS Icon" height="20px"/>
+
+            <calcite-accordion-item icon="../../images/lcms-icon.png" item-title="R10 LCMS Dashboard">
+
+              Image insertion? 
+              
+
+              <calcite-accordion-item item-title="Forest Health">Forest Health Questions</calcite-accordion-item>
+              <calcite-accordion-item item-title="Fire">Fire Questions</calcite-accordion-item>
+              <calcite-accordion-item item-title="Wildlife">Wildlife Questions</calcite-accordion-item>
+              <calcite-accordion-item item-title="Water/Coast/Ice">Water and Ice Questions</calcite-accordion-item>
+
+            </calcite-accordion-item>
+          </calcite-accordion>
+        </div> -->
+
       </div>
       
 
@@ -106,8 +212,6 @@
     <script src="./options.js"></script>
     <script src="https://js.arcgis.com/4.22/"></script>
    <script src="./main.js"></script>
-    
-    
 
   </body>
 </html>
