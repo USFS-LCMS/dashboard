@@ -69,8 +69,11 @@ define([
             doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
 
             //add title/unit info
-            var forestName =results.features[0].attributes["FORESTNAME"]; // ensure that fields are attributed with forest or just splice str(outID)[0]
-            var objectID =results.features[0].attributes["OBJECTID"];
+            var objectID =results.features[0].attributes["outID"];
+            console.log(objectID);
+            var forestDict = {'1':'Tongass National Forest', '2':'Chugach National Forest'}
+            var forestName = forestDict[String(objectID)[0]] // ensure that fields are attributed with forest or just splice str(outID)[0]
+            console.log(forestName);
             var unitName ='LTA' //update this when we get the real data to be dynamic with what type of data (only allow user to select multiply polygons within one laeyr?? e.g. only LTAs OR only watersheds.. not one LTA and one watershed)
             
 
@@ -167,8 +170,8 @@ define([
             for (var i=0; i<fastLoss.length; i++){
                 total+=fastLoss[i]}
             var meanFastLoss = parseFloat(String(total/fastLoss.length).slice(0,8));
-            var Region =results.features[0].attributes["REGION"];
-            var Area = results.features[0].attributes["GIS_ACRES"];
+            var Region ="10"//results.features[0].attributes["REGION"];
+            var Area = results.features[0].attributes["GIS_ACRES"]; //add AREA FIELD
 
             var head = [["ID","Forest", "Region", "Area (acres)", "Mean Fast Loss"]];
             var body = [[objectID, forestName, Region, Area, meanFastLoss]]; //will change this so that if user selects multiple polygons (???) theyll all populate in chart

@@ -70,7 +70,7 @@ require([
     // LOAD IN LAYERS - look in template for layer list widget. 
 
     const layer = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
+      url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",//"https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
       renderer: renderer
     });
 
