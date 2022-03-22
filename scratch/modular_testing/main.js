@@ -121,15 +121,17 @@ require([
       // extent:
     });
 
-    // Zoom 2 ext of layer!
-    layer.when(()=>{
-      console.log('setting extent');
-      view.extent = layer.fullExtent;
-    });
+
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when(()=>{
+
+          // Zoom 2 ext of layer!
+    layer.when(()=>{
+      console.log('setting extent');
+      view.extent = layer.fullExtent;
+    });
 
       // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
@@ -147,16 +149,17 @@ require([
       const c = CreateChart({});
       // PDF Download Class
       const d_pdf = DownloadPDF({});
+
+      // Create a function that let you toggle visibility based on mouse click.
+      const toggleSidebar = ToggleSidebar({});
+
+      toggleSidebar.hamburgerToggle();
+
+
       // Question input class
       // const u_q = UserQuestionSelection({});
       // Dropdown class
       // const drpdown = CreateDropdown({});
-
-
-      // Just some testing here. 
-      const alert_me = (clicked_id) => {
-        console.log(clicked_id)
-      }
 
       // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
 

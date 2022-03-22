@@ -23,7 +23,7 @@ define([
             // display: none;
             // overflow: hidden;
 
-            inside_sidebar_elem.style.display = 'none';
+            // inside_sidebar_elem.style.display = 'none';
             // inside_sidebar_elem.style.overflow = 'hidden';
 
             // Add a click event listener that will - maybe - ???? - do what I want.
