@@ -136,6 +136,14 @@ canvas {
   display: inline-block;
   cursor: pointer;
 }
+
+#parameters-collapse-label-parameters-collapse-div {
+  display:none;
+}
+
+#hamburger:checked ~ #sidebar-left-container{
+  display:none;
+}
 /* 
 #hamburger:checked ~ #sidebar-left {
   display: block;
