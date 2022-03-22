@@ -74,37 +74,39 @@ require([
       renderer: renderer
     });
 
-    // const chugach_ecosections = new GeoJSONLayer({
-    //   url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
-    // })
+    //
+      // const chugach_ecosections = new GeoJSONLayer({
+      //   url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
+      // })
 
-    // console.log(layer);
-    // const layer_west = new GeoJSONLayer({
-    //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_west.geojson",
-    //   renderer: renderer
-    // });
+      // console.log(layer);
+      // const layer_west = new GeoJSONLayer({
+      //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_west.geojson",
+      //   renderer: renderer
+      // });
 
-    // const layer_east = new GeoJSONLayer({
-    //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_east.geojson",
-    //   renderer: renderer
-    // });
+      // const layer_east = new GeoJSONLayer({
+      //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_east.geojson",
+      //   renderer: renderer
+      // });
 
-    // Map supplying layers & basemap
-    
+      // Map supplying layers & basemap
+      
 
-    // Try querying features and only adding those to the map.
+      // Try querying features and only adding those to the map.
 
-    // let queryhalf = new Query();
-    // queryhalf.returnGeometry = true;
-    // queryhalf.outFields = null;
-    // queryhalf.where = "EW_ID = 1";
+      // let queryhalf = new Query();
+      // queryhalf.returnGeometry = true;
+      // queryhalf.outFields = null;
+      // queryhalf.where = "EW_ID = 1";
 
-    // half_layer = layer.queryFeatures(layerSelectQuery).then((response) => {
-    //   return response;
-    //   // returns a feature set with features containing the following attributes
-    //   // STATE_NAME, COUNTY_NAME, POPULATION, POP_DENSITY
-    // });
+      // half_layer = layer.queryFeatures(layerSelectQuery).then((response) => {
+      //   return response;
+      //   // returns a feature set with features containing the following attributes
+      //   // STATE_NAME, COUNTY_NAME, POPULATION, POP_DENSITY
+      // });
 
+  
     const map = new Map({
       basemap: "hybrid",
       layers: [layer]
@@ -119,48 +121,18 @@ require([
       // extent:
     });
 
-    // const basemaps = new BasemapGallery({
-    //   view
-    // })
-
-
     // Zoom 2 ext of layer!
     layer.when(()=>{
       console.log('setting extent');
       view.extent = layer.fullExtent;
     });
 
-
-
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when(()=>{
 
-      console.log();
       // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
-
-      // selectorElement.addEventListener("click", doSomething);
-
-      
-      // * CREATE LAYER SELECTION FUNCTION BELOW
-
-
-      // const fQuery = {
-      //   "1": "EW_ID = '1'", 
-      //   "2": "EW_ID = '2'"
-      // }
-
-      // function showF(event) {
-      //   const fQuery = event.target.value;
-
-      //   view.layers.forEach((layer) => {
-      //     layer.definitionExpression = fQuery
-      //   })
-      // }
-
-      // * CREATE LAYER SELECTION FUNCTION ABOVE
-
 
       // Create a new query instance, and set some default settings. 
       let query = new Query();
@@ -176,10 +148,15 @@ require([
       // PDF Download Class
       const d_pdf = DownloadPDF({});
       // Question input class
-      const u_q = UserQuestionSelection({});
+      // const u_q = UserQuestionSelection({});
       // Dropdown class
       // const drpdown = CreateDropdown({});
 
+
+      // Just some testing here. 
+      const alert_me = (clicked_id) => {
+        console.log(clicked_id)
+      }
 
       // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
 
@@ -267,7 +244,8 @@ require([
             })            
             view.goTo(results.features[0].geometry);
             
-            c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
+            c.createOutputObj(results, ["Change---Fast Loss"]) // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
+            // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
             storeResults=results
             
           }
