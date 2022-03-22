@@ -9,6 +9,8 @@ Description:
   It provides the user with a selection of questions and provides charts using LCMS data.
 */
 
+//const { features } = require("process");
+
 // Require is an AMD - Asynchronous Module Definition - staple.
 // AMD is pretty much required when working with esri api and map views - and dashboards in general?
 
@@ -22,6 +24,10 @@ require([
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
     "esri/tasks/support/Query",
+    "esri/Color",
+    "esri/Graphic",
+    "esri/symbols/SimpleFillSymbol",
+    "esri/symbols/SimpleLineSymbol",    
     "dojo/domReady!"
 
     ], (
@@ -33,7 +39,11 @@ require([
       Map, 
       MapView, 
       GeoJSONLayer, 
-      Query
+      Query,
+      Color,
+      Graphic,
+      SimpleFillSymbol,
+      SimpleLineSymbol,
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
@@ -194,11 +204,42 @@ require([
       // Take a screenshot at the same resolution of the current view  
      
       view.on("click", (e) => {
+        query = new Query();
+        query.returnGeometry = true;
+        query.maxAllowableOffset = 0;
+        query.outFields = null; 
+        query.where = "1=1";
+        query.num = 50;
         query.geometry = e.mapPoint;
         
         layer.queryFeatures(query).then((results) =>{
           
           if(results.features.length>0){
+            view.hitTest(e.screenPoint).then(function(response){
+              var graphics= response.results;
+              graphics.forEach(function(g){
+                console.log('graphic:'+g);
+                
+                var geom = g.graphic.geometry;
+                if (geom.type === "polygon") {
+                  var symbol = new SimpleFillSymbol({
+                    color:[205,66,47,.0001],
+                    style:"solid",
+                    outline:{
+                      color:[205,66,47],//"yellow",
+                      width:1
+                    }
+
+                  });
+                  var graphic = new Graphic(geom, symbol);
+                  view.graphics.removeAll(); // make sure to remmove previous highlighted feature
+                  view.graphics.add(graphic);
+                }
+
+
+              })
+            })            
+            view.goTo(results.features[0].geometry);
             
             c.createOutputObj(results, [button_relationships[document.getElementById("options-dropdown").value]])
             storeResults=results
@@ -207,11 +248,10 @@ require([
         });
       });
 
-     
-      
-
-      
       document.getElementById("pdf-button").addEventListener("click",() => {//onclick = function() {
+        //var newExtent = esri.graphicsExtent(storeResults.features);
+        //map.setExtent(newExtent,true);
+        //view.goTo(storeResults.features[0].geometry); //works, but called asynchronously so happens AFTER screenshot
         view.takeScreenshot({format:'png', width:2048,height:2048}).then(function(screenshot) {
           //showPreview(screenshot);
           //const viewCanvas = document.createElement("canvas");
