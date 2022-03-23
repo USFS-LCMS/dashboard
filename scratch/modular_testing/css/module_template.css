@@ -201,7 +201,7 @@ canvas {
   display: none;
 }
 
-#accordion-item-1, #accordion-item-2, #accordion-item-3, #accordion-item-4 {
+#accordion-item-1, #forest-health-qs, #accordion-item-3, #accordion-item-4 {
   cursor: pointer;
 }
 
@@ -220,6 +220,63 @@ canvas {
 
 #fh-abbrev-1:hover + #fh-popout-1 {
   display: inline-block;
+}
+
+/* Flex parent */
+.checkbox-container {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  cursor: pointer;
+  font-size: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  max-height: 10px;
+}
+/* Flex parent */
+
+/* Flex parent */
+#fh-abbrev-1-checkmark {
+  /* width: 2px; */
+}
+
+#fh-abbrev-1 {
+
+}
+/* Flex parent */
+
+.checkbox-container input {
+  
+  opacity: 0;
+
+}
+
+.checkmark {
+  background-color: #eee;
+}
+
+
+.checkmark:after {
+  content: "";
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 /* #forest-health-question-1 {

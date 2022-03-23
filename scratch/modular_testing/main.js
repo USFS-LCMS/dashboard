@@ -156,7 +156,7 @@ require([
       toggleSidebar.hamburgerToggle("hamburger", "multilevel-accordion-menu");
 
       toggleSidebar.hamburgerToggle("accordion-item-1", "accordion-item-1-a");
-      toggleSidebar.hamburgerToggle("accordion-item-2", "accordion-item-1-b");
+      // toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-b");
       toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-1-c");
       toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-1-d");
 
@@ -164,6 +164,8 @@ require([
       // toggleSidebar.hamburgerToggle("forest-health-questions", "aaa");
 
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
+
+      toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-b");
 
       
 
