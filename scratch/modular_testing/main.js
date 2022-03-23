@@ -267,7 +267,7 @@ require([
                       color:[205,66,47,.0001],
                       style:"solid",
                       outline:{
-                        color:[205,66,47],//"yellow",
+                        color:[249,226,76],//205,66,47],//"yellow",
                         width:1
                       }
                     });

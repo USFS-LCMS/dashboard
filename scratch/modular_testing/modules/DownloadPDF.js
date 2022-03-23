@@ -2,11 +2,11 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
-    "./CreateRobotoFont"
+    "./CreateCustomFonts"
 ], function(
     declare,
     arrayUtils,
-    CreateRobotoFont){
+    CreateCustomFonts){
 
     return declare(null,{
 
@@ -33,15 +33,22 @@ define([
             let margin = 10;
            
             // Robotofont class (contains text needed to read ttf files)
-            const robotoFontClass = CreateRobotoFont({});            
-            const robotoNormal = robotoFontClass.getRobotoNormal();
-            const robotoBold = robotoFontClass.getRobotoBold();  
+            const customFontClass = CreateCustomFonts({});            
+            const robotoNormal = customFontClass.getRobotoNormal();
+            const robotoBold = customFontClass.getRobotoBold();  
+            const arialNormal = customFontClass.getArial();
+            const arialBold = customFontClass.getArialBold();
             doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
             doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
             doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
             doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
+            doc.addFileToVFS("FontsFree-Net-arial-bold.ttf", arialBold);
+            doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
+            doc.addFileToVFS("arial-normal.ttf", arialNormal);
+            doc.addFont("arial-normal.ttf", "Arial", "normal");
+            console.log(doc.getFontList())
                    
-            doc.setFont('RobotoCondensed','normal'); 
+            doc.setFont('Arial','normal'); 
 
             //header 
             //header color block
@@ -49,12 +56,12 @@ define([
             doc.setFontSize(fontSize);
             
             //header logo image
-            var fsLogo = new Image();
-            fsLogo.src = "../../images/usfslogo_black.png";
-            doc.addImage(fsLogo, 'PNG', 5, 3, 15,15);//x,y,w,h
             var usdaLogo = new Image();
-            usdaLogo.src = "../../images/usda_logo_black.png";
-            doc.addImage(usdaLogo, 'PNG', 25,4, 17,13)//, 15);
+            usdaLogo.src = "../../images/usda-logo-color.png";
+            doc.addImage(usdaLogo, 'PNG', 5,4, 18,13)//, 15);
+            var fsLogo = new Image();
+            fsLogo.src = "../../images/usfslogo.png";
+            doc.addImage(fsLogo, 'PNG', 27, 3, 14,15);//x,y,w,h            
             var lcmsLogo = new Image();
             lcmsLogo.src = "../../images/lcms-icon.png"
 
@@ -78,7 +85,7 @@ define([
             
             currentY+=3
 
-            doc.setFillColor(169,209,142);
+            doc.setFillColor(3,74,48);//169,209,142);
             //doc.setTextColor(8,124,124);
             doc.rect(0, currentY , 600, 20, 'F'); //x, y, w, h, style
 
@@ -93,13 +100,13 @@ define([
             
 
             doc.setFontSize(22);
-            doc.setTextColor(0,0,0);
+            doc.setTextColor(249,226,76,);//0,0,0);
             doc.setFont(undefined,'bold');  
             currentY+=3;                    
             doc.addImage(lcmsLogo, 'PNG', margin/2, currentY, 13,13)//x,y,w,h
             currentY+=10;  
-            doc.text(margin + 15, currentY, "LANDSCAPE CHANGE MONITORING SYSTEM SUMMARY");//x,y,text
-            var lineHeight = doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM SUMMARY") / doc.internal.scaleFactor
+            doc.text(margin + 15, currentY, "LANDSCAPE CHANGE MONITORING SYSTEM");//x,y,text
+            var lineHeight = doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM") / doc.internal.scaleFactor
             var lines = 1//splittedText.length  // splitted text is a string array
             var blockHeight = lines * lineHeight            
             currentY+= blockHeight+10;
@@ -107,7 +114,7 @@ define([
 
             doc.setFontSize(26);
             doc.setFont(undefined,'normal')
-            doc.setTextColor(8,124,124)
+            doc.setTextColor(0,0,0)//8,124,124)
             var question ="How does climate change...[This is the selected question of interest]?"; //change to document.getElementById("options-dropdown").value;//
             var wrapQuestion= doc.splitTextToSize(question, 180);
             doc.text(margin, currentY, wrapQuestion);
@@ -127,14 +134,14 @@ define([
             var lines = 1//wrapQuestion.length  // splitted text is a string array
             var blockHeight = lines * lineHeight
             currentY+= blockHeight+1
-            doc.setTextColor(8,124,124)
+            doc.setTextColor(3,74,48);//8,124,124)
             doc.text(margin*2, currentY, unitName + ' '+objectID+',') //
             currentY+=blockHeight
             doc.text(margin*2, currentY,forestName )     
-            doc.setFont(undefined,'normal');       
+            doc.setFont("Times",'Roman');       
             doc.setFontSize(12);
             doc.setTextColor(0,0,0);
-            currentY+=blockHeight+5;
+            currentY+=blockHeight+3;
             var wrapParagraph = doc.splitTextToSize("This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc.",180);
             doc.text(margin, currentY, wrapParagraph);
             var lineHeight = doc.getLineHeight("The ") / doc.internal.scaleFactor
