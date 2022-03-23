@@ -190,13 +190,45 @@ canvas {
 
 #forest-health-questions {
   cursor: pointer;
-  display: none;
 }
 
 #tree-shrub-question {
   cursor: pointer;
   display: none;
 }
+
+#multilevel-accordion-menu {
+  display: none;
+}
+
+#accordion-item-1, #accordion-item-2, #accordion-item-3, #accordion-item-4 {
+  cursor: pointer;
+}
+
+#accordion-item-1-a , #accordion-item-1-b , #accordion-item-1-c , #accordion-item-1-d {
+  display: none;
+  cursor: pointer;
+}
+
+#r10-questions {
+  display: none;
+}
+
+#fh-popout-1 {
+  display: none;
+}
+
+#fh-abbrev-1:hover + #fh-popout-1 {
+  display: inline-block;
+}
+
+/* #forest-health-question-1 {
+  display: none;
+} */
+
+/* #aaa{
+  display: none;
+} */
 
 /* Create a thing - hook thingy for button class="accordion" */
 /* .accordion {

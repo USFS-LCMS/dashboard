@@ -124,11 +124,11 @@ require([
 
     view.when(()=>{
 
-          // Zoom 2 ext of layer!
-    layer.when(()=>{
-      console.log('setting extent');
-      view.extent = layer.fullExtent;
-    });
+    // Zoom 2 ext of layer!
+    // layer.when(()=>{
+    //   console.log('setting extent');
+    //   view.extent = layer.fullExtent;
+    // });
 
       // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
@@ -153,10 +153,23 @@ require([
       const toggleSidebar = ToggleSidebar({});
 
       // TOGGLE HAMBURGER - QUESTION VISIBILITY
-      toggleSidebar.hamburgerToggle("hamburger", "parameters-collapse-label-parameters-collapse-div");
+      toggleSidebar.hamburgerToggle("hamburger", "multilevel-accordion-menu");
+
+      toggleSidebar.hamburgerToggle("accordion-item-1", "accordion-item-1-a");
+      toggleSidebar.hamburgerToggle("accordion-item-2", "accordion-item-1-b");
+      toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-1-c");
+      toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-1-d");
+
+      // Forest health questions
+      // toggleSidebar.hamburgerToggle("forest-health-questions", "aaa");
+
+      toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
+
       
 
       // // TOGGLE FOREST HEALTH SUBQUESTION VISIBILITY
+
+
       // toggleSidebar.hamburgerToggle("parameters-collapse-label-parameters-collapse-div",
       // ["forest-health", "tree-shrub-question"]);
 
@@ -191,8 +204,8 @@ require([
       let p = document.createElement("p");
       div.append(p);
 
-      // If there is a change in button status, do something
-      document.getElementById("tree-shrub-question").onclick = () => {
+      // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS.
+      document.getElementById("fh-abbrev-1").onclick = () => {
         if (document.getElementById("chart-canvas") != null){
           document.getElementById("chart-canvas").remove();
       };
@@ -202,7 +215,7 @@ require([
         // p.innerHTML = "";
 
         // assumes that we have a blank dropdown menu 
-        if ( document.getElementById("tree-shrub-question").value == "" ){
+        if ( document.getElementById("#fh-abbrev-1").value == "" ){
           
           // Ask user to select question if they have not yet.
           p.textContent = "Please select a question.";
