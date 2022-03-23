@@ -47,26 +47,41 @@ define([
             //header color block
             var fontSize = 12
             doc.setFontSize(fontSize);
-            doc.setFillColor(169,209,142);
-            //doc.setTextColor(8,124,124);
-            doc.rect(0, 0, 600, 20, 'F'); //x, y, w, h, style
-
+            
             //header logo image
             var fsLogo = new Image();
             fsLogo.src = "../../images/usfslogo_black.png";
-            doc.addImage(fsLogo, 'PNG', 3, 3, 15,15);//x,y,w,h
+            doc.addImage(fsLogo, 'PNG', 5, 3, 15,15);//x,y,w,h
             var usdaLogo = new Image();
             usdaLogo.src = "../../images/usda_logo_black.png";
-            doc.addImage(usdaLogo, 'PNG', 20,4, 17,13)//, 15);
+            doc.addImage(usdaLogo, 'PNG', 25,4, 17,13)//, 15);
+            var lcmsLogo = new Image();
+            lcmsLogo.src = "../../images/lcms-icon.png"
 
             //header text
-            var headerTextHeight=18
-            var widthPng = 34
-            doc.text(margin+widthPng,headerTextHeight, "Region 10");
-            doc.setFont(undefined,'bold');
-            doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
-            doc.setFont(undefined,'normal');
-            doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
+            var currentY = 9;
+            var widthPng = 36
+            doc.setFontSize(18);
+            doc.text(margin+widthPng,currentY, "Forest Service");//"Region 10");
+            doc.setFontSize(12);
+            currentY+=7
+            doc.text(margin+widthPng, currentY, "U.S. DEPARTMENT OF AGRICULTURE");
+            currentY+=5
+            
+            doc.line(margin/2,currentY,w-margin/2,currentY)//x,y,w,h
+            currentY+=5
+            doc.text(margin/2,currentY,  "Geospatial Technology and Applications Center | April 2022");
+            // doc.setFont(undefined,'bold');
+            // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
+            // doc.setFont(undefined,'normal');
+            // doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
+            
+            currentY+=3
+
+            doc.setFillColor(169,209,142);
+            //doc.setTextColor(8,124,124);
+            doc.rect(0, currentY , 600, 20, 'F'); //x, y, w, h, style
+
 
             //add title/unit info
             var objectID =results.features[0].attributes["outID"];
@@ -77,15 +92,17 @@ define([
             var unitName ='LTA' //update this when we get the real data to be dynamic with what type of data (only allow user to select multiply polygons within one laeyr?? e.g. only LTAs OR only watersheds.. not one LTA and one watershed)
             
 
-            doc.setFontSize(16);
+            doc.setFontSize(22);
             doc.setTextColor(0,0,0);
-            doc.setFont(undefined,'bold')
-            var yPos = 30
-            doc.text(margin, yPos, "LANDSCAPE CHANGE MONITORING SYSTEM SUMMARY");//x,y,text
+            doc.setFont(undefined,'bold');  
+            currentY+=3;                    
+            doc.addImage(lcmsLogo, 'PNG', margin/2, currentY, 13,13)//x,y,w,h
+            currentY+=10;  
+            doc.text(margin + 15, currentY, "LANDSCAPE CHANGE MONITORING SYSTEM SUMMARY");//x,y,text
             var lineHeight = doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM SUMMARY") / doc.internal.scaleFactor
             var lines = 1//splittedText.length  // splitted text is a string array
             var blockHeight = lines * lineHeight            
-            yPos+= blockHeight+5;
+            currentY+= blockHeight+10;
             doc.setFont(undefined,'normal');
 
             doc.setFontSize(26);
@@ -93,43 +110,44 @@ define([
             doc.setTextColor(8,124,124)
             var question ="How does climate change...[This is the selected question of interest]?"; //change to document.getElementById("options-dropdown").value;//
             var wrapQuestion= doc.splitTextToSize(question, 180);
-            doc.text(margin, yPos, wrapQuestion);
+            doc.text(margin, currentY, wrapQuestion);
 
             var lineHeight = doc.getLineHeight(question) / doc.internal.scaleFactor
             var lines = wrapQuestion.length  // splitted text is a string array
             var blockHeight = lines * lineHeight
-            yPos+= blockHeight-18
+            currentY+= blockHeight-18
 
             doc.setFontSize(16)
             doc.setTextColor(0,0,0);
-            doc.text(margin, yPos+= blockHeight, "The following areas are included in this summary:");
+            currentY+= blockHeight
+            doc.text(margin, currentY, "The following areas are included in this summary:");
             doc.setFontSize(16)
             doc.setFont(undefined,'bold');
             var lineHeight = doc.getLineHeight("The following areas are included in this summary:") / doc.internal.scaleFactor
             var lines = 1//wrapQuestion.length  // splitted text is a string array
             var blockHeight = lines * lineHeight
-            yPos+= blockHeight+1
+            currentY+= blockHeight+1
             doc.setTextColor(8,124,124)
-            doc.text(margin*2, yPos, unitName + ' '+objectID+',') //
-            yPos+=blockHeight
-            doc.text(margin*2, yPos,forestName )     
+            doc.text(margin*2, currentY, unitName + ' '+objectID+',') //
+            currentY+=blockHeight
+            doc.text(margin*2, currentY,forestName )     
             doc.setFont(undefined,'normal');       
             doc.setFontSize(12);
             doc.setTextColor(0,0,0);
-            yPos+=blockHeight+5;
+            currentY+=blockHeight+5;
             var wrapParagraph = doc.splitTextToSize("This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc.",180);
-            doc.text(margin, yPos, wrapParagraph);
+            doc.text(margin, currentY, wrapParagraph);
             var lineHeight = doc.getLineHeight("The ") / doc.internal.scaleFactor
             var lines = wrapParagraph.length  // splitted text is a string array
             var blockHeight = lines * lineHeight
-            yPos+= blockHeight
+            currentY+= blockHeight
             //doc.setFontSize(5);
             // // doc.text(margin, margin*2, selectedAreaNameList.join(', '),{ maxWidth: doc.internal.pageSize.width-margin*2});
             // doc.addPage();
 
             // //Add charts
-            let currentY = yPos;
-            let chartH = h - margin*2 - yPos;  //target height          
+            currentY = currentY;
+            let chartH = h - margin*2 - currentY;  //target height          
 
             
             const screenshotMap = document.getElementsByClassName(
@@ -145,7 +163,9 @@ define([
             //     doc.addPage();
             //     currentY = margin;
             // }
-            doc.addImage(screenshotMap.src, 'png', margin, currentY, chartW, chartH );//,{compresion:'NONE'});
+           
+
+            doc.addImage(screenshotMap.src, 'png',  (w-chartW)/2, currentY, chartW, chartH );//,{compresion:'NONE'});
             
             //new page
             doc.addPage();

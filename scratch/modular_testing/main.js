@@ -125,10 +125,10 @@ require([
     view.when(()=>{
 
     // Zoom 2 ext of layer!
-    // layer.when(()=>{
-    //   console.log('setting extent');
-    //   view.extent = layer.fullExtent;
-    // });
+    layer.when(()=>{
+      console.log('setting extent');
+      view.extent = layer.fullExtent;
+    });
 
       // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
@@ -236,6 +236,7 @@ require([
       // Take a screenshot at the same resolution of the current view  
      
       view.on("click", (e) => {
+        view.graphics.removeAll(); // make sure to remmove previous highlighted feature
         query = new Query();
         query.returnGeometry = true;
         query.maxAllowableOffset = 0;
@@ -245,39 +246,42 @@ require([
         query.geometry = e.mapPoint;
         
         layer.queryFeatures(query).then((results) =>{
+          view.goTo({target:results.features[0].geometry})//.then(function() {//, zoom:12});
+          view.when(()=>{
+            
+
+            console.log("results: "+results.features[0])
           
-          if(results.features.length>0){
-            view.hitTest(e.screenPoint).then(function(response){
-              var graphics= response.results;
-              graphics.forEach(function(g){
-                console.log('graphic:'+g);
-                
-                var geom = g.graphic.geometry;
-                if (geom.type === "polygon") {
-                  var symbol = new SimpleFillSymbol({
-                    color:[205,66,47,.0001],
-                    style:"solid",
-                    outline:{
-                      color:[205,66,47],//"yellow",
-                      width:1
-                    }
+            if(results.features.length>0){
+              console.log("len")
 
-                  });
-                  var graphic = new Graphic(geom, symbol);
-                  view.graphics.removeAll(); // make sure to remmove previous highlighted feature
-                  view.graphics.add(graphic);
-                }
-
-
-              })
-            })            
-            view.goTo(results.features[0].geometry);
-            
-            c.createOutputObj(results, ["Change---Fast Loss"]) // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
-            // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
-            storeResults=results
-            
-          }
+              //highlight selected feature
+              view.hitTest(e.screenPoint).then(function(response){
+                var graphics= response.results;
+                graphics.forEach(function(g){
+                  console.log('graphic:'+g);
+                  
+                  var geom = g.graphic.geometry;
+                  if (geom.type === "polygon") {
+                    var symbol = new SimpleFillSymbol({
+                      color:[205,66,47,.0001],
+                      style:"solid",
+                      outline:{
+                        color:[205,66,47],//"yellow",
+                        width:1
+                      }
+                    });
+                    var graphic = new Graphic(geom, symbol);
+                    
+                    view.graphics.add(graphic);
+                  }
+                })
+              })          
+              c.createOutputObj(results, ["Change---Fast Loss"]) // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
+              // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
+              storeResults=results              
+            }
+        })
         });
       });
 
