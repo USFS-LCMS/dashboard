@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <style>
+      #checkmark-word-container {
+        display: flex;
+        flex-direction: row;
+
+      }
+
+      #checkmark {
+
+      }
+
+      #description {
+
+      }
+
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        width: 100vw;
+        align-items: center;
+        margin: 30px;
+      }
+
+      label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <label for="c1">
+        <input type="checkbox" id="c1" name="c-group" checked>
+        <span class="label-text">cats are good</span>
+      </label>
+    </div>
+
+
+    <!-- make own container -->
+    <div class="container">
+      <label for="fh-q1">
+        <input type="checkbox" name="fh-q1-checkbox" id="fh-q1">
+        <span class="fh-q1-label">Tree/Shrub Encroachment</span>
+      </label>
+    </div>
+
+    <!-- outer div -->
+    <div id="checkmark-word-container">
+
+      <!-- checkmark div -->
+      <div id="checkmark">
+        <h2>Word1!!!</h2>
+      </div>
+
+      <!-- word - description div -->
+      <div id="description">
+        <h2>Word2!!!</h2>
+      </div>
+
+    </div>
+
+  </body>
+
+</html>

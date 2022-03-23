@@ -225,7 +225,7 @@ canvas {
 /* Flex parent */
 .checkbox-container {
   display: flex;
-  flex-direction: row;
+  /* flex-direction: column; */
   position: relative;
   cursor: pointer;
   font-size: 12px;
@@ -240,6 +240,7 @@ canvas {
 /* Flex parent */
 #fh-abbrev-1-checkmark {
   /* width: 2px; */
+  /* flex-grow: 0.1; */
 }
 
 #fh-abbrev-1 {
