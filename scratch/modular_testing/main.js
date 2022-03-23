@@ -106,7 +106,6 @@ require([
       //   // STATE_NAME, COUNTY_NAME, POPULATION, POP_DENSITY
       // });
 
-  
     const map = new Map({
       basemap: "hybrid",
       layers: [layer]
@@ -120,8 +119,6 @@ require([
       // center: [-90, 37]
       // extent:
     });
-
-
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
@@ -159,11 +156,14 @@ require([
       toggleSidebar.hamburgerToggle("hamburger", "parameters-collapse-label-parameters-collapse-div");
       
 
-      // TOGGLE FOREST HEALTH SUBQUESTION VISIBILITY
-      toggleSidebar.hamburgerToggle("parameters-collapse-label-parameters-collapse-div", "r10-question-list");
+      // // TOGGLE FOREST HEALTH SUBQUESTION VISIBILITY
+      // toggleSidebar.hamburgerToggle("parameters-collapse-label-parameters-collapse-div",
+      // ["forest-health", "tree-shrub-question"]);
 
-      // TOGGLE FOREST HEALTH QUESTIONS
-      toggleSidebar.hamburgerToggle("forest-health", "forest-health-questions");
+      // // TOGGLE FOREST HEALTH QUESTIONS
+      // toggleSidebar.hamburgerToggle("forest-health", ["tree-shrub-question"]);
+
+      // toggleSidebar.hamburgerToggle("forest-health-questions", "tree-shrub-question")
 
       // TOGGLE SIDEBAR VISIBILITY ***
 

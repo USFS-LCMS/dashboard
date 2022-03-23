@@ -193,6 +193,11 @@ canvas {
   display: none;
 }
 
+#tree-shrub-question {
+  cursor: pointer;
+  display: none;
+}
+
 /* Create a thing - hook thingy for button class="accordion" */
 /* .accordion {
   position: absolute;

@@ -17,6 +17,7 @@ define([
             // Grab the hamburger button.
             const hamburger = document.getElementById(div1);
 
+            // First element underneath - slightly
             // Grab the list thing under the sidebar just in case...
             const inside_sidebar_elem = document.getElementById(div2);
 
