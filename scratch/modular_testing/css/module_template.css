@@ -208,7 +208,7 @@ canvas {
   text-align: left;
 }
 
-#accordion-item-1-a , #accordion-item-1-b , #accordion-item-1-c , #accordion-item-1-d, #accordion-item-1-e, #accordion-item-1-f, #accordion-item-2-a, #accordion-item-2-b, #accordion-item-2-c, #accordion-item-2-d, #accordion-item-3-a, #accordion-item-3-b, #accordion-item-3-c {
+#accordion-item-1-a , #accordion-item-1-b , #accordion-item-1-c , #accordion-item-1-d, #accordion-item-1-e, #accordion-item-1-f, #accordion-item-1-g, #accordion-item-1-h,#accordion-item-1-i, #accordion-item-1-j, #accordion-item-1-k, #accordion-item-2-a, #accordion-item-2-b, #accordion-item-2-c, #accordion-item-2-d, #accordion-item-3-a, #accordion-item-3-b, #accordion-item-3-c {
   display: none;
   cursor: pointer;
   text-align: left;

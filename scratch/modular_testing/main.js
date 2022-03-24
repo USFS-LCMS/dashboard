@@ -167,11 +167,17 @@ require([
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
       toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
       toggleSidebar.hamburgerToggle("encroachment-qs", "accordion-item-1-b");
+      
       toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-c");
+      toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-d");
       toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-e");
       toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-f");
-      toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-d");     
-     
+      toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-g");
+
+      toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-h");
+      toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-i");
+      toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-j");
+      toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
       
 
       // // TOGGLE FOREST HEALTH SUBQUESTION VISIBILITY
