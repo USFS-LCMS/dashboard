@@ -153,20 +153,25 @@ require([
       const toggleSidebar = ToggleSidebar({});
 
       // TOGGLE HAMBURGER - QUESTION VISIBILITY
-      toggleSidebar.hamburgerToggle("hamburger", "multilevel-accordion-menu");
+      toggleSidebar.hamburgerToggle("hamburger", "multilevel-accordion-menu"); //out div, inner div
 
-      toggleSidebar.hamburgerToggle("accordion-item-1", "accordion-item-1-a");
-      // toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-b");
-      toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-1-c");
-      toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-1-d");
+      //toggleSidebar.hamburgerToggle("accordion-item-1", "accordion-item-1-a");
+      toggleSidebar.hamburgerToggle("accordion-item-2", "accordion-item-2-a");
+
+      toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-3-a");
+      toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-4-a");
 
       // Forest health questions
       // toggleSidebar.hamburgerToggle("forest-health-questions", "aaa");
 
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
-
-      toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-b");
-
+      toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
+      toggleSidebar.hamburgerToggle("encroachment-qs", "accordion-item-1-b");
+      toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-c");
+      toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-e");
+      toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-f");
+      toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-d");     
+     
       
 
       // // TOGGLE FOREST HEALTH SUBQUESTION VISIBILITY

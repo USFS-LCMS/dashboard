@@ -112,7 +112,7 @@ define([
             doc.setFontSize(26);
             doc.setFont(undefined,'normal')
             doc.setTextColor(0,0,0)//8,124,124)
-            var question ="How does climate change...[This is the selected question of interest]?"; //change to document.getElementById("options-dropdown").value;//
+            var question ="Is climate change affecting landscapes and ecosystems on National Forest system lands?"; //change to document.getElementById("options-dropdown").value;//
             var wrapQuestion= doc.splitTextToSize(question, 180);
             doc.text(margin, currentY, wrapQuestion);
 

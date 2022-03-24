@@ -20,6 +20,16 @@
     <script src ="https://unpkg.com/jspdf-autotable"></script>   
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <style>
+      input[type="checkbox"]+label {
+        color: white;
+        font-family: 'Roboto Condensed', sans-serif;
+        font-size: 16px;
+        font-style: bold;   
+        align-items: left;   
+        align-content: left;
+        align-self: left;  
+      }
+           
       #screenshotDiv {
         position: absolute;
         top: 0;
@@ -134,75 +144,95 @@
             </div>
 
             <div role="list" id="r10-question-list">
-              <div role="listitem" id="accordion-tab-element-list-collapse-div" class="accordion-item">
-                
-                  <h3 class="user-question" id="forest-health">Forest Health</h3>
-
+              <div role="listitem" id="accordion-tab-element-list-collapse-div" class="accordion-item">                
+                  <h3 class="user-question" id="forest-health">Forest Health!</h3>
               </div>
+              <div role="listitem" id="accordion-tab-element-list-collapse-div-2" class="accordion-item">                
+                <h3 class="user-question" id="snow-ice-water">Snow/Ice/Water!</h3>
+                
+            </div>
             </div>
             
             <div role="listitem" class="accordion-item" id="tree-shrub-question">
               <h2>What is the annual change in acres of trees<br> and shrub communities into previously unoccupied<br> alpine and recently deglaciated habitat?</h2>
             </div>
+            <div role="listitem" class="accordion-item" id="glacier-question">
+              <h2>my q abt glaciers</h2>
+            </div>
           </div>
 
         <!-- BELOW. IS. DROPDOWN ACCORDION MENU STUFF POSTED FROM ONLINE -->
+        <!--
+CLIAMTE CHANGE
+1.	Is climate change affecting landscapes and ecosystems on Chugach National Forest system lands?
+
+FOREST HEALTH
+1.	Are we seeing change in forest, shrub, herbaceous cover (acres)?
+2.	 What are the rates of change in forest, shrub, herbaceous cover? 
+3.	 What are the broad patterns of vegetation succession?   
+4.	What is the impact of slow disturbance agents (drought, insects, defoliation)?
+5. What is the impact of fast disturbance agents (fire, flood, avalanche, windthrow)?
+
+ENCROACHMENT
+1. What is the annual change in acres of trees and shrub communities into previously 
+unoccupied alpine and recently deglaciated habitat?
+
+Snow and Ice
+1.	What is the status of glaciers on the Chugach NF? What are rates of deglaciation?
+2.	Are rates of change for tidewater vs. upland glaciers different? 
+3.	What is the rate and pattern of primary succession following deglaciation? 
+4. What is the rate of change in snow and ice cover (acres) over time?
+        -->
 
         <ul id="multilevel-accordion-menu" data-accordion-menu>
-
           <div>
-
             <h1 id="accordion-item-1">R10 Questions</h1>
-
             <ul id="r10-questions" data-accordion-menu>
-
-              <!--  -->
-              <div id="forest-health-qs"><h1>Forest Health</h1></div>
-              <ul id="accordion-item-1-b">
-
-                <!-- <div class="checkbox-container">
-                  <label id="fh-abbrev-1-checkmark"> -->
-
-                    <!-- This goes to the left -->
-                    <!-- <div>
-                      <input type="checkbox">
-                      <span class="checkmark"></span>
-                    </div> -->
-                    <!-- This goes to the left -->
-                  <!-- </label>
-                </div> -->
-
-              
-                <!-- This goes to the right
-                <div id="fh-abbrev-1"><h2>Tree/Shrub Encroachment...</h2></div>
-                This goes to the right -->
-                
-                <!-- <div id="fh-popout-1"><h3>What is the annual change in acres of trees<br> and shrub communities into previously unoccupied<br> alpine and recently deglaciated habitat?</h3></div> -->
-
-              
-                <label for="fh-q1">
-                  <input type="checkbox" name="fh-q1-checkbox" id="fh-q1">
-                  <span class="fh-q1-label">Tree/Shrub Encroachment</span>
-                </label>
-                <!-- Dropdown element -->
-                <div class="fh-q1-label-popout"><h2>What is the annual change in acres of trees<br> and shrub communities into previously unoccupied<br> alpine and recently deglaciated habitat?</h2></div>
-              
-              
-              
+              <div id="climate-qs"><h1>CLIMATE CHANGE</h1></div>
+              <ul id="accordion-item-1-a">
+                  <input type="checkbox" name="q1-checkbox" id="q1" value="q1-True">
+                  <label for="q1-a-checkbox" >Impacts of Climate Change</label>                  
+                  <div class="q1-label-popout"><h3>Is climate change affecting landscapes and ecosystems on National Forest system lands?</h3></div>
               </ul>
-              <!--  -->
 
+              <div id="encroachment-qs"><h1>ENCROACHMENT</h1></div>
+              <ul id="accordion-item-1-b">                
+                  <input type="checkbox" name="q2-checkbox" id="q2" value="q2-True">
+                  <label for="q2-checkbox" >Tree/Shrub Encroachment</label>
+                  <!--<div class="fh-q1-label">Tree/Shrub Encroachment</div> -->
+                  <!--</label>-->
+                  <!-- Dropdown element -->
+                  <div class="q2-label-popout"><h3>What is the annual change in acres of trees and shrub communities into previously unoccupied alpine and recently deglaciated habitat?</h3></div>
+              </ul>
+              
+              <div id="forest-health-qs"><h1>FOREST HEALTH</h1> </div>
+              <ul id="accordion-item-1-c">                  
+                  <input type="checkbox" name="q3-checkbox" id="q3" value="q3-True">
+                  <label for="q3-checkbox" >Vegetation Cover Change</label>
+                  <div class="q3-label-popout"> <h3>Are we seeing change in forest, shrub, herbaceous cover (acres)?</h3></div>                 
+              </ul>
 
-              <div id="snow-ice-water-qs">
-                <h1>Snow/Ice/Water</h1>
-                <ul id="snow-ice-water-qs-list">
-                  <label for="fh-q1">
-                    <input type="checkbox" name="fh-q1-checkbox" id="fh-q1">
-                    <h2 class="fh-q1-label">Glacial Retreat</h2>
-                  </label>
-                </ul>
-              </div>
-              <div id="accordion-item-4">
+              <ul id="accordion-item-1-e">                  
+                <input type="checkbox" name="q4-checkbox" id="q4" value="q4-True">
+                <label for="q4-checkbox" >Vegetation Rate of Change</label>
+                <div class="q4-label-popout"> <h3>What are the rates of change in forest, shrub, herbaceous cover?</h3></div>                 
+            </ul>
+            <ul id="accordion-item-1-f">                  
+              <input type="checkbox" name="q5-checkbox" id="q5" value="q5-True">
+              <label for="q5-checkbox" >Vegetation Succession</label>
+              <div class="q5-label-popout"> <h3>What are the broad patterns of vegetation succession?</h3></div>                 
+          </ul>
+
+              
+
+              <div id="snow-glacier-qs"><h1>SNOW AND GLACIERS</h1> </div>
+              <ul id="accordion-item-1-d">                  
+                  <input type="checkbox" name="fh-q2-checkbox" id="fh-q2" value="fh-q2-True">
+                  <label for="fh-q2-checkbox" >Deglaciation</label>
+                  <div class="fh-q2-label-popout"> <h3>What is the status of glaciers on the Forest? What are rates of deglaciation?</h3></div>                 
+              </ul>
+            
+              <!--<div id="accordion-item-">
                 <h1>Item 4</h1>
                 <ul class="menu vertical sublevel-1" id="accordion-item-1-d">
                   <div>
@@ -215,7 +245,7 @@
                   <div><a class="subitem" href="#">Thing 1</a></div>
                   <div><a class="subitem" href="#">Thing 2</a></div>
                 </ul>
-              </div>
+              </div>-->
             </ul>
 
 
@@ -223,21 +253,21 @@
 
           <div id="accordion-item-2">
             <h1>Tools</h1>
-            <ul class="menu vertical sublevel-1" id="accordion-item-1-b">
+            <ul class="menu vertical sublevel-1" id="accordion-item-2-a">
               <div><a class="subitem" href="#">Area Selector</a></div>
               <div><a class="subitem" href="#">Polygonselector</a></div>
             </ul>
           </div>
           <div id="accordion-item-3">
             <h1>Item 3</h1>
-            <ul class="menu vertical sublevel-1" id="accordion-item-1-c">
+            <ul class="menu vertical sublevel-1" id="accordion-item-2-b">
               <div><a class="subitem" href="#">Thing 1</a></div>
               <div><a class="subitem" href="#">Thing 2</a></div>
             </ul>
           </div>
           <div id="accordion-item-4">
             <h1>Item 4</h1>
-            <ul class="menu vertical sublevel-1" id="accordion-item-1-d">
+            <ul class="menu vertical sublevel-1" id="accordion-item-2-c">
               <div>
                 <a href="#">Sub-item 3</a>
                 <ul class="menu vertical sublevel-2" id="accordion-sublevel-2">

@@ -118,7 +118,7 @@ canvas {
 #sidebar-left-container {
   position: absolute;
   max-height: 708px;
-  /* width: 1000px; */
+  width: 400px; 
   left: 0;
   background-color: var(--deep-brown-100);
   padding-right: 20px;
@@ -128,7 +128,7 @@ canvas {
   width: 20px;
   height: 5px;
   background-color: var(--white);
-  margin: 6px 2px;
+  margin: 6px 3px;
 }
 
 /* This is the burger that triggers collapsible content! */
@@ -137,7 +137,7 @@ canvas {
   cursor: pointer;
 }
 
-#parameters-collapse-label-parameters-collapse-div {
+#parameters-collapse-label-parameters-collapse-div, #parameters-collapse-label-parameters-collapse-div2 {
   display:none;
 }
 
@@ -186,13 +186,14 @@ canvas {
 #r10-question-list {
   cursor: pointer;
   display: none;
+  text-align: left;
 }
 
-#forest-health-questions {
+#forest-health-questions, #snow-glacier-questions {
   cursor: pointer;
 }
 
-#tree-shrub-question {
+#tree-shrub-question, #glacier-question, #climate-question {
   cursor: pointer;
   display: none;
 }
@@ -201,20 +202,23 @@ canvas {
   display: none;
 }
 
-#accordion-item-1, #forest-health-qs, #accordion-item-3, #accordion-item-4 {
+#accordion-item-1,#accordion-item-2, #forest-health-qs, #accordion-item-3, #accordion-item-4, #snow-glacier-qs, #climate-qs, #encroachment-qs {
   cursor: pointer;
+  text-align: left;
 }
 
-#accordion-item-1-a , #accordion-item-1-b , #accordion-item-1-c , #accordion-item-1-d {
+#accordion-item-1-a , #accordion-item-1-b , #accordion-item-1-c , #accordion-item-1-d, #accordion-item-1-e, #accordion-item-1-f, #accordion-item-2-a, #accordion-item-2-b, #accordion-item-2-c, #accordion-item-2-d, #accordion-item-3-a, #accordion-item-3-b, #accordion-item-3-c {
   display: none;
   cursor: pointer;
+  text-align: left;
+  
 }
 
 #r10-questions {
   display: none;
 }
 
-#fh-popout-1 {
+#fh-popout-1, #fh-popout-2, #fh-popout-3 {
   display: none;
 }
 
@@ -227,6 +231,7 @@ canvas {
   display: flex;
   /* flex-direction: column; */
   position: relative;
+  float: left;
   cursor: pointer;
   font-size: 12px;
   -webkit-user-select: none;
