@@ -167,7 +167,7 @@ require([
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
       toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
       toggleSidebar.hamburgerToggle("encroachment-qs", "accordion-item-1-b");
-      
+
       toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-c");
       toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-d");
       toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-e");
@@ -218,7 +218,7 @@ require([
       div.append(p);
 
       // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS.
-      document.getElementById("fh-abbrev-1").onclick = () => {
+      document.getElementById("accordion-item-1-a").onclick = () => {
         if (document.getElementById("chart-canvas") != null){
           document.getElementById("chart-canvas").remove();
       };
@@ -228,7 +228,7 @@ require([
         // p.innerHTML = "";
 
         // assumes that we have a blank dropdown menu 
-        if ( document.getElementById("#fh-abbrev-1").value == "" ){
+        if ( document.getElementById("accordion-item-1-a").value == "" ){
           
           // Ask user to select question if they have not yet.
           p.textContent = "Please select a question.";
