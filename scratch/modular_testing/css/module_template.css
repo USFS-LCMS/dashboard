@@ -38,7 +38,7 @@ html, body{
   background-color: black;
   font-size: 16px;
   font-family: 'Roboto Condensed', sans-serif;
-  font-weight: 100;
+  font-weight: 50;
   color: white;
 }
 
@@ -122,6 +122,7 @@ canvas {
   left: 0;
   background-color: var(--deep-brown-100);
   padding-right: 20px;
+  overflow-y:auto;
 }
 
 .sidebar-toggler {
@@ -218,8 +219,17 @@ canvas {
   display: none;
 }
 
+
 #fh-popout-1, #fh-popout-2, #fh-popout-3 {
   display: none;
+}
+
+#label-popout {
+  color: #80DFD2;
+  font-size: small;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: normal;
+  font-style: oblique;
 }
 
 #fh-abbrev-1:hover + #fh-popout-1 {
