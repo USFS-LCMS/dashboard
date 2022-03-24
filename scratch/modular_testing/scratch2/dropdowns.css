@@ -77,3 +77,15 @@
   .user-question {
     cursor: pointer;
   }
+
+
+  /* Question popout functionality for forest health questions */
+  
+
+  /* .fh-q1:hover ~ #fh-q1-label-popout {
+    display: block;
+  } */
+
+  .fh-q1-label-popout {
+    display: none;
+  }
