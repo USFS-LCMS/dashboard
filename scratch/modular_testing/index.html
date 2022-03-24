@@ -45,7 +45,7 @@
 
       .action-button:hover,
       .action-button:focus {
-        background: rgb(8,124,124, .5);
+        background: rgba(15, 223, 223, 0.7);
         color: white;
       }
 
@@ -262,14 +262,16 @@
       
       <div class="aside aside-2" id="side-chart">
         <h3>LCMS Outputs</h3>
-        <div id="viewDiv" class="esri-widget">
+        <div id="viewDiv" class="esri-widget" style="background-color:black;font-family: 'Times New Roman', Times, serif;">
           <button
             id="pdf-button"
             class="action-button esri-widget"
             aria-label="Download PDF"
             title="Download PDF"
+            style="font-family:Arial, Helvetica, sans-serif;"
+            
           >
-            Download PDF
+            Generate Report
           </button>
         <div id="screenshotDiv" class="hide">
           <img class="js-screenshot-image" />        

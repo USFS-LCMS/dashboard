@@ -85,6 +85,7 @@ define([
                     data: {"labels": years,
                     "datasets":t},
                     options:{
+                    devicePixelRatio:2,//increase resolution of output chart
                     responsive: true,
                     maintainAspectRatio: true,
                     aspectRatio: 1/0.6,
