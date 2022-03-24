@@ -46,7 +46,6 @@ define([
             doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
             doc.addFileToVFS("arial-normal.ttf", arialNormal);
             doc.addFont("arial-normal.ttf", "Arial", "normal");
-            console.log(doc.getFontList())
                    
             doc.setFont('Arial','normal'); 
 
@@ -92,15 +91,13 @@ define([
 
             //add title/unit info
             var objectID =results.features[0].attributes["outID"];
-            console.log(objectID);
             var forestDict = {'1':'Tongass National Forest', '2':'Chugach National Forest'}
             var forestName = forestDict[String(objectID)[0]] // ensure that fields are attributed with forest or just splice str(outID)[0]
-            console.log(forestName);
             var unitName ='LTA' //update this when we get the real data to be dynamic with what type of data (only allow user to select multiply polygons within one laeyr?? e.g. only LTAs OR only watersheds.. not one LTA and one watershed)
             
 
             doc.setFontSize(22);
-            doc.setTextColor(249,226,76,);//0,0,0);
+            doc.setTextColor(249,226,76);//0,0,0);
             doc.setFont(undefined,'bold');  
             currentY+=3;                    
             doc.addImage(lcmsLogo, 'PNG', margin/2, currentY, 13,13)//x,y,w,h
@@ -188,7 +185,11 @@ define([
 
             doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
 
-            currentY = currentY+ chartH + margin;
+            currentY = currentY+ chartH + 6;
+
+            doc.text(margin, currentY, "Figure 1. LCMS Change by Year");
+
+            currentY+=5
             //draw table
             // ultimately want a table with 
             var years = results.features[0].attributes["years"].split(",");
@@ -240,19 +241,16 @@ define([
 
             
             let finalY = doc.lastAutoTable.finalY; // The y position on the page
-            console.log(finalY+'is final y of table')
             doc.setFontSize(12)
-            doc.text(margin, finalY+5, "Table 1. Summary of units analyzed")
+            doc.text(margin, finalY+6, "Table 1. Summary of units analyzed")
 
             //add page numbers to bottom of each page
             var pageCount = doc.internal.getNumberOfPages();
-            console.log(pageCount+'is page count'+h+'is height'+w+'is width')
             for (i=0; i< pageCount; i++){
                 doc.setPage(i);
                 let pageCurrent = String(doc.internal.getCurrentPageInfo().pageNumber);
                 doc.setFontSize(12);
                 doc.text(pageCurrent,w-margin-pageCurrent.length, h-margin);
-                console.log(pageCurrent.length+'len pg cur')
             }
 
 
