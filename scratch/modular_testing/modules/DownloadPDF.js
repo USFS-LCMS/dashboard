@@ -2,10 +2,16 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
+    "esri/geometry/geometryEngine",
+    "esri/geometry/Geometry",
+    "esri/tasks/GeometryService",
     "./CreateCustomFonts"
 ], function(
     declare,
     arrayUtils,
+    geometryEngine,
+    Geometry,
+    GeometryService,
     CreateCustomFonts){
 
     return declare(null,{
@@ -17,6 +23,13 @@ define([
 
         },
         //Function to download a pdf report
+
+        getArea: function (polygon) {
+            const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
+            const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
+            return geodesicArea;  
+            //measurements.innerHTML = "<b>Geodesic area</b>:  " + geodesicArea.toFixed(2) + " km\xB2" + " |   <b>Planar area</b>: " + planarArea.toFixed(2) + "  km\xB2";
+          },
         
         downloadPDF: function(results){  
             console.log('Downloading PDF');
@@ -24,8 +37,7 @@ define([
             let outFilename = 'LCMS-Summaries'
             // if($('#pdfFilename').val() !== ''){
             // outFilename = $('#pdfFilename').val() 
-            // }  
-        
+            // }          
             // Add area namess
             let doc = new jspdf.jsPDF('portrait');
             let h = doc.internal.pageSize.height;
@@ -198,10 +210,10 @@ define([
             for (var i=0; i<fastLoss.length; i++){
                 total+=fastLoss[i]}
             var meanFastLoss = parseFloat(String(total/fastLoss.length).slice(0,8));
-            var Region ="10"//results.features[0].attributes["REGION"];
-            var Area = results.features[0].attributes["GIS_ACRES"]; //add AREA FIELD
-
-            var head = [["ID","Forest", "Region", "Area (acres)", "Mean Fast Loss"]];
+            var Region ="10"//results.features[0].attributes["REGION"];           
+            var Area = results.features[0].attributes["planarArea"]; //this.getArea(results.geometry);//results.features[0].attributes["GIS_ACRES"]; //add AREA FIELD
+            Area = String(Area).slice(0,9)
+            var head = [["ID","Forest", "Region", "Area (km2)", "Mean Fast Loss"]];
             var body = [[objectID, forestName, Region, Area, meanFastLoss]]; //will change this so that if user selects multiple polygons (???) theyll all populate in chart
             doc.autoTable({
                 head:head,

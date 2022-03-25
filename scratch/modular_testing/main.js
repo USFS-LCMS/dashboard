@@ -30,6 +30,7 @@ require([
     "esri/Graphic",
     "esri/symbols/SimpleFillSymbol",
     "esri/symbols/SimpleLineSymbol",    
+    "esri/geometry/geometryEngine",
     "dojo/domReady!"
 
     ], (
@@ -48,6 +49,7 @@ require([
       Graphic,
       SimpleFillSymbol,
       SimpleLineSymbol,
+      geometryEngine
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
@@ -105,6 +107,14 @@ require([
       //   // returns a feature set with features containing the following attributes
       //   // STATE_NAME, COUNTY_NAME, POPULATION, POP_DENSITY
       // });
+    function getArea(polygon) {
+      const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
+      const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
+      console.log(geodesicArea+"geodes area");
+      console.log(planarArea+"planar area")
+      return planarArea;
+
+    }
 
     const map = new Map({
       basemap: "hybrid",
@@ -114,11 +124,15 @@ require([
     // Map view - visualize map and pass it to html div element.
     const view = new MapView({
       map: map,
-      container: "main-map"
+      container: "main-map",
+      highlightOptions: {
+        color: "orange"
+      }
       // zoom: 6,
       // center: [-90, 37]
       // extent:
     });
+    view.ui.add("info", "top-right");
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
@@ -258,10 +272,10 @@ require([
         
         layer.queryFeatures(query).then((results) =>{
           view.goTo({target:results.features[0].geometry})//.then(function() {//, zoom:12});
-          view.when(()=>{
-            
+          //view.when(()=>{     
+          if (view.extent){
 
-            console.log("results: "+results.features[0])
+            console.log("results len: "+results.features.length)
           
             if(results.features.length>0){
               console.log("len")
@@ -283,6 +297,9 @@ require([
                       }
                     });
                     var graphic = new Graphic(geom, symbol);
+                    //console.log("graphic geom: "+graphic.geometry.Area())
+                    //results.features[0].planarArea = getArea(graphic.geometry);
+                    results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
                     
                     view.graphics.add(graphic);
                   }
@@ -292,7 +309,7 @@ require([
               // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
               storeResults=results              
             }
-        })
+        }//)
         });
       });
 
