@@ -132,17 +132,17 @@ require([
       // center: [-90, 37]
       // extent:
     });
-    //view.ui.add("info", "top-right"); //add popup with info about selected polygon
+    view.ui.add("info", "top-right");
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when(()=>{
 
-      // Zoom 2 ext of layer!
-      layer.when(()=>{
-        console.log('setting extent');
-        view.extent = layer.fullExtent;
-      });
+    // Zoom 2 ext of layer!
+    layer.when(()=>{
+      console.log('setting extent');
+      view.extent = layer.fullExtent;
+    });
 
       // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
@@ -260,122 +260,58 @@ require([
       var storeResults =null;
       // Take a screenshot at the same resolution of the current view  
      
-      view.on("click", eventHandler);
-
-      function eventHandler(e){
-
-        //first remove previous graphics/highlight and create NEW query
-        // view.graphics.removeAll(); // make sure to remmove previous highlighted feature
-        // query = new Query();
-        // query.returnGeometry = true;
-        // query.maxAllowableOffset = 0;
-        // query.outFields = null; 
-        // query.where = "1=1";
-        // query.num = 50;
-        // query.geometry = e.mapPoint;
+      view.on("click", (e) => {
+        view.graphics.removeAll(); // make sure to remmove previous highlighted feature
+        query = new Query();
+        query.returnGeometry = true;
+        query.maxAllowableOffset = 0;
+        query.outFields = null; 
+        query.where = "1=1";
+        query.num = 50;
+        query.geometry = e.mapPoint;
         
-        const opts={
-          include: layer
-        };
+        layer.queryFeatures(query).then((results) =>{
+          view.goTo({target:results.features[0].geometry})//.then(function() {//, zoom:12});
+          //view.when(()=>{     
+          if (view.extent){
 
-        view.hitTest(e, opts).then(getGraphics);
-
-        let highlight, currentID, currentForest;
-
-        function getGraphics(response){
-          if(response.results.length>0){
-            var graphics= response.results;
-            var results=graphics;
-            const attributes = graphics[0].graphic.attributes
-            console.log(attributes+'attr')
-            const outID = attributes["outID"]
-            graphics.forEach(function(g){
-              console.log('graphic:'+g);              
-              var geom = g.graphic.geometry;
-              if (
-                highlight &&
-                (currentID !== outID )//|| currentForest !== forest)
-              ) {
-                highlight.remove();
-                highlight = null;
-                return;
-              }
-              if (highlight) {
-                return;
-              }
-              //document.getElementById("info").style.visibility="visible";
-              //document.getElementById("outID").innerHTML = outID;
-
-              const query = layer.createQuery();
-              console.log("outid: "+outID)
-              query.where = "outID = "+outID;
-              layer.queryObjectIds(query).then((ids) =>{
-                if (highlight){
-                  highlight.remove();
-                }
-                highlight = layer.highlight(ids);
-                currentID = outID;
-
-              });
-            });
-          } else{
-              if (highlight){
-                highlight.remove();
-                highlight=null;
-              }
-              //document.getElementById("info").style.visibility="hidden";
-            }
-
-              // if (geom.type === "polygon") {
-              //   var symbol = new SimpleFillSymbol({
-              //     color:[205,66,47,.0001],
-              //     style:"solid",
-              //     outline:{
-              //       color:[249,226,76],//205,66,47],//"yellow",
-              //       width:1
-              //     }
-              //   });
-              //   var graphic = new Graphic(geom, symbol);
-              //   //console.log("graphic geom: "+graphic.geometry.Area())
-              //   //results.features[0].planarArea = getArea(graphic.geometry);
-              //   results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
-                
-              //   view.graphics.add(graphic);
-            c.createOutputObj(results, ["Change---Fast Loss"]) // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
-            // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
-            storeResults=results 
-            } //end of eventhandle
-
-        }
-            
-    });
-
-
-        //});
-
-
-      //   layer.queryFeatures(query).then((results) =>{
-      //     view.goTo({target:results.features[0].geometry})//.then(function() {//, zoom:12});
-      //     //view.when(()=>{     
-      //     if (view.extent){
-
-      //       console.log("results len: "+results.features.length)
+            console.log("results len: "+results.features.length)
           
-      //       if(results.features.length>0){
-      //         console.log("len")
+            if(results.features.length>0){
+              console.log("len")
 
-      //         //highlight selected feature
-      //         view.hitTest(e.screenPoint).then(function(response){
-                
-      //           })
-      //         })          
-      //         c.createOutputObj(results, ["Change---Fast Loss"]) // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
-      //         // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
-      //         storeResults=results              
-      //       }
-      //   }//)
-      //   });
-      // });
+              //highlight selected feature
+              view.hitTest(e.screenPoint).then(function(response){
+                var graphics= response.results;
+                graphics.forEach(function(g){
+                  console.log('graphic:'+g);
+                  
+                  var geom = g.graphic.geometry;
+                  if (geom.type === "polygon") {
+                    var symbol = new SimpleFillSymbol({
+                      color:[205,66,47,.0001],
+                      style:"solid",
+                      outline:{
+                        color:[249,226,76],//205,66,47],//"yellow",
+                        width:1
+                      }
+                    });
+                    var graphic = new Graphic(geom, symbol);
+                    //console.log("graphic geom: "+graphic.geometry.Area())
+                    //results.features[0].planarArea = getArea(graphic.geometry);
+                    results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
+                    
+                    view.graphics.add(graphic);
+                  }
+                })
+              })          
+              c.createOutputObj(results, ["Change---Fast Loss"]) // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
+              // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
+              storeResults=results              
+            }
+        }//)
+        });
+      });
 
       document.getElementById("pdf-button").addEventListener("click",() => {//onclick = function() {
         //var newExtent = esri.graphicsExtent(storeResults.features);
@@ -403,5 +339,5 @@ require([
         
       });
     })
-//   }
-// );
+  }
+);
