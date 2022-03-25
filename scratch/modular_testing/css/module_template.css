@@ -114,7 +114,9 @@ canvas {
   background-color: rgb(224, 226, 212);
   display: flex;
 }
-
+#tableDiv{
+ 
+}
 #sidebar-left-container {
   position: absolute;
   max-height: 708px;

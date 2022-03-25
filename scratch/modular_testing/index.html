@@ -314,29 +314,50 @@
       
       <div class="aside aside-2" id="side-chart">
         <h3>LCMS Outputs</h3>
-        <div id="viewDiv" class="esri-widget" style="background-color:black;font-family: 'Times New Roman', Times, serif;">
-          <button
+        <div id="viewDiv" class="esri-widget" style="background-color:black;font-family: 'Times New Roman', Times, serif; width:300px">
+          
+        
+        <div
+          id="select-by-rectangle"
+          class="esri-widget esri-widget--button esri-widget esri-interactive"
+          title="Select features by rectangle"
+        >
+          <span class="esri-icon-checkbox-unchecked"></span>
+        </div>
+
+        <div
+          id="clear-selection"
+          class="esri-widget esri-widget--button esri-widget esri-interactive"
+          title="Clear selection"
+        >
+          <span class="esri-icon-erase"></span>
+        </div>
+        <button
             id="pdf-button"
             class="action-button esri-widget"
             aria-label="Download PDF"
             title="Download PDF"
-            style="font-family:Arial, Helvetica, sans-serif;"
+            style="font-family:Arial, Helvetica, sans-serif;position:relative; padding:5px;"
             
           >
             Generate Report
           </button>
+        </div>
         <div id="screenshotDiv" class="hide">
           <img class="js-screenshot-image" />        
           
         </div>
+        
   
         <!--<button id="pdf-button">Download PDF</button>-->
         
-      </div>
       <!-- <div class="footer">
         <button style="float:right" id="pdf-button">Download PDF</button> 
         <input type="text" name="pdfName" id = 'pdfFilename' style = 'float:right;' placeholder="Enter pdf name">
       </div> -->
+    </div>
+    <div class="container">
+      <div id="tableDiv"></div>
     </div>
     <!-- <canvas id="side-test" width="200" height="100"></canvas> -->
     

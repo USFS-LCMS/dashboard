@@ -9,8 +9,6 @@ Description:
   It provides the user with a selection of questions and provides charts using LCMS data.
 */
 
-//const { features } = require("process");
-
 // Require is an AMD - Asynchronous Module Definition - staple.
 // AMD is pretty much required when working with esri api and map views - and dashboards in general?
 
@@ -31,6 +29,10 @@ require([
     "esri/symbols/SimpleFillSymbol",
     "esri/symbols/SimpleLineSymbol",    
     "esri/geometry/geometryEngine",
+    "esri/widgets/Sketch/SketchViewModel",
+    "esri/layers/GraphicsLayer",
+    "esri/geometry/geometryEngineAsync",
+    "esri/widgets/FeatureTable",
     "dojo/domReady!"
 
     ], (
@@ -49,7 +51,11 @@ require([
       Graphic,
       SimpleFillSymbol,
       SimpleLineSymbol,
-      geometryEngine
+      geometryEngine,
+      SketchViewModel,
+      GraphicsLayer,
+      geometryEngineAsync,
+      FeatureTable
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
@@ -95,18 +101,7 @@ require([
       // Map supplying layers & basemap
       
 
-      // Try querying features and only adding those to the map.
-
-      // let queryhalf = new Query();
-      // queryhalf.returnGeometry = true;
-      // queryhalf.outFields = null;
-      // queryhalf.where = "EW_ID = 1";
-
-      // half_layer = layer.queryFeatures(layerSelectQuery).then((response) => {
-      //   return response;
-      //   // returns a feature set with features containing the following attributes
-      //   // STATE_NAME, COUNTY_NAME, POPULATION, POP_DENSITY
-      // });
+      
     function getArea(polygon) {
       const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
       const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
@@ -132,17 +127,175 @@ require([
       // center: [-90, 37]
       // extent:
     });
-    view.ui.add("info", "top-right");
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    //////// CODE TO DRAW RECTANGLE TO SELECT MULTIPLE POLYGON FEATURES 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    let myLayerView;
+    layer
+      .when(() => {
+        view.whenLayerView(layer).then(function (layerView) {
+          myLayerView = layerView;
+        });
+      })
+      .catch(errorCallback);
+    let somefeatures = [];
+
+    const featureTable = new FeatureTable({
+      view: view,
+      layer: layer,
+      highlightOnRowSelectEnabled: false,
+      fieldConfigs: [
+        {
+          name: "outID",
+          label: "outID"
+        },        
+       
+      ],
+      container: document.getElementById("tableDiv")
+    });    
+
+    featureTable.on("selection-change"),(changes)=>{
+      console.log("selection recorded")
+      changes.removed.forEach((item) => {
+        const data = somefeatures.find((data) => {
+          return data === item.objectId;
+        });
+        if (data) {
+          somefeatures.splice(somefeatures.indexOf(data), 1);
+        }
+      });
+
+      // If the selection is added, push all added selections to array
+      changes.added.forEach((item) => {
+        somefeatures.push(item.objectId);
+      });
+
+      myLayerView.featureEffect = {
+        filter: {
+          objectIds: somefeatures
+        },
+        excludedEffect: "blur(5px) grayscale(90%) opacity(40%)"
+      };
+    }
+    console.log("somefeatures"+somefeatures)
+    // polygonGraphicsLayer will be used by the sketchviewmodel
+    // show the polygon being drawn on the view
+    const polygonGraphicsLayer = new GraphicsLayer();
+    map.add(polygonGraphicsLayer);
+
+    // add the select by rectangle button the view
+    //view.ui.add("select-by-rectangle")//, "bottom-left");
+    const selectButton = document.getElementById("select-by-rectangle");
+    // click event for the select by rectangle button
+    selectButton.addEventListener("click", () => {
+      view.popup.close();
+      sketchViewModel.create("rectangle");
+    });
+      //"info", "top-right");
+    document
+      .getElementById("clear-selection")
+      .addEventListener("click", () => {        
+        featureTable.clearSelection();
+        featureTable.filterGeometry = null;
+        polygonGraphicsLayer.removeAll();
+      });
+
+    // create a new sketch view model set its layer
+    const sketchViewModel = new SketchViewModel({
+      view: view,
+      layer: polygonGraphicsLayer
+    });
+
+    // Once user is done drawing a rectangle on the map
+    // use the rectangle to select features on the map and table
+    sketchViewModel.on("create", async (event) => {
+      if (event.state === "complete") {
+        // this polygon will be used to query features that intersect it
+        const geometries = polygonGraphicsLayer.graphics.map(function (
+          graphic
+        ) {
+          return graphic.geometry;
+        });
+        const queryGeometry = await geometryEngineAsync.union(
+          geometries.toArray()
+        );
+        selectFeatures(queryGeometry);
+      }
+    });
+
+    // This function is called when user completes drawing a rectangle
+    // on the map. Use the rectangle to select features in the layer and table
+    function selectFeatures(geometry) {
+      if (myLayerView) {
+        // create a query and set its geometry parameter to the
+        // rectangle that was drawn on the view
+        const query = {
+          geometry: geometry,
+          outFields: ["*"]
+        };
+
+        // query graphics from the csv layer view. Geometry set for the query
+        // can be polygon for point features and only intersecting geometries are returned
+        myLayerView
+          .queryFeatures(query)
+          .then((results) => {
+            if (results.features.length === 0) {
+              clearSelection();
+            } else {
+              // pass in the query results to the table by calling its selectRows method.
+              // This will trigger FeatureTable's selection-change event
+              // where we will be setting the feature effect on the csv layer view
+              console.log("trying...")
+              // // thins features in the view
+              // results.featureReduction = {
+              //   type: "selection"
+              // };
+              //layer.filterGeometry = geometry;
+              //layer.selectRows(results.features);
+              featureTable.filterGeometry = geometry;
+              featureTable.selectRows(results.features);
+            }
+          })
+          .catch(errorCallback);
+      }
+    }
+    
+
+    function errorCallback(error) {
+      console.log("error happened:", error.message);
+    }
+
+    // Once user is done drawing a rectangle on the map
+    // use the rectangle to select features on the map and table
+    sketchViewModel.on("create", async (event) => {
+      if (event.state === "complete") {
+        // this polygon will be used to query features that intersect it
+        const geometries = polygonGraphicsLayer.graphics.map(function (
+          graphic
+        ) {
+          return graphic.geometry;
+        });
+        const queryGeometry = await geometryEngineAsync.union(
+          geometries.toArray()
+        );
+        selectFeatures(queryGeometry);
+      }
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
-    view.when(()=>{
+    view.when().then(()=>{
+      
 
-    // Zoom 2 ext of layer!
-    layer.when(()=>{
-      console.log('setting extent');
-      view.extent = layer.fullExtent;
-    });
+      // Zoom 2 ext of layer!
+      layer.when(()=>{
+        console.log('setting extent');
+        view.extent = layer.fullExtent;
+      });
 
       // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
@@ -169,14 +322,10 @@ require([
       // TOGGLE HAMBURGER - QUESTION VISIBILITY
       toggleSidebar.hamburgerToggle("hamburger", "multilevel-accordion-menu"); //out div, inner div
 
-      //toggleSidebar.hamburgerToggle("accordion-item-1", "accordion-item-1-a");
       toggleSidebar.hamburgerToggle("accordion-item-2", "accordion-item-2-a");
 
       toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-3-a");
       toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-4-a");
-
-      // Forest health questions
-      // toggleSidebar.hamburgerToggle("forest-health-questions", "aaa");
 
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
       toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
@@ -192,32 +341,6 @@ require([
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-i");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-j");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
-      
-
-      // // TOGGLE FOREST HEALTH SUBQUESTION VISIBILITY
-
-
-      // toggleSidebar.hamburgerToggle("parameters-collapse-label-parameters-collapse-div",
-      // ["forest-health", "tree-shrub-question"]);
-
-      // // TOGGLE FOREST HEALTH QUESTIONS
-      // toggleSidebar.hamburgerToggle("forest-health", ["tree-shrub-question"]);
-
-      // toggleSidebar.hamburgerToggle("forest-health-questions", "tree-shrub-question")
-
-      // TOGGLE SIDEBAR VISIBILITY ***
-
-      // Question input class
-      // const u_q = UserQuestionSelection({});
-      // Dropdown class
-      // const drpdown = CreateDropdown({});
-
-      // CREATE BUTTON ONCLICK FUNCTIONALITY FOR USER QUESTIONS
-
-      // * CREATE DROPDOWN MENU CONTROL FLOW *
-
-      // Call CreateSimpleDropdown function to create a dropdown menu of questions
-      // drpdown.addDropElems();
       
       // Create a dictionary of button relationships.
       const button_relationships = {
@@ -255,89 +378,90 @@ require([
         }
       }
 
-      // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
-      // This function will listen for user click, and then apply above query to features, activating our plotting class.
-      var storeResults =null;
-      // Take a screenshot at the same resolution of the current view  
-     
-      view.on("click", (e) => {
-        view.graphics.removeAll(); // make sure to remmove previous highlighted feature
-        query = new Query();
-        query.returnGeometry = true;
-        query.maxAllowableOffset = 0;
-        query.outFields = null; 
-        query.where = "1=1";
-        query.num = 50;
-        query.geometry = e.mapPoint;
-        
-        layer.queryFeatures(query).then((results) =>{
-          view.goTo({target:results.features[0].geometry})//.then(function() {//, zoom:12});
-          //view.when(()=>{     
-          if (view.extent){
+      return layer
+    }).then(function (layer) {
 
-            console.log("results len: "+results.features.length)
-          
-            if(results.features.length>0){
-              console.log("len")
 
-              //highlight selected feature
-              view.hitTest(e.screenPoint).then(function(response){
-                var graphics= response.results;
-                graphics.forEach(function(g){
-                  console.log('graphic:'+g);
-                  
-                  var geom = g.graphic.geometry;
-                  if (geom.type === "polygon") {
-                    var symbol = new SimpleFillSymbol({
-                      color:[205,66,47,.0001],
-                      style:"solid",
-                      outline:{
-                        color:[249,226,76],//205,66,47],//"yellow",
-                        width:1
+        // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
+        // This function will listen for user click, and then apply above query to features, activating our plotting class.
+        var storeResults = null;
+        // Take a screenshot at the same resolution of the current view  
+        view.on("click", eventAction);
+        //view.on("mouse-drag",eventAction);
+        function eventAction(e){
+          //click -> query -> zoom to selection -> highlight feature
+          view.graphics.removeAll(); // make sure to remmove previous highlighted feature
+          var query = new Query();
+          query.returnGeometry = true;
+          query.maxAllowableOffset = 0;
+          query.outFields = null;
+          query.where = "1=1";
+          query.num = 50;
+          query.geometry = e.mapPoint;          
+          layer.queryFeatures(query).then((results) => {
+            view.goTo({ target: results.features[0].geometry })
+            return results;
+          }).then((results)=>{             
+               //.then(function() {//, zoom:12});
+              if (view.extent) {  
+                console.log("results len: " + results.features.length);  
+                if (results.features.length > 0) { 
+                  //highlight selected feature
+                  //view.whenLayerView(results).then(function(layerView){
+                    view.hitTest(e.mapPoint).then(function (response) {
+                    var graphics = response.results;
+                    graphics.forEach(function (g) {
+                      console.log('graphic:' + g);
+  
+                      var geom = g.graphic.geometry;
+                      if (geom.type === "polygon") {
+                        var symbol = new SimpleFillSymbol({
+                          color: [205, 66, 47, .0001],
+                          style: "solid",
+                          outline: {
+                            color: [249, 226, 76],
+                            width: 1
+                          }
+                        });
+                        var graphic = new Graphic(geom, symbol);
+                        //console.log("graphic geom: "+graphic.geometry.Area())
+                        //results.features[0].planarArea = getArea(graphic.geometry);
+                        results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
+  
+                        view.graphics.add(graphic);
                       }
                     });
-                    var graphic = new Graphic(geom, symbol);
-                    //console.log("graphic geom: "+graphic.geometry.Area())
-                    //results.features[0].planarArea = getArea(graphic.geometry);
-                    results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
-                    
-                    view.graphics.add(graphic);
-                  }
-                })
-              })          
-              c.createOutputObj(results, ["Change---Fast Loss"]) // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
-              // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
-              storeResults=results              
-            }
-        }//)
-        });
-      });
+                  });
+                //});
+                  c.createOutputObj(results, ["Change---Fast Loss"]); // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
+  
+                  // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
+                  storeResults = results;
+                }
+              } //)
+            });
 
-      document.getElementById("pdf-button").addEventListener("click",() => {//onclick = function() {
-        //var newExtent = esri.graphicsExtent(storeResults.features);
-        //map.setExtent(newExtent,true);
-        //view.goTo(storeResults.features[0].geometry); //works, but called asynchronously so happens AFTER screenshot
-        view.takeScreenshot({format:'png', width:2048,height:2048}).then(function(screenshot) {
-          //showPreview(screenshot);
-          //const viewCanvas = document.createElement("canvas");
-          //const viewCanvasImg = document.createElement("img").setAttribute('id',"my_screenshot_img");
-          //viewCanvasImg.src=screenshot.dataUrl;
-  
-          //var imageElement = document.getElementById("screenshotImage");
-          const imageElement = document.getElementsByClassName(
-            "js-screenshot-image"
-          )[0];
-          
-          imageElement.src = screenshot.dataUrl;
-          imageElement.height = screenshot.data.height;
-          imageElement.width = screenshot.data.width;
-          //screenshotDiv.classList.remove("hide");
-          d_pdf.downloadPDF(storeResults)
+          }
+
           
         });
-  
-        
-      });
-    })
+
+        document.getElementById("pdf-button").addEventListener("click", () => {
+          view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
+
+            const imageElement = document.getElementsByClassName(
+              "js-screenshot-image"
+            )[0];
+
+            imageElement.src = screenshot.dataUrl;
+            imageElement.height = screenshot.data.height;
+            imageElement.width = screenshot.data.width;
+            d_pdf.downloadPDF(storeResults);
+
+          });
+
+
+        });
+      //})
   }
 );
