@@ -9,6 +9,45 @@ Description:
   It provides the user with a selection of questions and provides charts using LCMS data.
 */
 
+//Function to handle resizing the windows properly
+// function resizeWindow(){
+//   console.log('resized');
+//   var margin = 5;
+//   var h = window.innerHeight-margin;
+//   var w = window.innerWidth;
+//   // var headerHeight = $('#headerDiv').height();
+//   // var bottomHeight = $('#bottomDiv').height();
+//   // $('#selected-area-list').css({'height':h/3*2-100});
+//   // $('#selected-area-div').css({'height':h/3*2-100});
+  
+//   if(w>h){
+//     // $('#headerDiv').css({'left':$('#nameDiv').width()+$('.esri-zoom').width()+20})
+//     $('.main').css({'float':'left','width':'45%'});
+//     // $('.left').css({'float':'left','width':'10%'});
+//     $('.aside aside-2').css({'float':'right','width':'45%'});
+//     // $('.bottom').css({'position': 'absolute','bottom': '0'});
+//     $("#main-map").height(h);
+//     $("#side-chart").height(h);
+//     // $("#nameDiv").height(h);
+//     // $('#legend-div').css({'float':'top','max-height':h/3});
+//     // $('#selected-area-div').css({'float':'bottom','height':h-$('#legend-div').height()-100});
+//   }else{
+//     $("#main-map").height((window.innerHeight-(headerHeight*1.2))/2);
+//     $("#side-chart").height((window.innerHeight-(headerHeight*1.2))/2);
+//     // $('.left').css({'float':'top','width':'100%'});
+//     $('.right').css({'float':'bottom','width':'100%'});
+//   }
+//   // $('#lcms-icon').height($('#dashboard-title').innerHeight()*0.6);
+
+//   // $('#chartDiv').css('overflow-y','visible');
+// }
+// ///////////////////////////////////////////////////////////////////////
+// $(document).ready(function() {
+//   window.addEventListener('resize',resizeWindow)
+// resizeWindow();
+
+// });
+
 // Require is an AMD - Asynchronous Module Definition - staple.
 // AMD is pretty much required when working with esri api and map views - and dashboards in general?
 
@@ -81,25 +120,6 @@ require([
       url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",//"https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
       renderer: renderer
     });
-
-    //
-      // const chugach_ecosections = new GeoJSONLayer({
-      //   url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
-      // })
-
-      // console.log(layer);
-      // const layer_west = new GeoJSONLayer({
-      //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_west.geojson",
-      //   renderer: renderer
-      // });
-
-      // const layer_east = new GeoJSONLayer({
-      //   url: "../../geojson/split-geojson/LCMS-Summaries-DISTRICTNA_compressed_east.geojson",
-      //   renderer: renderer
-      // });
-
-      // Map supplying layers & basemap
-      
 
       
     function getArea(polygon) {
@@ -324,13 +344,13 @@ require([
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-i");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-j");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
-      
-      // Create a dictionary of button relationships.
-      const button_relationships = {
-        "Question1": "Change---Fast Loss",
-        "Question2": "Change---Slow Loss"
-      };
 
+      // Create an empty chart as CreateChart object
+      const empty_chart = CreateChart({});
+      empty_chart.fetchVisibleFeatures(view, layer);
+      console.log(empty_chart.output_features);
+
+      
       // Create a div to populate 
       let div = document.getElementById("side-chart");
       // Create a paragraph in the div
