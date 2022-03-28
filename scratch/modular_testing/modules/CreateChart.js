@@ -11,8 +11,9 @@ define([
 
         },
 
-        // Pascal CASE.
-        createOutputObj: function(results, fieldNames){
+        // Create a single chart object based on an input list of features 
+        // and field names
+        createOutputObj: function(results, fieldNames, outer_div_id){
             /*
             Create a chart object and insert it into the chart div in main html
             */
@@ -73,10 +74,10 @@ define([
                 // Assign self output object to dictionary of chart values
                 this.outputObj = t;
 
-
-                chart_loc = document.getElementById("side-chart");
+                // Create a canvas element within the right side div
+                chart_loc = document.getElementById(outer_div_id);
                 let my_canvas = document.createElement("canvas");
-                my_canvas.setAttribute("id", "chart-canvas")
+                my_canvas.setAttribute("id", "chart-canvas");
                 chart_loc.appendChild(my_canvas);
                 
 
@@ -116,11 +117,31 @@ define([
         },
 
 
-        // Function below: fetch the features that are visible to the user.
-        fetchVisibleFeatures: function(in_view, in_layer) {
+        // Fetch the features that are visible to the user,
+        // and chart them.
+        chartVisibleFeatures: function(in_view, in_layer) {
 
-            // re-call the create output object function
-            const create_output_obj = ( (results, fieldNames) => {
+            // Create a series of divs up top
+            // First create a div - container for the three canvasses, and then attach it to the correct div
+            const right_side_div = document.getElementById("side-chart");
+            let canvas_container = document.createElement("div");
+            canvas_container.setAttribute("id", "canvas-container")
+            right_side_div.appendChild(canvas_container);
+
+            // Then create the three divs for canvasses 
+            let chart_change_div = document.createElement("div");
+            chart_change_div.setAttribute("id", "chart-change-div");
+            let chart_landcover_div = document.createElement("chart-landcover-div");
+            let chart_landuse_div = document.createElement("chart-landuse-div");
+
+            // Append these divs to the container div - "right side div"
+            canvas_container.appendChild()
+
+            my_canvas.setAttribute("id", "chart-canvas");
+            chart_loc.appendChild(my_canvas);
+
+            // re-call/create the "create output object" function
+            const create_output_obj = ( (results, fieldNames, outer_div_id) => {
                             /*
             Create a chart object and insert it into the chart div in main html
             */
@@ -182,9 +203,9 @@ define([
                 this.outputObj = t;
 
 
-                chart_loc = document.getElementById("side-chart");
+                chart_loc = document.getElementById(outer_div_id);
                 let my_canvas = document.createElement("canvas");
-                my_canvas.setAttribute("id", "chart-canvas")
+                my_canvas.setAttribute("id", "chart-canvas");
                 chart_loc.appendChild(my_canvas);
                 
 
@@ -221,7 +242,7 @@ define([
             else {
                 return "Please select a polygon to output a chart."
             }
-            } )
+            });
 
             // Get extent of view
             pastExtent = in_view.extent;
@@ -234,9 +255,11 @@ define([
 
             // Watch extent to see if user is panning or zooming
             in_view.watch('extent', function(evt){
+                // If something is still happening, hold off, watch, wait
                 if(!stillComputing){
                     viewWatched = true;
                     setTimeout( () => {
+                        // If we've stopped navigating, run a query of features
                         if(!in_view.navigating  && viewWatched  && pastExtent !== in_view.extent) {
                             pastExtent = in_view.extent;
                             in_layer.queryFeatures({
@@ -247,7 +270,43 @@ define([
                                 stillComputing = true;
                                if(results.features.length>0){
                                     // return results;
-                                    create_output_obj(results, ["Change---Fast Loss"]);
+                                    // Create top output - changes
+                                    create_output_obj(results, [
+                                        "Change---Fast Loss", "Change---Slow Loss",
+                                        "Change---Gain", 
+                                        "Change---Non-Processing Area Mask"
+                                    ]);
+
+                                    // Create middle output - land cover
+                                    create_output_obj(results, [
+                                        "Land_Cover---Trees",
+                                        "Land_Cover---Tall Shrubs & Trees Mix",
+                                        "Land_Cover---Shrubs & Trees Mix",
+                                        "Land_Cover---Grass/Forb/Herb & Trees Mix",
+                                        "Land_Cover---Barren & Trees Mix",
+                                        "Land_Cover---Tall Shrubs",
+                                        "Land_Cover---Shrubs",
+                                        "Land_Cover---Grass/Forb/Herb & Shrubs Mix",
+                                        "Land_Cover---Barren & Shrubs Mix",
+                                        "Land_Cover---Grass/Forb/Herb",
+                                        "Land_Cover---Barren & Grass/Forb/Herb Mix",
+                                        "Land_Cover---Barren or Impervious",
+                                        "Land_Cover---Snow or Ice",
+                                        "Land_Cover---Water",
+                                        "Land_Cover---Non-Processing Area Mask"
+                                    ]);
+                   
+                                    // Create bottom output - land use
+                                    create_output_obj(results, [
+                                        "Land_Use---Agriculture",
+                                        "Land_Use---Developed",
+                                        "Land_Use---Forest",
+                                        "Land_Use---Non-Forest Wetland",
+                                        "Land_Use---Other",
+                                        "Land_Use---Rangeland or Pasture",
+                                        "Land_Use---Non-Processing Area Mask"
+                                    ]);
+
                                     stillComputing = false;
                                     viewWatched = false;
                                  }else{

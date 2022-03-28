@@ -347,10 +347,8 @@ require([
 
       // Create an empty chart as CreateChart object
       const empty_chart = CreateChart({});
-      empty_chart.fetchVisibleFeatures(view, layer);
-      console.log(empty_chart.output_features);
+      empty_chart.chartVisibleFeatures(view, layer, ["Change---Fast Loss", "Change---Slow Loss"]);
 
-      
       // Create a div to populate 
       let div = document.getElementById("side-chart");
       // Create a paragraph in the div
@@ -438,7 +436,7 @@ require([
                 //});
                 // Chart class
                   const c = CreateChart({});
-                  c.createOutputObj(results, ["Change---Fast Loss"]); // OOF, CHANGE THIS, THIS IS JUST HARDCODED   
+                  c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED   
                   // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
                   storeResults = results;
                 }

@@ -271,7 +271,7 @@ require([
       // This method tries to ensure the user is finished panning/zooming before tabulating the graphs
       function updateSelectionList(selectedFeatures){
         $('#selected-area-list').empty();
-       
+      
         var i = 1;
         selectedAreaNameList = [];
         selectedFeatures.map((f)=>{var nm = f.attributes[titleField];
