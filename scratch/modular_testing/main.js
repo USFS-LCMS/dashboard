@@ -346,8 +346,8 @@ require([
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
 
       // Create an empty chart as CreateChart object
-      const empty_chart = CreateChart({});
-      empty_chart.chartVisibleFeatures(view, layer, ["Change---Fast Loss", "Change---Slow Loss"]);
+      // const empty_chart = CreateChart({});
+      // empty_chart.chartVisibleFeatures(view, layer, ["Change---Fast Loss", "Change---Slow Loss"]);
 
       // Create a div to populate 
       let div = document.getElementById("side-chart");
