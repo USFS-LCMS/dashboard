@@ -81,7 +81,7 @@ require([
 
       
     function getArea(polygon) {
-      const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
+      // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
       const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
       // console.log(geodesicArea+"geodes area");
       // console.log(planarArea+"planar area")
@@ -106,7 +106,76 @@ require([
       // extent:
     });
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
+
+    view.when().then(()=>{
+      
+
+      // Zoom 2 ext of layer!
+      layer.when(()=>{
+        // console.log('setting extent');
+        view.extent = layer.fullExtent;
+      });
+
+      // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
+      //const screenshotDiv = document.getElementById("screenshotDiv");
+
+      // Updated based on whether the user has clilcked or dragged
+      let hasUserSelected = false;
+
+      // Create a new query instance, and set some default settings. 
+      let query = new Query();
+      query.returnGeometry = true;
+      query.outFields = null; 
+      query.where = "1=1";
+      query.num = 50;
+
+      // *INSTANTIATE CLASSES*
+
+      empty_chart = CreateChart({});
+      // empty_chart.updateChartContent(view, layer);
+
+      // Below, watch for movement of map and update charts based on visible features.
+      let pastExtent = view.extent;
+
+      let stillComputing = false;
+
+      // Watch extent to see if user is panning or zooming
+      view.watch('extent', function(evt){
+          // If something is still happening, hold off, watch, wait
+          if(!stillComputing){
+              viewWatched = true;
+              setTimeout( () => {
+                  // If we've stopped navigating, run a query of features
+                  if(!view.navigating  && viewWatched  && pastExtent !== view.extent) {
+                      pastExtent = view.extent;
+                      layer.queryFeatures({
+                          geometry: view.extent,
+                          returnGeometry: true
+                      }).then( (results) => {
+                          // console.log(results.features.length);
+                          stillComputing = true;
+                          if(results.features.length>0){
+                              // Call function below
+                              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+
+
+                              stillComputing = false;
+                              viewWatched = false;
+                          }else{
+                              viewWatched = false; 
+                          };
+                      } )
+                  }
+              }, 1000)
+          }
+      })
+
+
+          /////////////////////////////////////////////////////////////////////////////////////////////////
     //////// CODE TO DRAW RECTANGLE TO SELECT MULTIPLE POLYGON FEATURES 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     let myLayerView;
@@ -115,14 +184,14 @@ require([
         view.whenLayerView(layer).then(function (layerView) {
           myLayerView = layerView;
         });
-      })
-      .catch(errorCallback);
+      });
+      // .catch(errorCallback);
 
     // create a new instance of a FeatureTable
     const featureTable = new FeatureTable({
       view: view,
       layer: layer,
-      highlightOnRowSelectEnabled: false,
+      highlightOnRowSelectEnabled: true,
       fieldConfigs: [
         {
           name: "outID",
@@ -229,14 +298,19 @@ require([
             if (results.features.length === 0) {
               clearSelection();
             } else {
+
+
+              // here we get to use queried features. chart here
+              // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+
               // pass in the query results to the table by calling its selectRows method.
               // This will trigger FeatureTable's selection-change event
               // where we will be setting the feature effect on the csv layer view
               featureTable.filterGeometry = geometry;
               featureTable.selectRows(results.features);
             }
-          })
-          .catch(errorCallback);
+          });
+          // .catch(errorCallback);
       }
     }
 
@@ -246,69 +320,6 @@ require([
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
-
-    view.when().then(()=>{
-      
-
-      // Zoom 2 ext of layer!
-      layer.when(()=>{
-        // console.log('setting extent');
-        view.extent = layer.fullExtent;
-      });
-
-      // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
-      //const screenshotDiv = document.getElementById("screenshotDiv");
-
-      // Create a new query instance, and set some default settings. 
-      let query = new Query();
-      query.returnGeometry = true;
-      query.outFields = null; 
-      query.where = "1=1";
-      query.num = 50;
-
-      // *INSTANTIATE CLASSES*
-
-      empty_chart = CreateChart({});
-      // empty_chart.updateChartContent(view, layer);
-
-      // Below, watch for movement of map and update charts based on visible features.
-      let pastExtent = view.extent;
-
-      let stillComputing = false;
-
-      // Watch extent to see if user is panning or zooming
-      view.watch('extent', function(evt){
-          // If something is still happening, hold off, watch, wait
-          if(!stillComputing){
-              viewWatched = true;
-              setTimeout( () => {
-                  // If we've stopped navigating, run a query of features
-                  if(!view.navigating  && viewWatched  && pastExtent !== view.extent) {
-                      pastExtent = view.extent;
-                      layer.queryFeatures({
-                          geometry: view.extent,
-                          returnGeometry: true
-                      }).then( (results) => {
-                          // console.log(results.features.length);
-                          stillComputing = true;
-                          if(results.features.length>0){
-                              // Call function below
-                              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
-
-
-                              stillComputing = false;
-                              viewWatched = false;
-                          }else{
-                              viewWatched = false; 
-                          };
-                      } )
-                  }
-              }, 1000)
-          }
-      })
       
       // PDF Download Class
       const d_pdf = DownloadPDF({});
