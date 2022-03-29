@@ -297,6 +297,51 @@ canvas {
   transform: rotate(45deg);
 }
 
+
+input[type="checkbox"]+label {
+  color: white;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 16px;
+  font-style: bold;   
+  align-items: left;   
+  align-content: left;
+  align-self: left;  
+}
+     
+#screenshotDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.hide {
+  display: none;
+}
+
+.action-button {
+  padding: 0.6em;
+  border: 1px solid #000000;
+  text-align: center;
+  background-color: rgb(8,124,124);
+  color: white;
+  cursor: pointer;
+  font:arial;
+}
+
+.action-button:hover,
+.action-button:focus {
+  background: rgba(15, 223, 223, 0.7);
+  color: white;
+}
+
+#side-chart {
+  width: 40%;
+  overflow-y: auto;
+}
+
 /* #forest-health-question-1 {
   display: none;
 } */

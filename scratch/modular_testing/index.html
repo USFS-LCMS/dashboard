@@ -16,68 +16,17 @@
     <link rel="icon" type="image/gif/png" href="../../images/usfslogo.png">
 
     <!-- CDN References -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
     <script src ="https://unpkg.com/jspdf-autotable"></script>   
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <style>
-      input[type="checkbox"]+label {
-        color: white;
-        font-family: 'Roboto Condensed', sans-serif;
-        font-size: 16px;
-        font-style: bold;   
-        align-items: left;   
-        align-content: left;
-        align-self: left;  
-      }
-           
-      #screenshotDiv {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        text-align: center;
-        background-color: rgba(0, 0, 0, 0.8);
-      }
-      .hide {
-        display: none;
-      }
-      
-      .action-button {
-        padding: 0.6em;
-        border: 1px solid #000000;
-        text-align: center;
-        background-color: rgb(8,124,124);
-        color: white;
-        cursor: pointer;
-        font:arial;
-      }
 
-      .action-button:hover,
-      .action-button:focus {
-        background: rgba(15, 223, 223, 0.7);
-        color: white;
-      }
-
-    </style>
   </head>
 
+
   <body>
-    
-    
-    <!-- <div class="header">
-      <h1 id = 'dashboard-title'> Region 10 LCMS Dashboard (Draft Version) <img src="../../images/usfslogo.png" align = "right" style="height:28px; position:relative; right:2%; margin-top:10px"></h1>  ../../ means 2 directories backwards
-      <div class="dropdown">
 
-        <label>Question of interest: </label>
-        <select id="options-dropdown" class="dropdown">
-
-        </select>
-        <input list="options-dropdown" class="dropdown">
-      </div>
-      </div> -->
-
-    <!-- The wrapper that everything else comes in! Not sure if it will stick around - a little artifactory -->
+    <!-- A flexbox wrapper that stores all other divs -->
     <div class="wrapper">
 
       <!-- This is the main map div - pretty sure everything sits right in here -->
@@ -85,20 +34,20 @@
 
         <!-- This is the top left sidebar containing our Accordion menu -->
         <nav id="sidebar-left-container">
-         
+          
           <!-- Make a header element in which to throw the title,  -->
           <header id="sidebar-left-header">
 
             <!-- Heading for title -->
             <h1 id="title-banner">
 
-            <!-- Insert Hamburger into heading! -->
-            <!-- Will need to change this into a hamburger dropdown by setting some onclick functionality - later -->
-            <span id="hamburger">
-              <div class="sidebar-toggler"></div>
-              <div class="sidebar-toggler"></div>
-              <div class="sidebar-toggler"></div>
-            </span>
+              <!-- Insert Hamburger into heading! -->
+              <!-- Will need to change this into a hamburger dropdown by setting some onclick functionality - later -->
+              <span id="hamburger">
+                <div class="sidebar-toggler"></div>
+                <div class="sidebar-toggler"></div>
+                <div class="sidebar-toggler"></div>
+              </span>
 
               <!-- Insert the lcms logo into heading! -->
               <img class="lcms-icon" alt="LCMS icon" src="../../images/lcms-icon.png">
@@ -110,6 +59,7 @@
               </span>
               Explorer 
             </h1>
+
           </header>
           
 
@@ -340,22 +290,20 @@
         <button style="float:right" id="pdf-button">Download PDF</button> 
         <input type="text" name="pdfName" id = 'pdfFilename' style = 'float:right;' placeholder="Enter pdf name">
       </div> -->
-    </div>
-    <div class="hide">
-      <div class="container">
-        <div id="tableDiv"></div>
       </div>
-    </div>
-    <!-- <canvas id="side-test" width="200" height="100"></canvas> -->
+      <div class="hide">
+        <div class="container">
+          <div id="tableDiv"></div>
+        </div>
+      </div>
     
-    <!-- JS Files -->
- 
-    </script>
-    <!-- <script src='https://cdn.plot.ly/plotly-2.8.3.min.js'></script> -->
+    </div>
+    
+    <!-- Scripts called into html body -->
     <script src="./config.js"></script>
     <script src="./options.js"></script>
     <script src="https://js.arcgis.com/4.22/"></script>
-   <script src="./main.js"></script>
+    <script src="./main.js"></script>
 
   </body>
 </html>

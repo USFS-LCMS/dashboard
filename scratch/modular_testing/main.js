@@ -5,59 +5,18 @@ Authors:
 - Ian Houseman
 
 Description: 
-  This is the main script called by the LCMS Viewer2 webpage (I don't actually know what it's called, so I'll just go with Viewer2 for now.)
+  This is the main script called by the LCMS data explainer.
   It provides the user with a selection of questions and provides charts using LCMS data.
 */
 
-//Function to handle resizing the windows properly
-// function resizeWindow(){
-//   console.log('resized');
-//   var margin = 5;
-//   var h = window.innerHeight-margin;
-//   var w = window.innerWidth;
-//   // var headerHeight = $('#headerDiv').height();
-//   // var bottomHeight = $('#bottomDiv').height();
-//   // $('#selected-area-list').css({'height':h/3*2-100});
-//   // $('#selected-area-div').css({'height':h/3*2-100});
-  
-//   if(w>h){
-//     // $('#headerDiv').css({'left':$('#nameDiv').width()+$('.esri-zoom').width()+20})
-//     $('.main').css({'float':'left','width':'45%'});
-//     // $('.left').css({'float':'left','width':'10%'});
-//     $('.aside aside-2').css({'float':'right','width':'45%'});
-//     // $('.bottom').css({'position': 'absolute','bottom': '0'});
-//     $("#main-map").height(h);
-//     $("#side-chart").height(h);
-//     // $("#nameDiv").height(h);
-//     // $('#legend-div').css({'float':'top','max-height':h/3});
-//     // $('#selected-area-div').css({'float':'bottom','height':h-$('#legend-div').height()-100});
-//   }else{
-//     $("#main-map").height((window.innerHeight-(headerHeight*1.2))/2);
-//     $("#side-chart").height((window.innerHeight-(headerHeight*1.2))/2);
-//     // $('.left').css({'float':'top','width':'100%'});
-//     $('.right').css({'float':'bottom','width':'100%'});
-//   }
-//   // $('#lcms-icon').height($('#dashboard-title').innerHeight()*0.6);
-
-//   // $('#chartDiv').css('overflow-y','visible');
-// }
-// ///////////////////////////////////////////////////////////////////////
-// $(document).ready(function() {
-//   window.addEventListener('resize',resizeWindow)
-// resizeWindow();
-
-// });
-
 // Require is an AMD - Asynchronous Module Definition - staple.
-// AMD is pretty much required when working with esri api and map views - and dashboards in general?
-
+// AMD is useful when working with esri api and map views.
 require([
     "dojo/_base/array",
     "modules/CreateChart",
     "modules/DownloadPDF",
     "modules/UserQuestionSelection_01",
     "modules/CreateDropdown",
-    "modules/ACCORDION",
     "modules/ToggleSidebar",
     "esri/Map",
     "esri/views/MapView",
@@ -80,7 +39,6 @@ require([
       DownloadPDF,
       UserQuestionSelection,
       CreateDropdown,
-      Accordion,
       ToggleSidebar,
       Map, 
       MapView, 
@@ -125,8 +83,8 @@ require([
     function getArea(polygon) {
       const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
       const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
-      console.log(geodesicArea+"geodes area");
-      console.log(planarArea+"planar area")
+      // console.log(geodesicArea+"geodes area");
+      // console.log(planarArea+"planar area")
       return planarArea;
 
     }
@@ -170,7 +128,7 @@ require([
           name: "outID",
           label: "outID"
         },       
-       
+      
       ],
       container: document.getElementById("tableDiv")
     });
@@ -297,7 +255,7 @@ require([
 
       // Zoom 2 ext of layer!
       layer.when(()=>{
-        console.log('setting extent');
+        // console.log('setting extent');
         view.extent = layer.fullExtent;
       });
 
@@ -313,6 +271,44 @@ require([
 
       // *INSTANTIATE CLASSES*
 
+      empty_chart = CreateChart({});
+      // empty_chart.updateChartContent(view, layer);
+
+      // Below, watch for movement of map and update charts based on visible features.
+      let pastExtent = view.extent;
+
+      let stillComputing = false;
+
+      // Watch extent to see if user is panning or zooming
+      view.watch('extent', function(evt){
+          // If something is still happening, hold off, watch, wait
+          if(!stillComputing){
+              viewWatched = true;
+              setTimeout( () => {
+                  // If we've stopped navigating, run a query of features
+                  if(!view.navigating  && viewWatched  && pastExtent !== view.extent) {
+                      pastExtent = view.extent;
+                      layer.queryFeatures({
+                          geometry: view.extent,
+                          returnGeometry: true
+                      }).then( (results) => {
+                          // console.log(results.features.length);
+                          stillComputing = true;
+                          if(results.features.length>0){
+                              // Call function below
+                              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+
+
+                              stillComputing = false;
+                              viewWatched = false;
+                          }else{
+                              viewWatched = false; 
+                          };
+                      } )
+                  }
+              }, 1000)
+          }
+      })
       
       // PDF Download Class
       const d_pdf = DownloadPDF({});
@@ -348,6 +344,9 @@ require([
       // Create an empty chart as CreateChart object
       // const empty_chart = CreateChart({});
       // empty_chart.chartVisibleFeatures(view, layer, ["Change---Fast Loss", "Change---Slow Loss"]);
+
+
+
 
       // Create a div to populate 
       let div = document.getElementById("side-chart");
@@ -405,14 +404,14 @@ require([
           }).then((results)=>{             
                //.then(function() {//, zoom:12});
               if (view.extent) {  
-                console.log("results len: " + results.features.length);  
+                // console.log("results len: " + results.features.length);  
                 if (results.features.length > 0) { 
                   //highlight selected feature
                   //view.whenLayerView(results).then(function(layerView){
                     view.hitTest(e.mapPoint).then(function (response) {
                     var graphics = response.results;
                     graphics.forEach(function (g) {
-                      console.log('graphic:' + g);
+                      // console.log('graphic:' + g);
   
                       var geom = g.graphic.geometry;
                       if (geom.type === "polygon") {
@@ -435,8 +434,9 @@ require([
                   });
                 //});
                 // Chart class
-                  const c = CreateChart({});
-                  c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED   
+                  // const c = CreateChart({});
+                  // c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
+                  // c.setContentInfo(results, "Land_Cover", "side-chart")  
                   // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
                   storeResults = results;
                 }
