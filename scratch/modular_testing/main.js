@@ -71,11 +71,57 @@ require([
       }
     };
 
-
     // LOAD IN LAYERS - look in template for layer list widget. 
 
+    // Get layers displayed. 
+    const chugach_urls = [
+      "LCMS-Summaries-ChugachHuc10-outID.geojson", "LCMS-Summaries-ChugachHuc6-outID.geojson",
+      "LCMS-Summaries-ChugachHuc8-outID.geojson", "LCMS-Summaries-ChugachNationalForestBasicOwnership-outID.geojson",
+      "LCMS-Summaries-ChugachNationalForestLandOwnership-outID.geojson", 
+      "LCMS-Summaries-ChugachNationalForestManagementAreas-outID.geojson",
+      "LCMS-Summaries-ChugachNationalForestPlanningUnits2002-outID.geojson", 
+      "LCMS-Summaries-ChugachNationalForestScenicIntegrityObjectives-outID.geojson",
+      "LCMS-Summaries-Chugach_National_Forest_Biome-outID.geojson", "LCMS-Summaries-Chugach_National_Forest_Boundary-outID.geojson",
+      "LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", 
+      "LCMS-Summaries-Chugach_National_Forest_Land_Type_Association-outID.geojson",
+      "LCMS-Summaries-Chugach_National_Forest_Landscape_Areas-outID.geojson",
+      "LCMS-Summaries-Hex_L_Chugach-outID.geojson", "LCMS-Summaries-Hex_M_Chugach-outID.geojson", 
+      "LCMS-Summaries-Hex_XL_Chugach-outID.geojson", "LCMS-Summaries-S_R10_CNF_Recommended_Wilderness_Multipart-outID.geojson",
+      "LCMS-Summaries-LandOwnershipStatus_CNF-outID.geojson"
+    ];
+
+
+    const tongass_urls = [
+      "LCMS-Summaries-Hex_L_Tongass-outID.geojson", "LCMS-Summaries-Hex_M_Tongass-outID.geojson",
+      "LCMS-Summaries-Hex_XL_Tongass-outID.geojson",
+      "LCMS-Summaries-TongassHuc10-outID.geojson", "LCMS-Summaries-TongassHuc6-outID.geojson", 
+      "LCMS-Summaries-TongassHuc8-outID.geojson", "LCMS-Summaries-TongassNationalForestEcologicalSubsections-outID.geojson",
+      "LCMS-Summaries-TongassNationalForestLandTypeAssociations-outID.geojson"
+    ];
+
+    // Create all layers here
+    const chugach_huc10 = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc10-outID.geojson",
+      renderer: renderer
+    })
+
+    const chugach_huc8 = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc8-outID.geojson",
+      renderer: renderer
+    });
+
+    const chugach_huc6 = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc6-outID.geojson",
+      renderer: renderer
+    })
+
+    const chugach_huc6 = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc6-outID.geojson",
+      renderer: renderer
+    })
+
     const layer = new GeoJSONLayer({
-      url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",//"https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", // "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson"
       renderer: renderer
     });
 
