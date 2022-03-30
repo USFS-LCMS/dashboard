@@ -183,148 +183,190 @@ require([
       /////////////////////////////////////////////////////////////////////////////////////////////////
       const pntGraphics = new GraphicsLayer();
       let viewClickEvtHandler = null, viewMouseMoveEvtHandler = null;
-      let drawPnt,
-        graphicP,
-        ctrlKey = false,
-        highlight,
-        statesLyrView;
-
-        layer.when(function () {
-          view.whenLayerView(layer).then(function (layerView) {
-            statesLyrView = layerView;
-          });
-        });
-  
-        const draw = new Draw({
-          view: view,
-        });
-  
-        var sym = {
-          type: 'simple-marker',
-          style: 'circle',
-          color: [0, 255, 255, 0.6],
-          size: '8px',
-          outline: {
-            color: [0, 255, 255, 1],
-            width: 1,
-          },
+      var renderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-fill", // autocasts as new SimpleFillSymbol()
+            color: [255, 255, 255, 0.5],
+            style: "none",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              color: "white",
+              width: 2
+            }
+          }
         };
+     
+      let drawPnt, graphic, ctrlKey = false, moveCtrlKey = false, highlight, statesLyrView;
+
+
+      layer.when(function(){
+        view.whenLayerView(layer).then(function(layerView) {
+          statesLyrView = layerView;
+        });
+      })
+
+      const draw = new Draw({
+        view: view
+      });
+
+      var sym = {
+        type: "simple-marker",
+        style: "circle",
+        color: [0, 255, 255, 0.6],
+        size: "8px",
+        outline: {
+          color: [0, 255, 255, 1],
+          width: 1
+        }
+      };
+
+      // view.ui.add("point-button", "top-left");
+
+      document.getElementById("point-button").onclick = drawPoint; //when user click the point button on RH side of screen..
+
+      function drawPoint() {
+        if(viewMouseMoveEvtHandler){
+          viewMouseMoveEvtHandler.remove()
+          viewMouseMoveEvtHandler = null
+        }
+        if(viewClickEvtHandler){
+          viewClickEvtHandler.remove()
+          viewClickEvtHandler = null
+        }
+        const action = draw.create("point");
+        viewMouseMoveEvtHandler = view.on('pointer-move', (evt) => {
+          //when mouse is moved, check if ctrl key is pressed
+          if (evt.native.ctrlKey) {moveCtrlKey = true;}
+          else{moveCtrlKey = false;}
+        })
+        viewClickEvtHandler = view.on('pointer-down', (evt)=>{
+          //when mouse is clicked, check if ctrl key is pressed
+          if (evt.native.ctrlKey) {
+            console.log("ctrl: "+evt.native.ctrlKey)
+            ctrlKey = true;
+          }else{
+            ctrlKey = false;
+          }
+        })
+        //removed any existing highlight
+        if (highlight) {
+          highlight.remove();
+        }
+        console.log("action has click listener "+ action.hasEventListener("cursor-update"))
   
-        //view.ui.add('point-button', 'top-left');
-        document.getElementById('point-button').onclick = drawPoint;
-  
-        function drawPoint() {
+        // Give a visual feedback to users as they move the pointer over the view
+        action.on("cursor-click", function(evt){
+          console.log("clicked!")
+          drawPnt = new Point({
+            x: evt.coordinates[0],
+            y: evt.coordinates[1],
+            spatialReference: view.spatialReference
+          });
+          graphic = new Graphic({
+            geometry: drawPnt,
+            symbol: sym
+          });
+          view.graphics.add(graphic);
+
+        })
+        action.on("cursor-update", function (evt) {
+          view.graphics.removeAll();
+          drawPnt = new Point({
+            x: evt.coordinates[0],
+            y: evt.coordinates[1],
+            spatialReference: view.spatialReference
+          });
+          graphic = new Graphic({
+            geometry: drawPnt,
+            symbol: sym
+          });
+          view.graphics.add(graphic);
+          if(ctrlKey && !moveCtrlKey){  //
+            //if the ctrl button was held when the mouse was clicked (pointer-down) 
+            //and was NOT pressed when the cursor was moving?
+            // then reset the graphics and re-select
+
+            //i.e. dont run selectStates func. until mouse moves while CTRL button NOT clicked
+            //ie. if ctrl button clicked and mouse is moving -- wait
+            //if ctrl button not clicked and mouse is moving -- dont do anything
+            draw.reset(); //resets drawing by clearing active action
+            view.graphics.removeAll(); //remove graphics
+            console.log("ctrl button clicked AND mouse moving")
+            selectStates();
+          }
+        });
+
+        action.on("draw-complete", function (evt) {
+          console.log("draw complete"+"ctrl: "+ctrlKey)
+          drawPnt = new Point({
+            x: evt.coordinates[0],
+            y: evt.coordinates[1],
+            spatialReference: view.spatialReference
+          });
+
+          graphic = new Graphic({
+            geometry: drawPnt,
+            symbol: sym
+          });
+          pntGraphics.add(graphic);
+          if (ctrlKey) {
+            drawPoint(); //recursive (this is wrapped up in drawPoint() )
+          } else {
+            view.graphics.removeAll();
+            selectStates();
+          }
+          //view.add(graphic)
+
+        });
+
+        view.focus();
+      };
+      //weird: use must move mouse from multiselected polygons in order for them to get highlighted
+      //ie event to trigger highlight is move of mouse without ctrl clicked
+      //need to highlight selected feature as soon as as mouse clicks 
+      //i.e. NOT when draw event is over I guess
+
+      function selectStates(){
+        console.log("selectStates running..")
+        ctrlKey = false
+        moveCtrlKey = false
+        if(viewMouseMoveEvtHandler){
+          viewMouseMoveEvtHandler.remove()
+          viewMouseMoveEvtHandler = null
+        }
+        if(viewClickEvtHandler){
+          viewClickEvtHandler.remove()
+          viewClickEvtHandler = null
+        }
+        let mp = new Multipoint({
+          spatialReference: view.spatialReference
+        });
+        let pntArray = pntGraphics.graphics.map(function(gra){
+          mp.addPoint(gra.geometry);
+        });
+        
+        const query = {
+          geometry: mp,
+          outFields: ["*"],
+          outSpatialReference: view.spatialReference,
+          returnGeometry: true
+        };
+        layer.queryFeatures(query)
+        .then(function(results){
+          const graphics = results.features;
+          // remove existing highlighted features
           if (highlight) {
             highlight.remove();
           }
-          if(viewMouseMoveEvtHandler){
-            viewMouseMoveEvtHandler.remove()
-            viewMouseMoveEvtHandler = null
-          }
-          if(viewClickEvtHandler){
-            viewClickEvtHandler.remove()
-            viewClickEvtHandler = null
-          }
-          const action = draw.create("point");
-          viewMouseMoveEvtHandler = view.on('pointer-move', (evt) => {
-            if (evt.native.ctrlKey) {
-              moveCtrlKey = true;
-            }else{
-              moveCtrlKey = false;
-            }
-          })
-          viewClickEvtHandler = view.on('pointer-down', (evt)=>{
-            if (evt.native.ctrlKey) {
-              ctrlKey = true;
-            }else{
-              ctrlKey = false;
-            }
-          })
-          
-    
-          // Give a visual feedback to users as they move the pointer over the view
-          action.on("cursor-update", function (evt) {
-            view.graphics.removeAll();
-            drawPnt = new Point({
-              x: evt.coordinates[0],
-              y: evt.coordinates[1],
-              spatialReference: view.spatialReference
-            });
-            graphicP = new Graphic({
-              geometry: drawPnt,
-              symbol: sym
-            });
-            view.graphics.add(graphicP);
-            if(ctrlKey && !moveCtrlKey){
-              draw.reset();
-              view.graphics.removeAll();
-              selectStates();
-            }
-          });
-  
-          action.on("draw-complete", function (evt) {
-            drawPnt = new Point({
-              x: evt.coordinates[0],
-              y: evt.coordinates[1],
-              spatialReference: view.spatialReference
-            });
-  
-            graphicP = new Graphic({
-              geometry: drawPnt,
-              symbol: sym
-            });
-            pntGraphics.add(graphicP);
-            if (ctrlKey) {
-              drawPoint();
-            } else {
-              view.graphics.removeAll();
-              selectStates();
-            }
-          });
-          view.focus();
-        };
-  
-        function selectStates(){
-          ctrlKey = false
-          moveCtrlKey = false
-          if(viewMouseMoveEvtHandler){
-            viewMouseMoveEvtHandler.remove()
-            viewMouseMoveEvtHandler = null
-          }
-          if(viewClickEvtHandler){
-            viewClickEvtHandler.remove()
-            viewClickEvtHandler = null
-          }
-          let mp = new Multipoint({
-            spatialReference: view.spatialReference
-          });
-          let pntArray = pntGraphics.graphics.map(function(gra){
-            mp.addPoint(gra.geometry);
-          });
-          
-          const query = {
-            geometry: mp,
-            outFields: ["*"],
-            outSpatialReference: view.spatialReference,
-            returnGeometry: true
-          };
-          layer.queryFeatures(query)
-          .then(function(results){
-            const graphics = results.features;
-            // remove existing highlighted features
-            if (highlight) {
-              highlight.remove();
-            }
-  
-            // highlight query results
-            highlight = statesLyrView.highlight(graphics);
-            pntGraphics.removeAll();
-          }).catch(function(err){
-            console.error(err);
-          })
-        }
-  
-        
+
+          // highlight query results
+          highlight = statesLyrView.highlight(graphics);
+          pntGraphics.removeAll();
+        }).catch(function(err){
+          console.error(err);
+        })
+      }
+       
   
 
 
@@ -408,6 +450,7 @@ require([
         featureTable.filterGeometry = null;
         polygonGraphicsLayer.removeAll();
         pntGraphics.removeAll();
+        highlight.remove();
 
       });
 
@@ -578,20 +621,19 @@ require([
   
                       var geom = g.graphic.geometry;
                       if (geom.type === "polygon") {
-                        var symbol = new SimpleFillSymbol({
-                          color: [205, 66, 47, .0001],
-                          style: "solid",
-                          outline: {
-                            color: [249, 226, 76],
-                            width: 1
-                          }
-                        });
-                        var graphic = new Graphic(geom, symbol);
-                        //console.log("graphic geom: "+graphic.geometry.Area())
-                        //results.features[0].planarArea = getArea(graphic.geometry);
+                        // var symbol = new SimpleFillSymbol({
+                        //   color: [205, 66, 47, .0001],
+                        //   style: "solid",
+                        //   outline: {
+                        //     color: [249, 226, 76],
+                        //     width: 1
+                        //   }
+                        // });
+                        var graphic = new Graphic(geom);//, symbol);
+                        
                         results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
   
-                        view.graphics.add(graphic);
+                        //view.graphics.add(graphic);
                       }
                     });
                   });
