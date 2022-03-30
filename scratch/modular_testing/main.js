@@ -223,7 +223,15 @@ require([
       // view.ui.add("point-button", "top-left");
 
       document.getElementById("point-button").onclick = drawPoint; //when user click the point button on RH side of screen..
-
+      console.log("*NOTE* User must (1) hold control before the first click through the last click (2) move mouse after final click to see highlight")
+      function zoomToLayer(layer) {
+        console.log("zoom to layer")
+        return layer.queryExtent().then((response) => {
+          view.goTo(response.extent).catch((error) => {
+            console.error(error);
+          });
+        });
+      }
       function drawPoint() {
         if(viewMouseMoveEvtHandler){
           viewMouseMoveEvtHandler.remove()
@@ -252,23 +260,7 @@ require([
         if (highlight) {
           highlight.remove();
         }
-        console.log("action has click listener "+ action.hasEventListener("cursor-update"))
   
-        // Give a visual feedback to users as they move the pointer over the view
-        action.on("cursor-click", function(evt){
-          console.log("clicked!")
-          drawPnt = new Point({
-            x: evt.coordinates[0],
-            y: evt.coordinates[1],
-            spatialReference: view.spatialReference
-          });
-          graphic = new Graphic({
-            geometry: drawPnt,
-            symbol: sym
-          });
-          view.graphics.add(graphic);
-
-        })
         action.on("cursor-update", function (evt) {
           view.graphics.removeAll();
           drawPnt = new Point({
@@ -344,6 +336,7 @@ require([
         let pntArray = pntGraphics.graphics.map(function(gra){
           mp.addPoint(gra.geometry);
         });
+        view.goTo({ target: pntArray })
         
         const query = {
           geometry: mp,
@@ -353,7 +346,8 @@ require([
         };
         layer.queryFeatures(query)
         .then(function(results){
-          const graphics = results.features;
+          storeResults=results
+          const graphics = results.features;          
           // remove existing highlighted features
           if (highlight) {
             highlight.remove();
@@ -362,7 +356,19 @@ require([
           // highlight query results
           highlight = statesLyrView.highlight(graphics);
           pntGraphics.removeAll();
-        }).catch(function(err){
+          ////
+          var totalArea=0;
+          graphics.forEach(function (g) { 
+            //get geometry of each selected features and turn it into a graphic for area calculation
+            var geom = g.geometry;
+            if (geom.type === "polygon") {                       
+              var graphicTemp = new Graphic(geom);     
+              totalArea += getArea(graphicTemp.geometry);
+              console.log("total area:"+totalArea)              
+            }
+          });
+          results.features[0].attributes["planarArea"] = totalArea
+        }).then(zoomToLayer(layer)).catch(function(err){
           console.error(err);
         })
       }
@@ -370,154 +376,154 @@ require([
   
 
 
-          /////////////////////////////////////////////////////////////////////////////////////////////////
-    //////// CODE TO DRAW RECTANGLE TO SELECT MULTIPLE POLYGON FEATURES 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    let myLayerView;
-    layer
-      .when(() => {
-        view.whenLayerView(layer).then(function (layerView) {
-          myLayerView = layerView;
-        });
-      });
-      // .catch(errorCallback);
+    //       /////////////////////////////////////////////////////////////////////////////////////////////////
+    // //////// CODE TO DRAW RECTANGLE TO SELECT MULTIPLE POLYGON FEATURES 
+    // ////////////////////////////////////////////////////////////////////////////////////////////////
+    // let myLayerView;
+    // layer
+    //   .when(() => {
+    //     view.whenLayerView(layer).then(function (layerView) {
+    //       myLayerView = layerView;
+    //     });
+    //   });
+    //   // .catch(errorCallback);
 
-    // create a new instance of a FeatureTable
-    const featureTable = new FeatureTable({
-      view: view,
-      layer: layer,
-      highlightOnRowSelectEnabled: true,
-      fieldConfigs: [
-        {
-          name: "outID",
-          label: "outID"
-        },       
+    // // create a new instance of a FeatureTable
+    // const featureTable = new FeatureTable({
+    //   view: view,
+    //   layer: layer,
+    //   highlightOnRowSelectEnabled: true,
+    //   fieldConfigs: [
+    //     {
+    //       name: "outID",
+    //       label: "outID"
+    //     },       
       
-      ],
-      container: document.getElementById("tableDiv")
-    });
+    //   ],
+    //   container: document.getElementById("tableDiv")
+    // });
 
-    // this array will keep track of selected feature objectIds to
-    // sync the layerview feature effects and feature table selection
-    let features = [];
+    // // this array will keep track of selected feature objectIds to
+    // // sync the layerview feature effects and feature table selection
+    // let features = [];
 
-    // Listen for the table's selection-change event
-    featureTable.on("selection-change", (changes) => {
-      // if the feature is unselected then remove the objectId
-      // of the removed feature from the features array
-      changes.removed.forEach((item) => {
-        const data = features.find((data) => {
-          return data === item.outID;
-        });
-        if (data) {
-          features.splice(features.indexOf(data), 1);
-        }
-      });
+    // // Listen for the table's selection-change event
+    // featureTable.on("selection-change", (changes) => {
+    //   // if the feature is unselected then remove the objectId
+    //   // of the removed feature from the features array
+    //   changes.removed.forEach((item) => {
+    //     const data = features.find((data) => {
+    //       return data === item.outID;
+    //     });
+    //     if (data) {
+    //       features.splice(features.indexOf(data), 1);
+    //     }
+    //   });
 
-      // If the selection is added, push all added selections to array
-      changes.added.forEach((item) => {
-        features.push(item.outID);
-      });
+    //   // If the selection is added, push all added selections to array
+    //   changes.added.forEach((item) => {
+    //     features.push(item.outID);
+    //   });
 
-      // set excluded effect on the features that are not selected in the table
-      myLayerView.featureEffect = {
-        filter: {
-          objectIds: features
-        },
-        excludedEffect: "grayscale(50%)"//"blur(5px) grayscale(90%) opacity(40%)"
-      };
-    });
+    //   // set excluded effect on the features that are not selected in the table
+    //   myLayerView.featureEffect = {
+    //     filter: {
+    //       objectIds: features
+    //     },
+    //     excludedEffect: "grayscale(50%)"//"blur(5px) grayscale(90%) opacity(40%)"
+    //   };
+    // });
 
-    // polygonGraphicsLayer will be used by the sketchviewmodel
-    // show the polygon being drawn on the view
-    const polygonGraphicsLayer = new GraphicsLayer();
-    map.add(polygonGraphicsLayer);
+    // // polygonGraphicsLayer will be used by the sketchviewmodel
+    // // show the polygon being drawn on the view
+    // const polygonGraphicsLayer = new GraphicsLayer();
+    // map.add(polygonGraphicsLayer);
 
-    // add the select by rectangle button the view
-    const selectButton = document.getElementById("select-by-rectangle");
+    // // add the select by rectangle button the view
+    // const selectButton = document.getElementById("select-by-rectangle");
 
-    // click event for the select by rectangle button
-    selectButton.addEventListener("click", () => {
-      view.popup.close();
-      sketchViewModel.create("rectangle");
-    });
+    // // click event for the select by rectangle button
+    // selectButton.addEventListener("click", () => {
+    //   view.popup.close();
+    //   sketchViewModel.create("rectangle");
+    // });
 
-    // add the clear selection button the view
-    document
-      .getElementById("clear-selection")
-      .addEventListener("click", () => {
-        featureTable.clearSelection();
-        featureTable.filterGeometry = null;
-        polygonGraphicsLayer.removeAll();
-        pntGraphics.removeAll();
-        highlight.remove();
+    // // add the clear selection button the view
+    // document
+    //   .getElementById("clear-selection")
+    //   .addEventListener("click", () => {
+    //     featureTable.clearSelection();
+    //     featureTable.filterGeometry = null;
+    //     polygonGraphicsLayer.removeAll();
+    //     pntGraphics.removeAll();
+    //     highlight.remove();
 
-      });
+    //   });
 
-    // create a new sketch view model set its layer
-    const sketchViewModel = new SketchViewModel({
-      view: view,
-      layer: polygonGraphicsLayer
-    });
+    // // create a new sketch view model set its layer
+    // const sketchViewModel = new SketchViewModel({
+    //   view: view,
+    //   layer: polygonGraphicsLayer
+    // });
 
-    // Once user is done drawing a rectangle on the map
-    // use the rectangle to select features on the map and table
-    sketchViewModel.on("create", async (event) => {
-      if (event.state === "complete") {
-        // this polygon will be used to query features that intersect it
-        const geometries = polygonGraphicsLayer.graphics.map(function (
-          graphic
-        ) {
-          return graphic.geometry;
-        });
-        const queryGeometry = await geometryEngineAsync.union(
-          geometries.toArray()
-        );
-        selectFeatures(queryGeometry);
-      }
-    });
+    // // Once user is done drawing a rectangle on the map
+    // // use the rectangle to select features on the map and table
+    // sketchViewModel.on("create", async (event) => {
+    //   if (event.state === "complete") {
+    //     // this polygon will be used to query features that intersect it
+    //     const geometries = polygonGraphicsLayer.graphics.map(function (
+    //       graphic
+    //     ) {
+    //       return graphic.geometry;
+    //     });
+    //     const queryGeometry = await geometryEngineAsync.union(
+    //       geometries.toArray()
+    //     );
+    //     selectFeatures(queryGeometry);
+    //   }
+    // });
 
-    // This function is called when user completes drawing a rectangle
-    // on the map. Use the rectangle to select features in the layer and table
-    function selectFeatures(geometry) {
-      if (myLayerView) {
-        // create a query and set its geometry parameter to the
-        // rectangle that was drawn on the view
-        const query = {
-          geometry: geometry,
-          outFields: ["*"]
-        };
+    // // This function is called when user completes drawing a rectangle
+    // // on the map. Use the rectangle to select features in the layer and table
+    // function selectFeatures(geometry) {
+    //   if (myLayerView) {
+    //     // create a query and set its geometry parameter to the
+    //     // rectangle that was drawn on the view
+    //     const query = {
+    //       geometry: geometry,
+    //       outFields: ["*"]
+    //     };
 
-        // query graphics from the csv layer view. Geometry set for the query
-        // can be polygon for point features and only intersecting geometries are returned
-        myLayerView
-          .queryFeatures(query)
-          .then((results) => {
-            if (results.features.length === 0) {
-              clearSelection();
-            } else {
-
-
-              // here we get to use queried features. chart here
-              // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
-
-              // pass in the query results to the table by calling its selectRows method.
-              // This will trigger FeatureTable's selection-change event
-              // where we will be setting the feature effect on the csv layer view
-              featureTable.filterGeometry = geometry;
-              featureTable.selectRows(results.features);
-            }
-          });
-          // .catch(errorCallback);
-      }
-    }
-
-    function errorCallback(error) {
-      console.log("error happened:", error.message);
-    }
+    //     // query graphics from the csv layer view. Geometry set for the query
+    //     // can be polygon for point features and only intersecting geometries are returned
+    //     myLayerView
+    //       .queryFeatures(query)
+    //       .then((results) => {
+    //         if (results.features.length === 0) {
+    //           clearSelection();
+    //         } else {
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //           // here we get to use queried features. chart here
+    //           // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+
+    //           // pass in the query results to the table by calling its selectRows method.
+    //           // This will trigger FeatureTable's selection-change event
+    //           // where we will be setting the feature effect on the csv layer view
+    //           featureTable.filterGeometry = geometry;
+    //           featureTable.selectRows(results.features);
+    //         }
+    //       });
+    //       // .catch(errorCallback);
+    //   }
+    // }
+
+    // function errorCallback(error) {
+    //   console.log("error happened:", error.message);
+    // }
+
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////
       
       
       // TOGGLE SIDEBAR VISIBILITY ***
@@ -585,73 +591,75 @@ require([
       }
 
       return layer
-    }).then(function (layer) {
+    })
+    
+    // .then(function (layer) {
 
 
-        // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
-        // This function will listen for user click, and then apply above query to features, activating our plotting class.
+    //     // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
+    //     // This function will listen for user click, and then apply above query to features, activating our plotting class.
         
-        // Take a screenshot at the same resolution of the current view  
-        view.on("click", eventAction);
-        //view.on("mouse-drag",eventAction);
-        function eventAction(e){
-          //click -> query -> zoom to selection -> highlight feature
-          view.graphics.removeAll(); // make sure to remmove previous highlighted feature
-          var query = new Query();
-          query.returnGeometry = true;
-          query.maxAllowableOffset = 0;
-          query.outFields = null;
-          query.where = "1=1";
-          query.num = 50;
-          query.geometry = e.mapPoint;          
-          layer.queryFeatures(query).then((results) => {
-            view.goTo({ target: results.features[0].geometry })
-            return results;
-          }).then((results)=>{             
-               //.then(function() {//, zoom:12});
-              if (view.extent) {  
-                // console.log("results len: " + results.features.length);  
-                if (results.features.length > 0) { 
-                  //highlight selected feature
-                  //view.whenLayerView(results).then(function(layerView){
-                    view.hitTest(e.mapPoint).then(function (response) {
-                    var graphics = response.results;
-                    graphics.forEach(function (g) {
-                      // console.log('graphic:' + g);
+    //     // Take a screenshot at the same resolution of the current view  
+    //     view.on("click", eventAction);
+    //     //view.on("mouse-drag",eventAction);
+    //     function eventAction(e){
+    //       //click -> query -> zoom to selection -> highlight feature
+    //       view.graphics.removeAll(); // make sure to remmove previous highlighted feature
+    //       var query = new Query();
+    //       query.returnGeometry = true;
+    //       query.maxAllowableOffset = 0;
+    //       query.outFields = null;
+    //       query.where = "1=1";
+    //       query.num = 50;
+    //       query.geometry = e.mapPoint;          
+    //       layer.queryFeatures(query).then((results) => {
+    //         view.goTo({ target: results.features[0].geometry })
+    //         return results;
+    //       }).then((results)=>{             
+    //            //.then(function() {//, zoom:12});
+    //           if (view.extent) {  
+    //             // console.log("results len: " + results.features.length);  
+    //             if (results.features.length > 0) { 
+    //               //highlight selected feature
+    //               //view.whenLayerView(results).then(function(layerView){
+    //                 view.hitTest(e.mapPoint).then(function (response) {
+    //                 var graphics = response.results;
+    //                 // graphics.forEach(function (g) {
+    //                 //   // console.log('graphic:' + g);
   
-                      var geom = g.graphic.geometry;
-                      if (geom.type === "polygon") {
-                        // var symbol = new SimpleFillSymbol({
-                        //   color: [205, 66, 47, .0001],
-                        //   style: "solid",
-                        //   outline: {
-                        //     color: [249, 226, 76],
-                        //     width: 1
-                        //   }
-                        // });
-                        var graphic = new Graphic(geom);//, symbol);
+    //                 //   var geom = g.graphic.geometry;
+    //                 //   if (geom.type === "polygon") {
+    //                 //     // var symbol = new SimpleFillSymbol({
+    //                 //     //   color: [205, 66, 47, .0001],
+    //                 //     //   style: "solid",
+    //                 //     //   outline: {
+    //                 //     //     color: [249, 226, 76],
+    //                 //     //     width: 1
+    //                 //     //   }
+    //                 //     // });
+    //                 //     var graphic = new Graphic(geom);//, symbol);
                         
-                        results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
+    //                 //     results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
   
-                        //view.graphics.add(graphic);
-                      }
-                    });
-                  });
-                //});
-                // Chart class
-                  // const c = CreateChart({});
-                  // c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
-                  // c.setContentInfo(results, "Land_Cover", "side-chart")  
-                  // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
-                  storeResults = results;
-                }
-              } //)
-            });
+    //                 //     //view.graphics.add(graphic);
+    //                 //   }
+    //                 // });
+    //               });
+    //             //});
+    //             // Chart class
+    //               // const c = CreateChart({});
+    //               // c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
+    //               // c.setContentInfo(results, "Land_Cover", "side-chart")  
+    //               // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
+    //               // storeResults = results;
+    //             }
+    //           } //)
+    //         });
 
-          }
+    //       }
 
           
-        });
+    //     });
         // PDF Download Class
         const d_pdf = DownloadPDF({});
 
