@@ -189,15 +189,18 @@ define([
             //add graph
             currentY = margin;// currentY+ chartH + margin;
             chartW = w - margin*2;
-            const canvas = document.getElementById("chart-canvas");
+            const canvas = document.getElementById("chart-canvas-Change");//chart-change-div");//"chart-canvas");
+            console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
             chartHeight = canvas.height;
             chartWidth = canvas.width;
             aspectRatio = chartHeight/chartWidth;
             chartH = chartW*aspectRatio;
+            console.log(chartH+"chart height")
 
             doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
 
             currentY = currentY+ chartH + 6;
+            console.log('currentY: '+currentY);
 
             doc.text(margin, currentY, "Figure 1. LCMS Change by Year");
 
@@ -264,9 +267,11 @@ define([
                 doc.setFontSize(12);
                 doc.text(pageCurrent,w-margin-pageCurrent.length, h-margin);
             }
+            console.log(pageCount+" is pg cnt")
+            console.log(`output pdf ${doc}`)
 
 
-            doc.save(outFilename+'.pdf');
+            doc.save(outFilename+'.pdf',{returnPromise:true}).then(alert('PDF render all done!'));
             //doc.printout();
             console.log('Finished Downloading PDF');
         }

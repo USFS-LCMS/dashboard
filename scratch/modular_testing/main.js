@@ -105,6 +105,7 @@ require([
       // center: [-90, 37]
       // extent:
     });
+    var storeResults = null;
 
 
 
@@ -321,10 +322,7 @@ require([
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
       
-      // PDF Download Class
-      const d_pdf = DownloadPDF({});
-
-
+      
       // TOGGLE SIDEBAR VISIBILITY ***
       // Create a function that let you toggle visibility based on mouse click.
       const toggleSidebar = ToggleSidebar({});
@@ -395,7 +393,7 @@ require([
 
         // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
         // This function will listen for user click, and then apply above query to features, activating our plotting class.
-        var storeResults = null;
+        
         // Take a screenshot at the same resolution of the current view  
         view.on("click", eventAction);
         //view.on("mouse-drag",eventAction);
@@ -458,6 +456,9 @@ require([
 
           
         });
+        // PDF Download Class
+        const d_pdf = DownloadPDF({});
+
 
         document.getElementById("pdf-button").addEventListener("click", () => {
           view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
