@@ -674,7 +674,7 @@ require([
             imageElement.src = screenshot.dataUrl;
             imageElement.height = screenshot.data.height;
             imageElement.width = screenshot.data.width;
-            d_pdf.downloadPDF(storeResults);
+            setTimeout(d_pdf.downloadPDF(storeResults), 7000);
 
           });
 

@@ -190,7 +190,7 @@ define([
             currentY = margin;// currentY+ chartH + margin;
             chartW = w - margin*2;
             const canvas = document.getElementById("chart-canvas-Change");//chart-change-div");//"chart-canvas");
-            console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
+            //console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
             chartHeight = canvas.height;
             chartWidth = canvas.width;
             aspectRatio = chartHeight/chartWidth;
@@ -198,11 +198,25 @@ define([
             console.log(chartH+"chart height")
 
             doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+            currentY = currentY+ chartH + 6;
+            doc.text(margin, currentY, "Figure 1. LCMS Change By Year");
+
+            //add 2nd graph
+            currentY+=6
+            const canvas2 = document.getElementById("chart-canvas-Land_Cover");//chart-change-div");//"chart-canvas");
+            doc.addImage(canvas2.toDataURL("image2/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+            currentY = currentY+ chartH + 6;
+            doc.text(margin, currentY, "Figure 2. Land Cover Distribution Change Over Time");
+
+            // add 3rd graph
+            doc.addPage();
+            currentY = margin;//currentY+ chartH + 6;
+            const canvas3 = document.getElementById("chart-canvas-Land_Use");//chart-change-div");//"chart-canvas");
+            doc.addImage(canvas3.toDataURL("image3/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+            
 
             currentY = currentY+ chartH + 6;
-            console.log('currentY: '+currentY);
-
-            doc.text(margin, currentY, "Figure 1. LCMS Change by Year");
+            doc.text(margin, currentY, "Figure 3. Change in Area of Difference Land Use Types Over Time");
 
             currentY+=5
             //draw table
