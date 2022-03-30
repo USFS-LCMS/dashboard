@@ -31,6 +31,9 @@ require([
     "esri/layers/GraphicsLayer",
     "esri/geometry/geometryEngineAsync",
     "esri/widgets/FeatureTable",
+    "esri/views/draw/Draw",
+    "esri/geometry/Point",
+    "esri/geometry/Multipoint",
     "dojo/domReady!"
 
     ], (
@@ -52,7 +55,10 @@ require([
       SketchViewModel,
       GraphicsLayer,
       geometryEngineAsync,
-      FeatureTable
+      FeatureTable,
+      Draw,
+      Point,
+      Multipoint
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
@@ -162,8 +168,6 @@ require([
                           if(results.features.length>0){
                               // Call function below
                               ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
-
-
                               stillComputing = false;
                               viewWatched = false;
                           }else{
@@ -174,6 +178,154 @@ require([
               }, 1000)
           }
       })
+      /////////////////////////////////////////////////////////////////////////////////////////////////
+      ///// CODE TO CTRL+CLICK TO SELECT MULTIPLE POLYGONS
+      /////////////////////////////////////////////////////////////////////////////////////////////////
+      const pntGraphics = new GraphicsLayer();
+      let viewClickEvtHandler = null, viewMouseMoveEvtHandler = null;
+      let drawPnt,
+        graphicP,
+        ctrlKey = false,
+        highlight,
+        statesLyrView;
+
+        layer.when(function () {
+          view.whenLayerView(layer).then(function (layerView) {
+            statesLyrView = layerView;
+          });
+        });
+  
+        const draw = new Draw({
+          view: view,
+        });
+  
+        var sym = {
+          type: 'simple-marker',
+          style: 'circle',
+          color: [0, 255, 255, 0.6],
+          size: '8px',
+          outline: {
+            color: [0, 255, 255, 1],
+            width: 1,
+          },
+        };
+  
+        //view.ui.add('point-button', 'top-left');
+        document.getElementById('point-button').onclick = drawPoint;
+  
+        function drawPoint() {
+          if (highlight) {
+            highlight.remove();
+          }
+          if(viewMouseMoveEvtHandler){
+            viewMouseMoveEvtHandler.remove()
+            viewMouseMoveEvtHandler = null
+          }
+          if(viewClickEvtHandler){
+            viewClickEvtHandler.remove()
+            viewClickEvtHandler = null
+          }
+          const action = draw.create("point");
+          viewMouseMoveEvtHandler = view.on('pointer-move', (evt) => {
+            if (evt.native.ctrlKey) {
+              moveCtrlKey = true;
+            }else{
+              moveCtrlKey = false;
+            }
+          })
+          viewClickEvtHandler = view.on('pointer-down', (evt)=>{
+            if (evt.native.ctrlKey) {
+              ctrlKey = true;
+            }else{
+              ctrlKey = false;
+            }
+          })
+          
+    
+          // Give a visual feedback to users as they move the pointer over the view
+          action.on("cursor-update", function (evt) {
+            view.graphics.removeAll();
+            drawPnt = new Point({
+              x: evt.coordinates[0],
+              y: evt.coordinates[1],
+              spatialReference: view.spatialReference
+            });
+            graphicP = new Graphic({
+              geometry: drawPnt,
+              symbol: sym
+            });
+            view.graphics.add(graphicP);
+            if(ctrlKey && !moveCtrlKey){
+              draw.reset();
+              view.graphics.removeAll();
+              selectStates();
+            }
+          });
+  
+          action.on("draw-complete", function (evt) {
+            drawPnt = new Point({
+              x: evt.coordinates[0],
+              y: evt.coordinates[1],
+              spatialReference: view.spatialReference
+            });
+  
+            graphicP = new Graphic({
+              geometry: drawPnt,
+              symbol: sym
+            });
+            pntGraphics.add(graphicP);
+            if (ctrlKey) {
+              drawPoint();
+            } else {
+              view.graphics.removeAll();
+              selectStates();
+            }
+          });
+          view.focus();
+        };
+  
+        function selectStates(){
+          ctrlKey = false
+          moveCtrlKey = false
+          if(viewMouseMoveEvtHandler){
+            viewMouseMoveEvtHandler.remove()
+            viewMouseMoveEvtHandler = null
+          }
+          if(viewClickEvtHandler){
+            viewClickEvtHandler.remove()
+            viewClickEvtHandler = null
+          }
+          let mp = new Multipoint({
+            spatialReference: view.spatialReference
+          });
+          let pntArray = pntGraphics.graphics.map(function(gra){
+            mp.addPoint(gra.geometry);
+          });
+          
+          const query = {
+            geometry: mp,
+            outFields: ["*"],
+            outSpatialReference: view.spatialReference,
+            returnGeometry: true
+          };
+          layer.queryFeatures(query)
+          .then(function(results){
+            const graphics = results.features;
+            // remove existing highlighted features
+            if (highlight) {
+              highlight.remove();
+            }
+  
+            // highlight query results
+            highlight = statesLyrView.highlight(graphics);
+            pntGraphics.removeAll();
+          }).catch(function(err){
+            console.error(err);
+          })
+        }
+  
+        
+  
 
 
           /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +407,8 @@ require([
         featureTable.clearSelection();
         featureTable.filterGeometry = null;
         polygonGraphicsLayer.removeAll();
+        pntGraphics.removeAll();
+
       });
 
     // create a new sketch view model set its layer

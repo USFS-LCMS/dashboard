@@ -181,7 +181,7 @@ define([
             // }
            
 
-            doc.addImage(screenshotMap.src, 'png',  (w-chartW)/2, currentY, chartW, chartH );//,{compresion:'NONE'});
+            doc.addImage(screenshotMap.src, 'png',  (w-chartW)/2, currentY, chartW, chartH);//,{compresion:'NONE'});
             
             //new page
             doc.addPage();
@@ -271,7 +271,7 @@ define([
             console.log(`output pdf ${doc}`)
 
 
-            doc.save(outFilename+'.pdf',{returnPromise:true}).then(alert('PDF render all done!'));
+            doc.save(outFilename+'.pdf');//,{returnPromise:true}).then(alert('PDF render all done!'));
             //doc.printout();
             console.log('Finished Downloading PDF');
         }
