@@ -197,19 +197,19 @@ require([
     //   renderer: renderer
     // });
 
-    const group_layer_Chugach = new GroupLayer({
-      listMode: 'show',
-      visibilityMode: 'exclusive',
-      layers: [chugach_huc10, chugach_huc8, chugach_huc6, chugach_natl_forest_boundary, chugach_natl_forest_ecosection, chugach_natl_forest_lta, chugach_natl_forest_hex_m, chugach_natl_forest_hex_l, chugach_natl_forest_hex_xl],
-      title: 'Chugach National Forest Layers'
-    });
+    // const group_layer_Chugach = new GroupLayer({
+    //   listMode: 'show',
+    //   visibilityMode: 'exclusive',
+    //   layers: [chugach_huc10, chugach_huc8, chugach_huc6, chugach_natl_forest_boundary, chugach_natl_forest_ecosection, chugach_natl_forest_lta, chugach_natl_forest_hex_m, chugach_natl_forest_hex_l, chugach_natl_forest_hex_xl],
+    //   title: 'Chugach National Forest Layers'
+    // });
 
-    const group_layer_Tongass = new GroupLayer({
-      listMode: 'show',
-      visibilityMode: 'exclusive',
-      layers: [tongass_huc_10, tongass_huc_8, tongass_huc_6, tongass_ecosection, tongass_lta, tongass_hex_m, tongass_hex_l, tongass_hex_xl],
-      title: 'Tongass National Forest Layers'
-    });
+    // const group_layer_Tongass = new GroupLayer({
+    //   listMode: 'show',
+    //   visibilityMode: 'exclusive',
+    //   layers: [tongass_huc_10, tongass_huc_8, tongass_huc_6, tongass_ecosection, tongass_lta, tongass_hex_m, tongass_hex_l, tongass_hex_xl],
+    //   title: 'Tongass National Forest Layers'
+    // });
 
     // const layer = new GroupLayer({
     //   listMode: 'show',
@@ -221,9 +221,16 @@ require([
     //   title: 'Tongass and Chugach National Forest Layers'
     // })
 
+    const layer = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Chugach-outID.geojson",
+      renderer: renderer,
+      title: 'Chugach Hexagons (Lrg.)'
+    });
+
     const map = new Map({
       basemap: "hybrid",
-      layers: [group_layer_Chugach, group_layer_Tongass]
+      // layers: [group_layer_Chugach, group_layer_Tongass]
+      layers: [layer]
     });
 
     // Map view - visualize map and pass it to html div element.
@@ -232,10 +239,10 @@ require([
       container: "main-map",
       highlightOptions: {
         color: "orange"
-      }
+      },
       // extent: map.extent
-      // zoom: 6,
-      // center: [-90, 37]
+      zoom: 6,
+      center: [-141, 60]
       // extent: map.Extent
     });
 
@@ -244,11 +251,11 @@ require([
     // view.when().then(()=>{
     view.when().then(() => {
 
-      const layerList = new LayerList({
-        view: view
-      });
+      // const layerList = new LayerList({
+      //   view: view
+      // });
 
-      view.ui.add(layerList, "top-right");
+      // view.ui.add(layerList, "top-right");
 
       // // Zoom 2 ext of layer!
       // layer.when(()=>{
@@ -271,6 +278,8 @@ require([
 
       // *INSTANTIATE CLASSES*
 
+
+      // ONCLICK AND USER SCROLL FUNCTIONALITY FOR SIDE CHART UPDATES. BELOW
       empty_chart = CreateChart({});
       // empty_chart.updateChartContent(view, layer);
 
@@ -310,6 +319,23 @@ require([
           }
       })
 
+
+      view.on("click", (e) => {
+        query.geometry = e.mapPoint;
+        console.log(e.mapPoint)
+        
+        layer.queryFeatures(query).then((results) =>{
+     
+          console.log(results.features.length);
+          if(results.features.length>0){
+            // $('.lcms-icon').addClass('fa-spin');
+            // updateSelectionList(results.features);
+            ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w, "side-chart"));
+            // $('.lcms-icon').removeClass('fa-spin');
+          }
+         });
+       });
+      // ONCLICK AND USER SCROLL FUNCTIONALITY FOR SIDE CHART UPDATES. ABOVE ^
 
           /////////////////////////////////////////////////////////////////////////////////////////////////
     //////// CODE TO DRAW RECTANGLE TO SELECT MULTIPLE POLYGON FEATURES 
@@ -480,8 +506,8 @@ require([
 
       toggleSidebar.hamburgerToggle("accordion-item-2", "accordion-item-2-a");
 
-      toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-3-a");
-      toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-4-a");
+      // toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-3-a");
+      // toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-4-a");
 
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
       toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
@@ -497,6 +523,8 @@ require([
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-i");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-j");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
+
+      toggleSidebar.hamburgerToggle("map-layer-selection", "map-layer-selection-items");
 
       // Create an empty chart as CreateChart object
       // const empty_chart = CreateChart({});
@@ -523,74 +551,74 @@ require([
       // return layer
     })
     
-    .then(function (layer) {
+    // .then(function (layer) {
 
 
-        // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
-        // This function will listen for user click, and then apply above query to features, activating our plotting class.
-        var storeResults = null;
-        // Take a screenshot at the same resolution of the current view  
-        view.on("click", eventAction);
-        //view.on("mouse-drag",eventAction);
-        function eventAction(e){
-          //click -> query -> zoom to selection -> highlight feature
-          view.graphics.removeAll(); // make sure to remmove previous highlighted feature
-          var query = new Query();
-          query.returnGeometry = true;
-          query.maxAllowableOffset = 0;
-          query.outFields = null;
-          query.where = "1=1";
-          query.num = 50;
-          query.geometry = e.mapPoint;          
-          layer.queryFeatures(query).then((results) => {
-            view.goTo({ target: results.features[0].geometry })
-            return results;
-          }).then((results)=>{             
-               //.then(function() {//, zoom:12});
-              if (view.extent) {  
-                // console.log("results len: " + results.features.length);  
-                if (results.features.length > 0) { 
-                  //highlight selected feature
-                  //view.whenLayerView(results).then(function(layerView){
-                    view.hitTest(e.mapPoint).then(function (response) {
-                    var graphics = response.results;
-                    graphics.forEach(function (g) {
-                      // console.log('graphic:' + g);
+    //     // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
+    //     // This function will listen for user click, and then apply above query to features, activating our plotting class.
+    //     var storeResults = null;
+    //     // Take a screenshot at the same resolution of the current view  
+    //     view.on("click", eventAction);
+    //     //view.on("mouse-drag",eventAction);
+    //     function eventAction(e){
+    //       //click -> query -> zoom to selection -> highlight feature
+    //       view.graphics.removeAll(); // make sure to remmove previous highlighted feature
+    //       var query = new Query();
+    //       query.returnGeometry = true;
+    //       query.maxAllowableOffset = 0;
+    //       query.outFields = null;
+    //       query.where = "1=1";
+    //       query.num = 50;
+    //       query.geometry = e.mapPoint;          
+    //       layer.queryFeatures(query).then((results) => {
+    //         view.goTo({ target: results.features[0].geometry })
+    //         return results;
+    //       }).then((results)=>{             
+    //            //.then(function() {//, zoom:12});
+    //           if (view.extent) {  
+    //             // console.log("results len: " + results.features.length);  
+    //             if (results.features.length > 0) { 
+    //               //highlight selected feature
+    //               //view.whenLayerView(results).then(function(layerView){
+    //                 view.hitTest(e.mapPoint).then(function (response) {
+    //                 var graphics = response.results;
+    //                 graphics.forEach(function (g) {
+    //                   // console.log('graphic:' + g);
   
-                      var geom = g.graphic.geometry;
-                      if (geom.type === "polygon") {
-                        var symbol = new SimpleFillSymbol({
-                          color: [205, 66, 47, .0001],
-                          style: "solid",
-                          outline: {
-                            color: [249, 226, 76],
-                            width: 1
-                          }
-                        });
-                        var graphic = new Graphic(geom, symbol);
-                        //console.log("graphic geom: "+graphic.geometry.Area())
-                        //results.features[0].planarArea = getArea(graphic.geometry);
-                        results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
+    //                   var geom = g.graphic.geometry;
+    //                   if (geom.type === "polygon") {
+    //                     var symbol = new SimpleFillSymbol({
+    //                       color: [205, 66, 47, .0001],
+    //                       style: "solid",
+    //                       outline: {
+    //                         color: [249, 226, 76],
+    //                         width: 1
+    //                       }
+    //                     });
+    //                     var graphic = new Graphic(geom, symbol);
+    //                     //console.log("graphic geom: "+graphic.geometry.Area())
+    //                     //results.features[0].planarArea = getArea(graphic.geometry);
+    //                     results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
   
-                        view.graphics.add(graphic);
-                      }
-                    });
-                  });
-                //});
-                // Chart class
-                  // const c = CreateChart({});
-                  // c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
-                  // c.setContentInfo(results, "Land_Cover", "side-chart")  
-                  // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
-                  storeResults = results;
-                }
-              } //)
-            });
+    //                     view.graphics.add(graphic);
+    //                   }
+    //                 });
+    //               });
+    //             //});
+    //             // Chart class
+    //               // const c = CreateChart({});
+    //               // c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
+    //               // c.setContentInfo(results, "Land_Cover", "side-chart")  
+    //               // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
+    //               storeResults = results;
+    //             }
+    //           } //)
+    //         });
 
-          }
+    //       }
 
           
-        });
+    //     });
 
 
       // })

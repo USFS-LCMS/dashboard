@@ -121,7 +121,7 @@
           -->
 
         <ul id="multilevel-accordion-menu" data-accordion-menu>
-          <div>
+          <!-- <div> -->
             <h1 id="accordion-item-1">R10 Questions</h1>
             <ul id="r10-questions" data-accordion-menu>
               <div id="climate-qs"><h1>CLIMATE CHANGE</h1></div>
@@ -187,44 +187,110 @@
                 <input type="checkbox" name="q11-checkbox" id="q11" value="q11-True">
                 <label for="q11-checkbox" >Change in Snow/Ice Cover</label>
                 <div id ="label-popout" > <h3>What is the rate of change in snow and ice cover (acres) over time? </h3></div>                 
+              </ul>
+
             </ul>
+<!-- 
+            <h1 id="map-layer-selection">LAYER SELECTION</h1>
+            <ul id="map-layer-items">
+              <li><p>Hi there</p></li>
+            </ul> -->
 
+          <!-- </div> -->
 
-
-              
-            
-              <!--<div id="accordion-item-">
-                <h1>Item 4</h1>
-                <ul class="menu vertical sublevel-1" id="accordion-item-1-d">
-                  <div>
-                    <a href="#">Sub-item 3</a>
-                    <ul class="menu vertical sublevel-2" id="accordion-sublevel-2">
-                      <div><a class="subitem" href="#">Thing 1</a></div>
-                      <div><a class="subitem" href="#">Thing 2</a></div>
-                    </ul>
-                  </div>
-                  <div><a class="subitem" href="#">Thing 1</a></div>
-                  <div><a class="subitem" href="#">Thing 2</a></div>
-                </ul>
-              </div>-->
-            </ul>
-          </div>
-
-          <div id="accordion-item-2">
-            <h1>Tools</h1>
+          <!-- <div id="accordion-item-2"> -->
+            <h1 id="accordion-item-2">Tools</h1>
             <ul class="menu vertical sublevel-1" id="accordion-item-2-a">
               <div><a class="subitem" href="#">Area Selector</a></div>
               <div><a class="subitem" href="#">Polygonselector</a></div>
             </ul>
-          </div>
-          <div id="accordion-item-3">
-            <h1>Item 3</h1>
-            <ul class="menu vertical sublevel-1" id="accordion-item-2-b">
-              <div><a class="subitem" href="#">Thing 1</a></div>
-              <div><a class="subitem" href="#">Thing 2</a></div>
+
+            <h1 id="map-layer-selection">LAYER SELECTION</h1>
+            <ul id="map-layer-selection-items">
+
+              <input type="radio" class="layer-radio-button" id="chugach-huc10-radio-select">
+              <label for="chugach-huc10-radio-select" class="radio-button-label">Chugach HUC 10</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-huc8-radio-select">
+              <label for="chugach-huc8-radio-select" class="radio-button-label">Chugach HUC 8</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-huc6-radio-select">
+              <label for="chugach-huc6-radio-select" class="radio-button-label">Chugach HUC 6</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-huc6-radio-select">
+              <label for="chugach-huc6-radio-select" class="radio-button-label">Chugach HUC 6</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-small-hex-radio-select">
+              <label for="chugach-small-hex-radio-select" class="radio-button-label">Chugach Small HEX</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-med-hex-radio-select">
+              <label for="chugach-med-hex-radio-select" class="radio-button-label">Chugach Medium HEX</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-lrg-hex-radio-select">
+              <label for="chugach-lrg-hex-radio-select" class="radio-button-label">Chugach Large HEX</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-ecosection-radio-select">
+              <label for="chugach-ecosection-radio-select" class="radio-button-label">Chugach Ecological Subsection</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-lta-radio-select">
+              <label for="chugach-lta-radio-select" class="radio-button-label">Chugach LTA</label>
+
+              <input type="radio" class="layer-radio-button" id="chugach-boundary-radio-select">
+              <label for="chugach-huc6-radio-select" class="radio-button-label">Chugach NF Boundary</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-huc10-radio-select">
+              <label for="tongass-huc10-radio-select" class="radio-button-label">Tongass HUC 10</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-huc8-radio-select">
+              <label for="tongass-huc8-radio-select" class="radio-button-label">Tongass HUC 8</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-huc6-radio-select">
+              <label for="tongass-huc6-radio-select" class="radio-button-label">Tongass HUC 6</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-huc6-radio-select">
+              <label for="tongass-huc6-radio-select" class="radio-button-label">Tongass HUC 6</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-small-hex-radio-select">
+              <label for="tongass-small-hex-radio-select" class="radio-button-label">Tongass Small HEX</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-med-hex-radio-select">
+              <label for="tongass-med-hex-radio-select" class="radio-button-label">Tongass Medium HEX</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-lrg-hex-radio-select">
+              <label for="tongass-lrg-hex-radio-select" class="radio-button-label">Tongass Large HEX</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-ecosection-radio-select">
+              <label for="tongass-ecosection-radio-select" class="radio-button-label">Tongass Ecological Subsection</label>
+
+              <input type="radio" class="layer-radio-button" id="tongass-lta-radio-select">
+              <label for="tongass-lta-radio-select" class="radio-button-label">Tongass LTA</label>
+
+
             </ul>
+          <!--
           </div>
-          <div id="accordion-item-4">
+          <div id="map-layer-selection"><h1>LAYER SELECTION</h1> </div>
+          <ul id="map-layer-selection-accordion-items">                  
+              <input type="checkbox" name="q8-checkbox" id="q8" value="q8-True">
+              <label for="q8-checkbox" >Deglaciation</label>
+              <div id ="label-popout" > <h3>What is the status of glaciers on the Forest? What are rates of deglaciation?</h3></div>                 
+          </ul>              
+          <ul id="accordion-item-1-i">                  
+              <input type="checkbox" name="q9-checkbox" id="q9" value="q9-True">
+              <label for="q9-checkbox" >Tidewater Vs. Upland Glaciers</label>
+              <div id ="label-popout" > <h3>Are rates of change for tidewater vs. upland glaciers different?</h3></div>                 
+          </ul>
+          <ul id="accordion-item-1-j">                  
+              <input type="checkbox" name="q10-checkbox" id="q10" value="q10-True">
+              <label for="q10-checkbox" >Primary Succession after Deglaciaton</label>
+              <div id ="label-popout" > <h3>What is the rate and pattern of primary succession following deglaciation? </h3></div>                 
+          </ul>
+          <ul id="accordion-item-1-k">                  
+            <input type="checkbox" name="q11-checkbox" id="q11" value="q11-True">
+            <label for="q11-checkbox" >Change in Snow/Ice Cover</label>
+            <div id ="label-popout" > <h3>What is the rate of change in snow and ice cover (acres) over time? </h3></div>                 
+          </ul> -->
+          <!-- <div id="accordion-item-4">
             <h1>Item 4</h1>
             <ul class="menu vertical sublevel-1" id="accordion-item-2-c">
               <div>
@@ -237,7 +303,7 @@
               <div><a class="subitem" href="#">Thing 1</a></div>
               <div><a class="subitem" href="#">Thing 2</a></div>
             </ul>
-          </div>
+          </div> -->
         </ul>
 
         <!-- ABOVE. IS. DROPDOWN ACCORDION MENU STUFF POSTED FROM ONLINE -->

@@ -114,9 +114,9 @@ canvas {
   background-color: rgb(224, 226, 212);
   display: flex;
 }
-#tableDiv{
+/* #tableDiv{
  
-}
+} */
 #sidebar-left-container {
   position: absolute;
   max-height: 708px;
@@ -205,7 +205,7 @@ canvas {
   display: none;
 }
 
-#accordion-item-1,#accordion-item-2, #forest-health-qs, #accordion-item-3, #accordion-item-4, #snow-glacier-qs, #climate-qs, #encroachment-qs {
+#accordion-item-1,#accordion-item-2, #forest-health-qs, #accordion-item-3, #accordion-item-4, #snow-glacier-qs, #climate-qs, #encroachment-qs, #map-layer-selection {
   cursor: pointer;
   text-align: left;
 }
@@ -214,11 +214,21 @@ canvas {
   display: none;
   cursor: pointer;
   text-align: left;
-  
 }
 
-#r10-questions {
+#r10-questions, #map-layer-selection-items {
   display: none;
+}
+
+/* Radio button formatting */
+.radio-button-label {
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+}
+
+.layer-radio-button {
+  display: block;
 }
 
 
@@ -255,14 +265,14 @@ canvas {
 /* Flex parent */
 
 /* Flex parent */
-#fh-abbrev-1-checkmark {
+/* #fh-abbrev-1-checkmark { */
   /* width: 2px; */
   /* flex-grow: 0.1; */
-}
+/* } */
 
-#fh-abbrev-1 {
+/* #fh-abbrev-1 {
 
-}
+} */
 /* Flex parent */
 
 .checkbox-container input {
@@ -340,6 +350,10 @@ input[type="checkbox"]+label {
 #side-chart {
   width: 40%;
   overflow-y: auto;
+}
+
+#map-layer-selection-accordion-items{
+  display: none;
 }
 
 /* #forest-health-question-1 {
