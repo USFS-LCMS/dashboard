@@ -374,6 +374,7 @@ require([
           pntGraphics.removeAll();
           ////
           var totalArea=0;
+          console.log("len "+results.features.length)
           graphics.forEach(function (g) { 
             
           //get geometry of each selected features and turn it into a graphic for area calculation
@@ -457,91 +458,101 @@ require([
 
     // // polygonGraphicsLayer will be used by the sketchviewmodel
     // // show the polygon being drawn on the view
-    // const polygonGraphicsLayer = new GraphicsLayer();
-    // map.add(polygonGraphicsLayer);
+    const polygonGraphicsLayer = new GraphicsLayer();
+    map.add(polygonGraphicsLayer);
 
     // // add the select by rectangle button the view
-    // const selectButton = document.getElementById("select-by-rectangle");
+     const selectButton = document.getElementById("select-by-rectangle");
 
-    // // click event for the select by rectangle button
-    // selectButton.addEventListener("click", () => {
-    //   view.popup.close();
-    //   sketchViewModel.create("rectangle");
-    // });
+    // click event for the select by rectangle button
+    selectButton.addEventListener("click", () => {
+      view.graphics.removeAll();
+      if (highlight){
+        highlight.remove()
+      }
+      view.popup.close();
+      sketchViewModel.create("rectangle");
+    });
 
-    // // add the clear selection button the view
-    // document
-    //   .getElementById("clear-selection")
-    //   .addEventListener("click", () => {
-    //     featureTable.clearSelection();
-    //     featureTable.filterGeometry = null;
-    //     polygonGraphicsLayer.removeAll();
-    //     pntGraphics.removeAll();
-    //     highlight.remove();
+    // add the clear selection button the view
+    document
+      .getElementById("clear-selection")
+      .addEventListener("click", () => {
+        //featureTable.clearSelection();
+        //featureTable.filterGeometry = null;
+        polygonGraphicsLayer.removeAll();
+        pntGraphics.removeAll();
+        highlight.remove();
 
-    //   });
+      });
 
-    // // create a new sketch view model set its layer
-    // const sketchViewModel = new SketchViewModel({
-    //   view: view,
-    //   layer: polygonGraphicsLayer
-    // });
+    // create a new sketch view model set its layer
+    const sketchViewModel = new SketchViewModel({
+      view: view,
+      layer: polygonGraphicsLayer
+    });
 
-    // // Once user is done drawing a rectangle on the map
-    // // use the rectangle to select features on the map and table
-    // sketchViewModel.on("create", async (event) => {
-    //   if (event.state === "complete") {
-    //     // this polygon will be used to query features that intersect it
-    //     const geometries = polygonGraphicsLayer.graphics.map(function (
-    //       graphic
-    //     ) {
-    //       return graphic.geometry;
-    //     });
-    //     const queryGeometry = await geometryEngineAsync.union(
-    //       geometries.toArray()
-    //     );
-    //     selectFeatures(queryGeometry);
-    //   }
-    // });
+    // Once user is done drawing a rectangle on the map
+    // use the rectangle to select features on the map and table
+    sketchViewModel.on("create", async (event) => {
+      if (event.state === "complete") {
+        // this polygon will be used to query features that intersect it
+        const geometries = polygonGraphicsLayer.graphics.map(function (
+          graphic
+        ) {
+          return graphic.geometry;
+        });
+        const queryGeometry = await geometryEngineAsync.union(
+          geometries.toArray()
+        );
+        selectFeatures(queryGeometry);
+      }
+    });
 
-    // // This function is called when user completes drawing a rectangle
-    // // on the map. Use the rectangle to select features in the layer and table
-    // function selectFeatures(geometry) {
-    //   if (myLayerView) {
-    //     // create a query and set its geometry parameter to the
-    //     // rectangle that was drawn on the view
-    //     const query = {
-    //       geometry: geometry,
-    //       outFields: ["*"]
-    //     };
+    // This function is called when user completes drawing a rectangle
+    // on the map. Use the rectangle to select features in the layer and table
+    function selectFeatures(geometry) {
+      if (highlight){
+        highlight.remove();
+      }
+      if (statesLyrView) {
+        // create a query and set its geometry parameter to the
+        // rectangle that was drawn on the view
+        const query = {
+          geometry: geometry,
+          outFields: ["*"]
+        };
+        // query graphics from the csv layer view. Geometry set for the query
+        // can be polygon for point features and only intersecting geometries are returned
+        statesLyrView
+          .queryFeatures(query)
+          .then((results) => {
+            console.log("len "+results.features.length)
+            if (results.features.length === 0) {
+              clearSelection();
+            } else {
+              
+              highlight = statesLyrView.highlight(results.features);
 
-    //     // query graphics from the csv layer view. Geometry set for the query
-    //     // can be polygon for point features and only intersecting geometries are returned
-    //     myLayerView
-    //       .queryFeatures(query)
-    //       .then((results) => {
-    //         if (results.features.length === 0) {
-    //           clearSelection();
-    //         } else {
+              // here we get to use queried features. chart here
+              empty_chart = CreateChart({});
+              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
 
+              // pass in the query results to the table by calling its selectRows method.
+              // This will trigger FeatureTable's selection-change event
+              // where we will be setting the feature effect on the csv layer view
+              //featureTable.filterGeometry = geometry;
+              //featureTable.selectRows(results.features);
+            }
+          });
+          polygonGraphicsLayer.removeAll();//view.graphics.removeAll()
+          // .catch(errorCallback);
+      }
+    }
 
-    //           // here we get to use queried features. chart here
-    //           // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
-
-    //           // pass in the query results to the table by calling its selectRows method.
-    //           // This will trigger FeatureTable's selection-change event
-    //           // where we will be setting the feature effect on the csv layer view
-    //           featureTable.filterGeometry = geometry;
-    //           featureTable.selectRows(results.features);
-    //         }
-    //       });
-    //       // .catch(errorCallback);
-    //   }
-    // }
-
-    // function errorCallback(error) {
-    //   console.log("error happened:", error.message);
-    // }
+    function errorCallback(error) {
+      console.log("error happened:", error.message);
+    }
 
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////
