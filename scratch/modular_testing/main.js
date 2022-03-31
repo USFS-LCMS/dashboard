@@ -21,7 +21,7 @@ require([
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
-    "esri/tasks/support/Query",
+    "esri/rest/support/Query",
     "esri/Color",
     "esri/Graphic",
     "esri/symbols/SimpleFillSymbol",
@@ -29,10 +29,12 @@ require([
     "esri/geometry/geometryEngine",
     "esri/widgets/Sketch/SketchViewModel",
     "esri/layers/GraphicsLayer",
+    "esri/geometry/Extent",
     "esri/geometry/geometryEngineAsync",
     "esri/widgets/FeatureTable",
     "esri/views/draw/Draw",
     "esri/geometry/Point",
+    "esri/geometry/Polygon",
     "esri/geometry/Multipoint",
     "dojo/domReady!"
 
@@ -54,10 +56,12 @@ require([
       geometryEngine,
       SketchViewModel,
       GraphicsLayer,
+      Extent,
       geometryEngineAsync,
       FeatureTable,
       Draw,
       Point,
+      Polygon,
       Multipoint
       ) => {
 
@@ -223,15 +227,16 @@ require([
       // view.ui.add("point-button", "top-left");
 
       document.getElementById("point-button").onclick = drawPoint; //when user click the point button on RH side of screen..
-      console.log("*NOTE* User must (1) hold control before the first click through the last click (2) move mouse after final click to see highlight")
-      function zoomToLayer(layer) {
-        console.log("zoom to layer")
-        return layer.queryExtent().then((response) => {
-          view.goTo(response.extent).catch((error) => {
-            console.error(error);
-          });
-        });
-      }
+      console.log("*NOTE* To select multiple items, user must hold 'CTRL' before the first click through the last click AND move mouse after final click to see highlight")
+      // function zoomToLayer(layer) {
+      //   console.log("zoom to layer")
+      //   return layer.queryExtent(query).then((response) => {
+      //     view.goTo(response.extent).catch((error) => {
+      //       console.error(error);
+      //     });
+      //   });
+      // }
+    
       function drawPoint() {
         if(viewMouseMoveEvtHandler){
           viewMouseMoveEvtHandler.remove()
@@ -283,7 +288,6 @@ require([
             //if ctrl button not clicked and mouse is moving -- dont do anything
             draw.reset(); //resets drawing by clearing active action
             view.graphics.removeAll(); //remove graphics
-            console.log("ctrl button clicked AND mouse moving")
             selectStates();
           }
         });
@@ -319,7 +323,6 @@ require([
       //i.e. NOT when draw event is over I guess
 
       function selectStates(){
-        console.log("selectStates running..")
         ctrlKey = false
         moveCtrlKey = false
         if(viewMouseMoveEvtHandler){
@@ -336,7 +339,6 @@ require([
         let pntArray = pntGraphics.graphics.map(function(gra){
           mp.addPoint(gra.geometry);
         });
-        view.goTo({ target: pntArray })
         
         const query = {
           geometry: mp,
@@ -344,10 +346,21 @@ require([
           outSpatialReference: view.spatialReference,
           returnGeometry: true
         };
-        layer.queryFeatures(query)
-        .then(function(results){
+        
+        layer.queryFeatures(query).then(function(results){
+
+          //zoom to selected (queried) features
+          layer.queryExtent(query).then((response) => {
+            view.goTo(response.extent.expand(1.25)).catch((error) => {
+              console.error(error);
+            })});
+
           storeResults=results
-          const graphics = results.features;          
+          console.log("results "+storeResults)
+          const graphics = results.features; 
+          view.goTo(graphics)
+
+
           // remove existing highlighted features
           if (highlight) {
             highlight.remove();
@@ -359,16 +372,20 @@ require([
           ////
           var totalArea=0;
           graphics.forEach(function (g) { 
+            
             //get geometry of each selected features and turn it into a graphic for area calculation
             var geom = g.geometry;
-            if (geom.type === "polygon") {                       
-              var graphicTemp = new Graphic(geom);     
+            
+            if (geom.type === "polygon") {     
+              var graphicTemp = new Graphic(geom); 
+              
               totalArea += getArea(graphicTemp.geometry);
               console.log("total area:"+totalArea)              
             }
           });
           results.features[0].attributes["planarArea"] = totalArea
-        }).then(zoomToLayer(layer)).catch(function(err){
+          
+        }).catch(function(err){
           console.error(err);
         })
       }
@@ -674,7 +691,7 @@ require([
             imageElement.src = screenshot.dataUrl;
             imageElement.height = screenshot.data.height;
             imageElement.width = screenshot.data.width;
-            setTimeout(d_pdf.downloadPDF(storeResults), 7000);
+            setTimeout(d_pdf.downloadPDF(storeResults), 7000); //wait 7 ms before running function to let charts load (does this work?)
 
           });
 
