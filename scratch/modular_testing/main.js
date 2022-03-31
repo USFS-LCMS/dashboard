@@ -15,9 +15,8 @@ require([
     "dojo/_base/array",
     "modules/CreateChart",
     "modules/DownloadPDF",
-    "modules/UserQuestionSelection_01",
-    "modules/CreateDropdown",
     "modules/ToggleSidebar",
+    "modules/CreateStaticTemplates",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -31,15 +30,16 @@ require([
     "esri/layers/GraphicsLayer",
     "esri/geometry/geometryEngineAsync",
     "esri/widgets/FeatureTable",
+    "esri/widgets/LayerList",
+    "esri/layers/GroupLayer",
     "dojo/domReady!"
 
     ], (
       arrayUtils,
       CreateChart,
       DownloadPDF,
-      UserQuestionSelection,
-      CreateDropdown,
       ToggleSidebar,
+      CreateStaticTemplates,
       Map, 
       MapView, 
       GeoJSONLayer, 
@@ -52,7 +52,9 @@ require([
       SketchViewModel,
       GraphicsLayer,
       geometryEngineAsync,
-      FeatureTable
+      FeatureTable,
+      LayerList,
+      GroupLayer
       ) => {
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
@@ -99,45 +101,129 @@ require([
       "LCMS-Summaries-TongassNationalForestLandTypeAssociations-outID.geojson"
     ];
 
-    // Create all layers here
+    
+
+    // Create all Tongass Layers
+    const tongass_huc_10 = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc10-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass HUC 10'
+    });
+    const tongass_huc_8 = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc8-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass HUC 8'
+    });
+    const tongass_huc_6 = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc6-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass HUC 6'
+    });
+    const tongass_hex_m = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_M_Tongass-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass Hexagon (Sm.)'
+    });
+    const tongass_hex_l = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_L_Tongass-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass Hexagon (Med.)'
+    });
+    const tongass_hex_xl = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Tongass-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass Hexagon (Lrg.)'
+    });
+    const tongass_ecosection = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassNationalForestEcologicalSubsections-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass Eco. Subsections'
+    });
+    const tongass_lta = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassNationalForestLandTypeAssociations-outID.geojson",
+      renderer: renderer,
+      title: 'Tongass LTAs'
+    });
+
+    // Create all Chugach layers here
     const chugach_huc10 = new GeoJSONLayer({
       url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc10-outID.geojson",
-      renderer: renderer
-    })
-
+      renderer: renderer,
+      title: 'Chugach HUC 10'
+    });
     const chugach_huc8 = new GeoJSONLayer({
       url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc8-outID.geojson",
-      renderer: renderer
+      renderer: renderer,
+      title: 'Chugach HUC 8'
     });
-
     const chugach_huc6 = new GeoJSONLayer({
       url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc6-outID.geojson",
-      renderer: renderer
-    })
-
-    const chugach_huc6 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc6-outID.geojson",
-      renderer: renderer
-    })
-
-    const layer = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", // "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson"
-      renderer: renderer
+      renderer: renderer,
+      title: 'Chugach HUC 6'
+    });
+    const chugach_natl_forest_boundary = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Boundary-outID.geojson",
+      renderer: renderer,
+      title: 'Chugach NF Boundary'
+    });
+    const chugach_natl_forest_ecosection = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
+      renderer: renderer,
+      title: 'Chugach Eco. Subsections'
+    });
+    const chugach_natl_forest_lta = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Land_Type_Association-outID.geojson",
+      renderer: renderer,
+      title: 'Chugach LTAs'
+    });
+    const chugach_natl_forest_hex_m = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_M_Chugach-outID.geojson",
+      renderer: renderer,
+      title: 'Chugach Hexagaons (Sm.)'
+    });
+    const chugach_natl_forest_hex_l = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_L_Chugach-outID.geojson",
+      renderer: renderer,
+      title: 'Chugach Hexagons (Med.)'
+    });
+    const chugach_natl_forest_hex_xl = new GeoJSONLayer({
+      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Chugach-outID.geojson",
+      renderer: renderer,
+      title: 'Chugach Hexagons (Lrg.)'
     });
 
-      
-    function getArea(polygon) {
-      // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
-      const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
-      // console.log(geodesicArea+"geodes area");
-      // console.log(planarArea+"planar area")
-      return planarArea;
+    // const layer = new GeoJSONLayer({
+    //   url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", // "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", // 
+    //   renderer: renderer
+    // });
 
-    }
+    const group_layer_Chugach = new GroupLayer({
+      listMode: 'show',
+      visibilityMode: 'exclusive',
+      layers: [chugach_huc10, chugach_huc8, chugach_huc6, chugach_natl_forest_boundary, chugach_natl_forest_ecosection, chugach_natl_forest_lta, chugach_natl_forest_hex_m, chugach_natl_forest_hex_l, chugach_natl_forest_hex_xl],
+      title: 'Chugach National Forest Layers'
+    });
+
+    const group_layer_Tongass = new GroupLayer({
+      listMode: 'show',
+      visibilityMode: 'exclusive',
+      layers: [tongass_huc_10, tongass_huc_8, tongass_huc_6, tongass_ecosection, tongass_lta, tongass_hex_m, tongass_hex_l, tongass_hex_xl],
+      title: 'Tongass National Forest Layers'
+    });
+
+    // const layer = new GroupLayer({
+    //   listMode: 'show',
+    //   visibilityMode: 'exclusive',
+    //   layers: [
+    //     tongass_huc_10, tongass_huc_8, tongass_huc_6, tongass_ecosection, tongass_lta, tongass_hex_m, tongass_hex_l, tongass_hex_xl, chugach_huc10, chugach_huc8, chugach_huc6, 
+    //     chugach_natl_forest_boundary, chugach_natl_forest_ecosection, chugach_natl_forest_lta, chugach_natl_forest_hex_m, chugach_natl_forest_hex_l, chugach_natl_forest_hex_xl
+    //   ],
+    //   title: 'Tongass and Chugach National Forest Layers'
+    // })
 
     const map = new Map({
       basemap: "hybrid",
-      layers: [layer]
+      layers: [group_layer_Chugach, group_layer_Tongass]
     });
 
     // Map view - visualize map and pass it to html div element.
@@ -147,24 +233,28 @@ require([
       highlightOptions: {
         color: "orange"
       }
+      // extent: map.extent
       // zoom: 6,
       // center: [-90, 37]
-      // extent:
+      // extent: map.Extent
     });
-
-
-
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
-    view.when().then(()=>{
-      
+    // view.when().then(()=>{
+    view.when().then(() => {
 
-      // Zoom 2 ext of layer!
-      layer.when(()=>{
-        // console.log('setting extent');
-        view.extent = layer.fullExtent;
+      const layerList = new LayerList({
+        view: view
       });
+
+      view.ui.add(layerList, "top-right");
+
+      // // Zoom 2 ext of layer!
+      // layer.when(()=>{
+      //   // console.log('setting extent');
+      //   view.extent = layer.fullExtent;
+      // });
 
       // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
       //const screenshotDiv = document.getElementById("screenshotDiv");
@@ -224,6 +314,16 @@ require([
           /////////////////////////////////////////////////////////////////////////////////////////////////
     //////// CODE TO DRAW RECTANGLE TO SELECT MULTIPLE POLYGON FEATURES 
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function getArea(polygon) {
+      // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
+      const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
+      // console.log(geodesicArea+"geodes area");
+      // console.log(planarArea+"planar area")
+      return planarArea;
+
+    }
+
     let myLayerView;
     layer
       .when(() => {
@@ -403,40 +503,27 @@ require([
       // empty_chart.chartVisibleFeatures(view, layer, ["Change---Fast Loss", "Change---Slow Loss"]);
 
 
+      // Function used to create a chart. WM moved to 
+      document.getElementById("pdf-button").addEventListener("click", () => {
+        view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
 
+          const imageElement = document.getElementsByClassName(
+            "js-screenshot-image"
+          )[0];
 
-      // Create a div to populate 
-      let div = document.getElementById("side-chart");
-      // Create a paragraph in the div
-      let p = document.createElement("p");
-      div.append(p);
+          imageElement.src = screenshot.dataUrl;
+          imageElement.height = screenshot.data.height;
+          imageElement.width = screenshot.data.width;
+          d_pdf.downloadPDF(storeResults);
 
-      // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS.
-      document.getElementById("accordion-item-1-a").onclick = () => {
-        if (document.getElementById("chart-canvas") != null){
-          document.getElementById("chart-canvas").remove();
-      };
+        });
 
-        p.textContent="Please Select a question.";
-        // document.getElementById("side-chart").innerHTML = "";
-        // p.innerHTML = "";
+      });
 
-        // assumes that we have a blank dropdown menu 
-        if ( document.getElementById("accordion-item-1-a").value == "" ){
-          
-          // Ask user to select question if they have not yet.
-          p.textContent = "Please select a question.";
-        }
-        else {
-          // if no blank value, clear out the chart 
-          p.textContent = "";
-
-          p.textContent = c.createOutputObj(null, ["null"]);
-        }
-      }
-
-      return layer
-    }).then(function (layer) {
+      // return layer
+    })
+    
+    .then(function (layer) {
 
 
         // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
@@ -505,22 +592,7 @@ require([
           
         });
 
-        document.getElementById("pdf-button").addEventListener("click", () => {
-          view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
 
-            const imageElement = document.getElementsByClassName(
-              "js-screenshot-image"
-            )[0];
-
-            imageElement.src = screenshot.dataUrl;
-            imageElement.height = screenshot.data.height;
-            imageElement.width = screenshot.data.width;
-            d_pdf.downloadPDF(storeResults);
-
-          });
-
-
-        });
-      //})
+      // })
   }
 );
