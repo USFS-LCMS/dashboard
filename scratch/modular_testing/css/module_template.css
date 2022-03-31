@@ -223,14 +223,19 @@ canvas {
 /* Radio button formatting */
 .radio-button-label {
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   font-size: 16px;
+  display: inline;
 }
 
 .layer-radio-button {
-  display: block;
+  display: inline;
 }
 
+.radio-button-wrapper {
+  display: block;
+  padding: 1em;
+}
 
 #fh-popout-1, #fh-popout-2, #fh-popout-3 {
   display: none;

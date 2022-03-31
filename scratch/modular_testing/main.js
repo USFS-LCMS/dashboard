@@ -92,7 +92,6 @@ require([
       "LCMS-Summaries-LandOwnershipStatus_CNF-outID.geojson"
     ];
 
-
     const tongass_urls = [
       "LCMS-Summaries-Hex_L_Tongass-outID.geojson", "LCMS-Summaries-Hex_M_Tongass-outID.geojson",
       "LCMS-Summaries-Hex_XL_Tongass-outID.geojson",
@@ -100,8 +99,6 @@ require([
       "LCMS-Summaries-TongassHuc8-outID.geojson", "LCMS-Summaries-TongassNationalForestEcologicalSubsections-outID.geojson",
       "LCMS-Summaries-TongassNationalForestLandTypeAssociations-outID.geojson"
     ];
-
-    
 
     // Create all Tongass Layers
     const tongass_huc_10 = new GeoJSONLayer({
