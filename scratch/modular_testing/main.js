@@ -358,7 +358,7 @@ require([
           storeResults=results
           console.log("results "+storeResults)
           const graphics = results.features; 
-          view.goTo(graphics)
+          //view.goTo(graphics)
 
           console.log("setting chart from click")
           empty_chart = CreateChart({});
@@ -475,16 +475,16 @@ require([
     });
 
     // add the clear selection button the view
-    document
-      .getElementById("clear-selection")
-      .addEventListener("click", () => {
-        //featureTable.clearSelection();
-        //featureTable.filterGeometry = null;
-        polygonGraphicsLayer.removeAll();
-        pntGraphics.removeAll();
-        highlight.remove();
+    // document
+    //   .getElementById("clear-selection")
+    //   .addEventListener("click", () => {
+    //     //featureTable.clearSelection();
+    //     //featureTable.filterGeometry = null;
+    //     polygonGraphicsLayer.removeAll();
+    //     pntGraphics.removeAll();
+    //     highlight.remove();
 
-      });
+    //   });
 
     // create a new sketch view model set its layer
     const sketchViewModel = new SketchViewModel({
@@ -524,13 +524,18 @@ require([
         };
         // query graphics from the csv layer view. Geometry set for the query
         // can be polygon for point features and only intersecting geometries are returned
-        statesLyrView
+        layer//statesLyrView
           .queryFeatures(query)
           .then((results) => {
             console.log("len "+results.features.length)
             if (results.features.length === 0) {
               clearSelection();
             } else {
+              //zoom to selected (queried) features
+              layer.queryExtent(query).then((response) => {
+              view.goTo(response.extent.expand(1.25)).catch((error) => {
+              console.error(error);
+            })});
               
               highlight = statesLyrView.highlight(results.features);
 
