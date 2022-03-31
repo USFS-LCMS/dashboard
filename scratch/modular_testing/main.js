@@ -347,7 +347,7 @@ require([
           returnGeometry: true
         };
         
-        layer.queryFeatures(query).then(function(results){
+        layer.queryFeatures(query,{returnGeometry:true}).then(function(results){
 
           //zoom to selected (queried) features
           layer.queryExtent(query).then((response) => {
@@ -360,7 +360,10 @@ require([
           const graphics = results.features; 
           view.goTo(graphics)
 
-
+          console.log("setting chart from click")
+          empty_chart = CreateChart({});
+          ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+          
           // remove existing highlighted features
           if (highlight) {
             highlight.remove();
@@ -373,17 +376,18 @@ require([
           var totalArea=0;
           graphics.forEach(function (g) { 
             
-            //get geometry of each selected features and turn it into a graphic for area calculation
-            var geom = g.geometry;
+          //get geometry of each selected features and turn it into a graphic for area calculation
+          var geom = g.geometry;
+          
+          if (geom.type === "polygon") {     
+            var graphicTemp = new Graphic(geom); 
             
-            if (geom.type === "polygon") {     
-              var graphicTemp = new Graphic(geom); 
-              
-              totalArea += getArea(graphicTemp.geometry);
-              console.log("total area:"+totalArea)              
-            }
-          });
-          results.features[0].attributes["planarArea"] = totalArea
+            totalArea += getArea(graphicTemp.geometry);
+            console.log("total area:"+totalArea)              
+          }
+        });
+        results.features[0].attributes["planarArea"] = totalArea
+                          
           
         }).catch(function(err){
           console.error(err);
