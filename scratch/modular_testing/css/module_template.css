@@ -114,9 +114,9 @@ canvas {
   background-color: rgb(224, 226, 212);
   display: flex;
 }
-/* #tableDiv{
+#tableDiv{
  
-} */
+}
 #sidebar-left-container {
   position: absolute;
   max-height: 708px;
@@ -205,7 +205,7 @@ canvas {
   display: none;
 }
 
-#accordion-item-1,#accordion-item-2, #forest-health-qs, #accordion-item-3, #accordion-item-4, #snow-glacier-qs, #climate-qs, #encroachment-qs, #map-layer-selection {
+#accordion-item-1,#accordion-item-2, #forest-health-qs, #accordion-item-3, #accordion-item-4, #snow-glacier-qs, #climate-qs, #encroachment-qs {
   cursor: pointer;
   text-align: left;
 }
@@ -214,28 +214,13 @@ canvas {
   display: none;
   cursor: pointer;
   text-align: left;
+  
 }
 
-#r10-questions, #map-layer-selection-items {
+#r10-questions {
   display: none;
 }
 
-/* Radio button formatting */
-.radio-button-label {
-  cursor: pointer;
-  text-align: center;
-  font-size: 16px;
-  display: inline;
-}
-
-.layer-radio-button {
-  display: inline;
-}
-
-.radio-button-wrapper {
-  display: block;
-  padding: 1em;
-}
 
 #fh-popout-1, #fh-popout-2, #fh-popout-3 {
   display: none;
@@ -270,14 +255,14 @@ canvas {
 /* Flex parent */
 
 /* Flex parent */
-/* #fh-abbrev-1-checkmark { */
+#fh-abbrev-1-checkmark {
   /* width: 2px; */
   /* flex-grow: 0.1; */
-/* } */
+}
 
-/* #fh-abbrev-1 {
+#fh-abbrev-1 {
 
-} */
+}
 /* Flex parent */
 
 .checkbox-container input {
@@ -361,10 +346,6 @@ input[type="checkbox"]+label {
 #side-chart {
   width: 40%;
   overflow-y: auto;
-}
-
-#map-layer-selection-accordion-items{
-  display: none;
 }
 
 /* #forest-health-question-1 {

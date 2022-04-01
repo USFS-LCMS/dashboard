@@ -182,7 +182,6 @@ define([
         },
 
         // Create a chart in the side panel based on which of the metric groupings is selected.
-        // THIS IS CURRENTLY USED IN SCRIPT
         setContentInfo: function(results, which_one, chart_div) {
 
             function range(start, end) {

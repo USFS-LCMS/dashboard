@@ -1,16 +1,4 @@
 /*
-Note: This below script is a branch with only the layer selection dropdown and the pan/zoom/click functionality of the chart uncommented. 
-
-This will hopefully make it more clear which parts of the script to bring over to the main branch - I think that just merging the two will cause wierd conflicts. We may need to do some strategic copy and paste. 
-
-
-
-
-*/ 
-
-
-
-/*
 Authors: 
 - Wyatt McCurdy
 - Claire Simpson
@@ -27,8 +15,9 @@ require([
     "dojo/_base/array",
     "modules/CreateChart",
     "modules/DownloadPDF",
+    "modules/UserQuestionSelection_01",
+    "modules/CreateDropdown",
     "modules/ToggleSidebar",
-    "modules/CreateStaticTemplates",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -43,8 +32,6 @@ require([
     "esri/geometry/Extent",
     "esri/geometry/geometryEngineAsync",
     "esri/widgets/FeatureTable",
-    "esri/widgets/LayerList",
-    "esri/layers/GroupLayer",
     "esri/views/draw/Draw",
     "esri/geometry/Point",
     "esri/geometry/Polygon",
@@ -55,8 +42,9 @@ require([
       arrayUtils,
       CreateChart,
       DownloadPDF,
+      UserQuestionSelection,
+      CreateDropdown,
       ToggleSidebar,
-      CreateStaticTemplates,
       Map, 
       MapView, 
       GeoJSONLayer, 
@@ -71,8 +59,6 @@ require([
       Extent,
       geometryEngineAsync,
       FeatureTable,
-      LayerList,
-      GroupLayer,
       Draw,
       Point,
       Polygon,
@@ -92,108 +78,29 @@ require([
           width: 1.3,
           color:'#00897B'
         }
-      },
+      }
     };
 
-    // Create all Tongass Layers
-    const tongass_huc_10 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc10-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass HUC 10'
-    });
-    const tongass_huc_8 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc8-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass HUC 8'
-    });
-    const tongass_huc_6 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc6-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass HUC 6'
-    });
-    const tongass_hex_m = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_M_Tongass-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Hexagon (Sm.)'
-    });
-    const tongass_hex_l = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_L_Tongass-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Hexagon (Med.)'
-    });
-    const tongass_hex_xl = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Tongass-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Hexagon (Lrg.)'
-    });
-    const tongass_ecosection = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassNationalForestEcologicalSubsections-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Eco. Subsections'
-    });
-    const tongass_lta = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassNationalForestLandTypeAssociations-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass LTAs'
+
+    // LOAD IN LAYERS - look in template for layer list widget. 
+
+    const layer = new GeoJSONLayer({
+      url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",//"https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
+      renderer: renderer
     });
 
-    // Create all Chugach layers here
-    const chugach_huc10 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc10-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach HUC 10'
-    });
-    const chugach_huc8 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc8-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach HUC 8'
-    });
-    const chugach_huc6 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc6-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach HUC 6'
-    });
-    const chugach_natl_forest_boundary = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Boundary-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach NF Boundary'
-    });
-    const chugach_natl_forest_ecosection = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Eco. Subsections'
-    });
-    const chugach_natl_forest_lta = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Land_Type_Association-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach LTAs'
-    });
-    const chugach_natl_forest_hex_m = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_M_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagaons (Sm.)'
-    });
-    const chugach_natl_forest_hex_l = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_L_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagons (Med.)'
-    });
-    const chugach_natl_forest_hex_xl = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagons (Lrg.)'
-    });
+      
+    function getArea(polygon) {
+      // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
+      const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
+      // console.log(geodesicArea+"geodes area");
+      // console.log(planarArea+"planar area")
+      return planarArea;
 
-    // First instance of layer
-    let layer = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagons (Lrg.)'
-    });
+    }
 
     const map = new Map({
       basemap: "hybrid",
-      // layers: [group_layer_Chugach, group_layer_Tongass]
       layers: [layer]
     });
 
@@ -203,60 +110,29 @@ require([
       container: "main-map",
       highlightOptions: {
         color: "orange"
-      },
-      // extent: map.extent
-      zoom: 6,
-      center: [-141, 60]
-      // extent: map.Extent
+      }
+      // zoom: 6,
+      // center: [-90, 37]
+      // extent:
     });
     var storeResults = null;
 
+
+
+
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
-    // view.when().then(()=>{
-    view.when().then(() => {
+    view.when().then(()=>{
+      
 
-      const radio_button_layer_dict = {
-        "chugach-huc10-radio-wrapper": chugach_huc10,
-        "chugach-huc8-radio-wrapper": chugach_huc8,
-        "chugach-huc6-radio-wrapper": chugach_huc6,
-        "chugach-small-hex-radio-wrapper": chugach_natl_forest_hex_m,
-        "chugach-med-hex-radio-wrapper": chugach_natl_forest_hex_l,
-        "chugach-lrg-hex-radio-wrapper": chugach_natl_forest_hex_xl,
-        "chugach-ecosection-radio-wrapper": chugach_natl_forest_ecosection,
-        "chugach-lta-radio-wrapper": chugach_natl_forest_lta,
-        "chugach-boundary-radio-wrapper": chugach_natl_forest_boundary,
-        "tongass-huc10-radio-wrapper": tongass_huc_10,
-        "tongass-huc8-radio-wrapper": tongass_huc_8,
-        "tongass-huc6-radio-wrapper": tongass_huc_6,
-        "tongass-small-hex-radio-wrapper": tongass_hex_m,
-        "tongass-med-hex-radio-wrapper": tongass_hex_l,
-        "tongass-lrg-hex-radio-wrapper": tongass_hex_xl,
-        "tongass-ecosection-radio-wrapper": tongass_ecosection,
-        "tongass-lta-radio-wrapper": tongass_lta
-      };
-  
-      // console.log(Object.keys(radio_button_layer_dict)[0]);
-  
-  
-      Object.keys(radio_button_layer_dict).map((r) => {
-        const radio_button_div = document.getElementById(r);
-        console.log(r);
-        console.log(radio_button_div);
-        radio_button_div.addEventListener('click', () => {
-          layer = radio_button_layer_dict[r];
-          view.map = null;
-
-          const map = new Map({
-            basemap: "hybrid",
-            // layers: [group_layer_Chugach, group_layer_Tongass]
-            layers: [layer]
-          });
-
-          view.map = map;
-          
-        })
+      // Zoom 2 ext of layer!
+      layer.when(()=>{
+        // console.log('setting extent');
+        view.extent = layer.fullExtent;
       });
+
+      // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
+      //const screenshotDiv = document.getElementById("screenshotDiv");
 
       // Updated based on whether the user has clilcked or dragged
       let hasUserSelected = false;
@@ -270,8 +146,6 @@ require([
 
       // *INSTANTIATE CLASSES*
 
-
-      // ONCLICK AND USER SCROLL FUNCTIONALITY FOR SIDE CHART UPDATES. BELOW
       empty_chart = CreateChart({});
       // empty_chart.updateChartContent(view, layer);
 
@@ -328,7 +202,8 @@ require([
      
       let drawPnt, graphic, ctrlKey = false, moveCtrlKey = false, highlight, statesLyrView;
 
-layer.when(function(){
+
+      layer.when(function(){
         view.whenLayerView(layer).then(function(layerView) {
           statesLyrView = layerView;
         });
@@ -699,6 +574,9 @@ layer.when(function(){
 
       toggleSidebar.hamburgerToggle("accordion-item-2", "accordion-item-2-a");
 
+      toggleSidebar.hamburgerToggle("accordion-item-3", "accordion-item-3-a");
+      toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-4-a");
+
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
       toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
       toggleSidebar.hamburgerToggle("encroachment-qs", "accordion-item-1-b");
@@ -714,28 +592,38 @@ layer.when(function(){
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-j");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
 
-      toggleSidebar.hamburgerToggle("map-layer-selection", "map-layer-selection-items");
+      // Create an empty chart as CreateChart object
+      // const empty_chart = CreateChart({});
+      // empty_chart.chartVisibleFeatures(view, layer, ["Change---Fast Loss", "Change---Slow Loss"]);
 
 
-      // COMMENTED OUT THIS BELOW PDF CREATION FUNCTIONALITY - THROWS AN ERROR IN THIS VERSION - WILL NEED TO INCORPORATE CS'S FUNCTIONALITY FROM MAIN BRANCH >
 
-      // Function used to create a chart. 
-      // document.getElementById("pdf-button").addEventListener("click", () => {
-      //   view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
 
-      //     const imageElement = document.getElementsByClassName(
-      //       "js-screenshot-image"
-      //     )[0];
+      // Create a div to populate 
+      let div = document.getElementById("side-chart");
+      // Create a paragraph in the div
+      let p = document.createElement("p");
+      div.append(p);
 
-      //     imageElement.src = screenshot.dataUrl;
-      //     imageElement.height = screenshot.data.height;
-      //     imageElement.width = screenshot.data.width;
-      //     d_pdf.downloadPDF(storeResults);
+      // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS.
+      document.getElementById("accordion-item-1-a").onclick = () => {
+        if (document.getElementById("chart-canvas") != null){
+          document.getElementById("chart-canvas").remove();
+      };
 
-      //   });
+        p.textContent="Please Select a question.";
+        // document.getElementById("side-chart").innerHTML = "";
+        // p.innerHTML = "";
 
-      // });
-
+        // assumes that we have a blank dropdown menu 
+        if ( document.getElementById("accordion-item-1-a").value == "" ){
+          
+          // Ask user to select question if they have not yet.
+          p.textContent = "Please select a question.";
+        }
+        else {
+          // if no blank value, clear out the chart 
+          p.textContent = "";
 
           p.textContent = c.createOutputObj(null, ["null"]);
         }
@@ -815,79 +703,22 @@ layer.when(function(){
         const d_pdf = DownloadPDF({});
 
 
-      // return layer
-    });
+        document.getElementById("pdf-button").addEventListener("click", () => {
+          view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
+
+            const imageElement = document.getElementsByClassName(
+              "js-screenshot-image"
+            )[0];
+
+            imageElement.src = screenshot.dataUrl;
+            imageElement.height = screenshot.data.height;
+            imageElement.width = screenshot.data.width;
+            setTimeout(d_pdf.downloadPDF(storeResults), 7000); //wait 7 ms before running function to let charts load (does this work?)
+
+          });
 
 
-
-
-    // I REMOVED BELOW ".THEN" PART OF SCRIPT TO GET MY FEATURE CLICK FUNCTIONALITY TO WORK - EITHER WE WILL NEED TO FIX THIS OR SUBSTITUTE IN THE VERSION OF THE SCRIPT FROM THE OTHER BRANCH - ONCLICK THROWS AN ERROR
-    
-    // .then(function (layer) {
-
-
-    //     // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
-    //     // This function will listen for user click, and then apply above query to features, activating our plotting class.
-    //     var storeResults = null;
-    //     // Take a screenshot at the same resolution of the current view  
-    //     view.on("click", eventAction);
-    //     //view.on("mouse-drag",eventAction);
-    //     function eventAction(e){
-    //       //click -> query -> zoom to selection -> highlight feature
-    //       view.graphics.removeAll(); // make sure to remmove previous highlighted feature
-    //       var query = new Query();
-    //       query.returnGeometry = true;
-    //       query.maxAllowableOffset = 0;
-    //       query.outFields = null;
-    //       query.where = "1=1";
-    //       query.num = 50;
-    //       query.geometry = e.mapPoint;          
-    //       layer.queryFeatures(query).then((results) => {
-    //         view.goTo({ target: results.features[0].geometry })
-    //         return results;
-    //       }).then((results)=>{             
-    //            //.then(function() {//, zoom:12});
-    //           if (view.extent) {  
-    //             // console.log("results len: " + results.features.length);  
-    //             if (results.features.length > 0) { 
-    //               //highlight selected feature
-    //               //view.whenLayerView(results).then(function(layerView){
-    //                 view.hitTest(e.mapPoint).then(function (response) {
-    //                 var graphics = response.results;
-    //                 graphics.forEach(function (g) {
-    //                   // console.log('graphic:' + g);
-  
-    //                   var geom = g.graphic.geometry;
-    //                   if (geom.type === "polygon") {
-    //                     var symbol = new SimpleFillSymbol({
-    //                       color: [205, 66, 47, .0001],
-    //                       style: "solid",
-    //                       outline: {
-    //                         color: [249, 226, 76],
-    //                         width: 1
-    //                       }
-    //                     });
-    //                     var graphic = new Graphic(geom, symbol);
-    //                     //console.log("graphic geom: "+graphic.geometry.Area())
-    //                     //results.features[0].planarArea = getArea(graphic.geometry);
-    //                     results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
-  
-    //                     view.graphics.add(graphic);
-    //                   }
-    //                 });
-    //               });
-    //               storeResults = results;
-    //             }
-    //           } 
-    //       });
-
-    //     }
-    // });
-
-
-
-    // I REMOVED ABOVE ".THEN" PART OF SCRIPT TO GET MY FEATURE CLICK FUNCTIONALITY TO WORK - EITHER WE WILL NEED TO FIX THIS OR SUBSTITUTE IN THE VERSION OF THE SCRIPT FROM THE OTHER BRANCH
-
-
+        });
+      //})
   }
 );
