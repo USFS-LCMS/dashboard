@@ -70,35 +70,8 @@ require([
           width: 1.3,
           color:'#00897B'
         }
-      }
+      },
     };
-
-    // LOAD IN LAYERS - look in template for layer list widget. 
-
-    // Get layers displayed. 
-    const chugach_urls = [
-      "LCMS-Summaries-ChugachHuc10-outID.geojson", "LCMS-Summaries-ChugachHuc6-outID.geojson",
-      "LCMS-Summaries-ChugachHuc8-outID.geojson", "LCMS-Summaries-ChugachNationalForestBasicOwnership-outID.geojson",
-      "LCMS-Summaries-ChugachNationalForestLandOwnership-outID.geojson", 
-      "LCMS-Summaries-ChugachNationalForestManagementAreas-outID.geojson",
-      "LCMS-Summaries-ChugachNationalForestPlanningUnits2002-outID.geojson", 
-      "LCMS-Summaries-ChugachNationalForestScenicIntegrityObjectives-outID.geojson",
-      "LCMS-Summaries-Chugach_National_Forest_Biome-outID.geojson", "LCMS-Summaries-Chugach_National_Forest_Boundary-outID.geojson",
-      "LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", 
-      "LCMS-Summaries-Chugach_National_Forest_Land_Type_Association-outID.geojson",
-      "LCMS-Summaries-Chugach_National_Forest_Landscape_Areas-outID.geojson",
-      "LCMS-Summaries-Hex_L_Chugach-outID.geojson", "LCMS-Summaries-Hex_M_Chugach-outID.geojson", 
-      "LCMS-Summaries-Hex_XL_Chugach-outID.geojson", "LCMS-Summaries-S_R10_CNF_Recommended_Wilderness_Multipart-outID.geojson",
-      "LCMS-Summaries-LandOwnershipStatus_CNF-outID.geojson"
-    ];
-
-    const tongass_urls = [
-      "LCMS-Summaries-Hex_L_Tongass-outID.geojson", "LCMS-Summaries-Hex_M_Tongass-outID.geojson",
-      "LCMS-Summaries-Hex_XL_Tongass-outID.geojson",
-      "LCMS-Summaries-TongassHuc10-outID.geojson", "LCMS-Summaries-TongassHuc6-outID.geojson", 
-      "LCMS-Summaries-TongassHuc8-outID.geojson", "LCMS-Summaries-TongassNationalForestEcologicalSubsections-outID.geojson",
-      "LCMS-Summaries-TongassNationalForestLandTypeAssociations-outID.geojson"
-    ];
 
     // Create all Tongass Layers
     const tongass_huc_10 = new GeoJSONLayer({
@@ -189,36 +162,8 @@ require([
       title: 'Chugach Hexagons (Lrg.)'
     });
 
-    // const layer = new GeoJSONLayer({
-    //   url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", // "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson", // 
-    //   renderer: renderer
-    // });
-
-    // const group_layer_Chugach = new GroupLayer({
-    //   listMode: 'show',
-    //   visibilityMode: 'exclusive',
-    //   layers: [chugach_huc10, chugach_huc8, chugach_huc6, chugach_natl_forest_boundary, chugach_natl_forest_ecosection, chugach_natl_forest_lta, chugach_natl_forest_hex_m, chugach_natl_forest_hex_l, chugach_natl_forest_hex_xl],
-    //   title: 'Chugach National Forest Layers'
-    // });
-
-    // const group_layer_Tongass = new GroupLayer({
-    //   listMode: 'show',
-    //   visibilityMode: 'exclusive',
-    //   layers: [tongass_huc_10, tongass_huc_8, tongass_huc_6, tongass_ecosection, tongass_lta, tongass_hex_m, tongass_hex_l, tongass_hex_xl],
-    //   title: 'Tongass National Forest Layers'
-    // });
-
-    // const layer = new GroupLayer({
-    //   listMode: 'show',
-    //   visibilityMode: 'exclusive',
-    //   layers: [
-    //     tongass_huc_10, tongass_huc_8, tongass_huc_6, tongass_ecosection, tongass_lta, tongass_hex_m, tongass_hex_l, tongass_hex_xl, chugach_huc10, chugach_huc8, chugach_huc6, 
-    //     chugach_natl_forest_boundary, chugach_natl_forest_ecosection, chugach_natl_forest_lta, chugach_natl_forest_hex_m, chugach_natl_forest_hex_l, chugach_natl_forest_hex_xl
-    //   ],
-    //   title: 'Tongass and Chugach National Forest Layers'
-    // })
-
-    const layer = new GeoJSONLayer({
+    // First instance of layer
+    let layer = new GeoJSONLayer({
       url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Chugach-outID.geojson",
       renderer: renderer,
       title: 'Chugach Hexagons (Lrg.)'
@@ -248,20 +193,47 @@ require([
     // view.when().then(()=>{
     view.when().then(() => {
 
-      // const layerList = new LayerList({
-      //   view: view
-      // });
+      const radio_button_layer_dict = {
+        "chugach-huc10-radio-wrapper": chugach_huc10,
+        "chugach-huc8-radio-wrapper": chugach_huc8,
+        "chugach-huc6-radio-wrapper": chugach_huc6,
+        "chugach-small-hex-radio-wrapper": chugach_natl_forest_hex_m,
+        "chugach-med-hex-radio-wrapper": chugach_natl_forest_hex_l,
+        "chugach-lrg-hex-radio-wrapper": chugach_natl_forest_hex_xl,
+        "chugach-ecosection-radio-wrapper": chugach_natl_forest_ecosection,
+        "chugach-lta-radio-wrapper": chugach_natl_forest_lta,
+        "chugach-boundary-radio-wrapper": chugach_natl_forest_boundary,
+        "tongass-huc10-radio-wrapper": tongass_huc_10,
+        "tongass-huc8-radio-wrapper": tongass_huc_8,
+        "tongass-huc6-radio-wrapper": tongass_huc_6,
+        "tongass-small-hex-radio-wrapper": tongass_hex_m,
+        "tongass-med-hex-radio-wrapper": tongass_hex_l,
+        "tongass-lrg-hex-radio-wrapper": tongass_hex_xl,
+        "tongass-ecosection-radio-wrapper": tongass_ecosection,
+        "tongass-lta-radio-wrapper": tongass_lta
+      };
+  
+      // console.log(Object.keys(radio_button_layer_dict)[0]);
+  
+  
+      Object.keys(radio_button_layer_dict).map((r) => {
+        const radio_button_div = document.getElementById(r);
+        console.log(r);
+        console.log(radio_button_div);
+        radio_button_div.addEventListener('click', () => {
+          layer = radio_button_layer_dict[r];
+          view.map = null;
 
-      // view.ui.add(layerList, "top-right");
+          const map = new Map({
+            basemap: "hybrid",
+            // layers: [group_layer_Chugach, group_layer_Tongass]
+            layers: [layer]
+          });
 
-      // // Zoom 2 ext of layer!
-      // layer.when(()=>{
-      //   // console.log('setting extent');
-      //   view.extent = layer.fullExtent;
-      // });
-
-      // const selectorElement = document.getElementById("features-select"); MAYBE BRING BACK LATER
-      //const screenshotDiv = document.getElementById("screenshotDiv");
+          view.map = map;
+          
+        })
+      });
 
       // Updated based on whether the user has clilcked or dragged
       let hasUserSelected = false;
@@ -522,6 +494,33 @@ require([
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
 
       toggleSidebar.hamburgerToggle("map-layer-selection", "map-layer-selection-items");
+
+
+      // ************************************************************  // testing function below > 
+
+      const get_clicked_radio = (radio_div_id) => { 
+        // should return id of radio div on click, 
+        // then do some other stuff
+        const radio_button_div = document.getElementById(radio_div_id);
+        
+        radio_button_div.addEventListener('click', () => {
+          console.log("aaaaa");
+        })
+      };
+
+      // get_clicked_radio('chugach-huc10-radio-select');
+
+
+
+      
+      // const ids = $('#map-layer-selection-items > .radio-button-wrapper').map(function() {
+      //   return this.id || null;
+      // }).get();
+
+      // console.log(ids);
+
+      // ************************************************************ // testing function above ^
+
 
       // Create an empty chart as CreateChart object
       // const empty_chart = CreateChart({});
