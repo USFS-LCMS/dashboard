@@ -335,6 +335,12 @@ input[type="checkbox"]+label {
 .hide {
   display: none;
 }
+.customPoint:hover,
+.customPoint.focus{
+  background: rgba(15, 223, 223, 0.7);
+  color: white;
+
+}
 
 .action-button {
   padding: 0.6em;

@@ -90,6 +90,7 @@ define([
                     responsive: true,
                     maintainAspectRatio: true,
                     aspectRatio: 1/0.6,
+                    devicePixelRatio:2,
                     title: {
                             display: true,
                             position:'top',
@@ -192,7 +193,7 @@ define([
 
             var years = range(1985,2020).map(i => i.toString());
             var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
-                          'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
+                          'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","808080","4780f3","1B1716"].map(c =>'#'+c),
                           'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
             var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
                         'Land_Cover':["Trees",
@@ -275,6 +276,7 @@ define([
               responsive: true,
               maintainAspectRatio: true,
               aspectRatio: 1/0.6,
+              devicePixelRatio:2,
                title: {
                     display: true,
                     position:'top',
@@ -397,6 +399,7 @@ define([
                   responsive: true,
                   maintainAspectRatio: true,
                   aspectRatio: 1/0.6,
+                  devicePixelRatio:2,
                    title: {
                         display: true,
                         position:'top',
