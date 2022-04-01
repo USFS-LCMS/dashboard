@@ -250,16 +250,27 @@ require([
         console.log(r);
         console.log(radio_button_div);
         radio_button_div.addEventListener('click', () => {
+          //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
+          highlight=null
+          map.remove(layer);
           layer = radio_button_layer_dict[r];
-          view.map = null;
+          //view.map = null;
 
-          const map = new Map({
-            basemap: "hybrid",
-            // layers: [group_layer_Chugach, group_layer_Tongass]
-            layers: [layer]
-          });
+          // const map = new Map({
+          //   basemap: "hybrid",
+          //   // layers: [group_layer_Chugach, group_layer_Tongass]
+          //   layers: [layer]
+          // });
 
-          view.map = map;
+          ///view.map = map;
+          map.add(layer);
+          
+
+          layer.when(function(){
+            view.whenLayerView(layer).then(function(layerView) {
+              statesLyrView = layerView;
+            });
+          })
           
         })
       });
@@ -669,6 +680,7 @@ require([
         layer//statesLyrView
           .queryFeatures(query)
           .then((results) => {
+            storeResults=results
             console.log("len "+results.features.length)
             if (results.features.length === 0) {
               clearSelection();
@@ -855,7 +867,7 @@ require([
             imageElement.src = screenshot.dataUrl;
             imageElement.height = screenshot.data.height;
             imageElement.width = screenshot.data.width;
-            setTimeout(d_pdf.downloadPDF(storeResults), 7000); //wait 7 ms before running function to let charts load (does this work?)
+            d_pdf.downloadPDF(storeResults); //wait 7 ms before running function to let charts load (does this work?)
 
           });
 
