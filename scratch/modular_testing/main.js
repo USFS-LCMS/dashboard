@@ -592,6 +592,8 @@ require([
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-j");
       toggleSidebar.hamburgerToggle("snow-glacier-qs", "accordion-item-1-k");
 
+      toggleSidebar.hamburgerToggle("map-layer-selection", "map-layer-selection-items");
+
       // Create an empty chart as CreateChart object
       // const empty_chart = CreateChart({});
       // empty_chart.chartVisibleFeatures(view, layer, ["Change---Fast Loss", "Change---Slow Loss"]);
