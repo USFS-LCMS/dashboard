@@ -205,7 +205,7 @@ canvas {
   display: none;
 }
 
-#accordion-item-1,#accordion-item-2, #forest-health-qs, #accordion-item-3, #accordion-item-4, #snow-glacier-qs, #climate-qs, #encroachment-qs {
+#accordion-item-1,#accordion-item-2, #forest-health-qs, #accordion-item-3, #accordion-item-4, #snow-glacier-qs, #climate-qs, #encroachment-qs,#map-layer-selection {
   cursor: pointer;
   text-align: left;
 }
@@ -217,10 +217,26 @@ canvas {
   
 }
 
-#r10-questions {
+#r10-questions, #map-layer-selection-items {
   display: none;
 }
 
+/* Radio button formatting */
+.radio-button-label {
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  display: inline;
+}
+
+.layer-radio-button {
+  display: inline;
+}
+
+.radio-button-wrapper {
+  display: block;
+  padding: 1em;
+}
 
 #fh-popout-1, #fh-popout-2, #fh-popout-3 {
   display: none;
@@ -346,6 +362,10 @@ input[type="checkbox"]+label {
 #side-chart {
   width: 40%;
   overflow-y: auto;
+}
+
+#map-layer-selection-accordion-items{
+  display:none;
 }
 
 /* #forest-health-question-1 {
