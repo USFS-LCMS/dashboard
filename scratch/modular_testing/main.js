@@ -123,6 +123,48 @@ require([
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when().then(()=>{
+
+      const radio_button_layer_dict = {
+        "chugach-huc10-radio-wrapper": chugach_huc10,
+        "chugach-huc8-radio-wrapper": chugach_huc8,
+        "chugach-huc6-radio-wrapper": chugach_huc6,
+        "chugach-small-hex-radio-wrapper": chugach_natl_forest_hex_m,
+        "chugach-med-hex-radio-wrapper": chugach_natl_forest_hex_l,
+        "chugach-lrg-hex-radio-wrapper": chugach_natl_forest_hex_xl,
+        "chugach-ecosection-radio-wrapper": chugach_natl_forest_ecosection,
+        "chugach-lta-radio-wrapper": chugach_natl_forest_lta,
+        "chugach-boundary-radio-wrapper": chugach_natl_forest_boundary,
+        "tongass-huc10-radio-wrapper": tongass_huc_10,
+        "tongass-huc8-radio-wrapper": tongass_huc_8,
+        "tongass-huc6-radio-wrapper": tongass_huc_6,
+        "tongass-small-hex-radio-wrapper": tongass_hex_m,
+        "tongass-med-hex-radio-wrapper": tongass_hex_l,
+        "tongass-lrg-hex-radio-wrapper": tongass_hex_xl,
+        "tongass-ecosection-radio-wrapper": tongass_ecosection,
+        "tongass-lta-radio-wrapper": tongass_lta
+      };
+  
+      // console.log(Object.keys(radio_button_layer_dict)[0]);
+  
+  
+      Object.keys(radio_button_layer_dict).map((r) => {
+        const radio_button_div = document.getElementById(r);
+        console.log(r);
+        console.log(radio_button_div);
+        radio_button_div.addEventListener('click', () => {
+          layer = radio_button_layer_dict[r];
+          view.map = null;
+
+          const map = new Map({
+            basemap: "hybrid",
+            // layers: [group_layer_Chugach, group_layer_Tongass]
+            layers: [layer]
+          });
+
+          view.map = map;
+          
+        })
+      });
       
 
       // Zoom 2 ext of layer!
