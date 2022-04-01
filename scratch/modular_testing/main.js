@@ -467,6 +467,8 @@ require([
     // click event for the select by rectangle button
     selectButton.addEventListener("click", () => {
       view.graphics.removeAll();
+      draw.reset();
+      action=null
       if (highlight){
         highlight.remove()
       }
@@ -533,8 +535,8 @@ require([
             } else {
               //zoom to selected (queried) features
               layer.queryExtent(query).then((response) => {
-              view.goTo(response.extent.expand(1.25)).catch((error) => {
-              console.error(error);
+                view.goTo(response.extent.expand(1.25)).catch((error) => {
+                  console.error(error);
             })});
               
               highlight = statesLyrView.highlight(results.features);
