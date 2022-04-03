@@ -19,6 +19,7 @@ require([
     "modules/CreateDropdown",
     "modules/ToggleSidebar",
     "modules/CreateStaticTemplates",
+    "modules/CreateLayersDict",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -47,6 +48,7 @@ require([
       CreateDropdown,
       ToggleSidebar,
       CreateStaticTemplates,
+      CreateLayersDict,
       Map, 
       MapView, 
       GeoJSONLayer, 
@@ -69,7 +71,6 @@ require([
 
     // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
     
-
     // Dictionary object that is supplied to the layer - visibility parameters.
     const renderer = {
       type: "simple",  
@@ -83,101 +84,10 @@ require([
       }
     };
 
-    // Create all Tongass Layers
-    const tongass_huc_10 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc10-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass HUC 10'
-    });
-    const tongass_huc_8 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc8-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass HUC 8'
-    });
-    const tongass_huc_6 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassHuc6-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass HUC 6'
-    });
-    const tongass_hex_m = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_M_Tongass-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Hexagon (Sm.)'
-    });
-    const tongass_hex_l = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_L_Tongass-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Hexagon (Med.)'
-    });
-    const tongass_hex_xl = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Tongass-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Hexagon (Lrg.)'
-    });
-    const tongass_ecosection = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassNationalForestEcologicalSubsections-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass Eco. Subsections'
-    });
-    const tongass_lta = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-TongassNationalForestLandTypeAssociations-outID.geojson",
-      renderer: renderer,
-      title: 'Tongass LTAs'
-    });
+    const ld = CreateLayersDict({});
+    const radio_button_layer_dict = ld.createLayersDict();
 
-    // Create all Chugach layers here
-    const chugach_huc10 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc10-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach HUC 10'
-    });
-    const chugach_huc8 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc8-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach HUC 8'
-    });
-    const chugach_huc6 = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-ChugachHuc6-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach HUC 6'
-    });
-    const chugach_natl_forest_boundary = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Boundary-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach NF Boundary'
-    });
-    const chugach_natl_forest_ecosection = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Eco. Subsections'
-    });
-    const chugach_natl_forest_lta = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Land_Type_Association-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach LTAs'
-    });
-    const chugach_natl_forest_hex_m = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_M_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagaons (Sm.)'
-    });
-    const chugach_natl_forest_hex_l = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_L_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagons (Med.)'
-    });
-    const chugach_natl_forest_hex_xl = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagons (Lrg.)'
-    });
-
-    // First instance of layer
-    let layer = new GeoJSONLayer({
-      url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Hex_XL_Chugach-outID.geojson",
-      renderer: renderer,
-      title: 'Chugach Hexagons (Lrg.)'
-    });
+    let layer = radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"];
 
 
     // LOAD IN LAYERS - look in template for layer list widget. 
@@ -216,55 +126,21 @@ require([
     var storeResults = null;
 
 
-
-
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when().then(()=>{
 
-      const radio_button_layer_dict = {
-        "chugach-huc10-radio-wrapper": chugach_huc10,
-        "chugach-huc8-radio-wrapper": chugach_huc8,
-        "chugach-huc6-radio-wrapper": chugach_huc6,
-        "chugach-small-hex-radio-wrapper": chugach_natl_forest_hex_m,
-        "chugach-med-hex-radio-wrapper": chugach_natl_forest_hex_l,
-        "chugach-lrg-hex-radio-wrapper": chugach_natl_forest_hex_xl,
-        "chugach-ecosection-radio-wrapper": chugach_natl_forest_ecosection,
-        "chugach-lta-radio-wrapper": chugach_natl_forest_lta,
-        "chugach-boundary-radio-wrapper": chugach_natl_forest_boundary,
-        "tongass-huc10-radio-wrapper": tongass_huc_10,
-        "tongass-huc8-radio-wrapper": tongass_huc_8,
-        "tongass-huc6-radio-wrapper": tongass_huc_6,
-        "tongass-small-hex-radio-wrapper": tongass_hex_m,
-        "tongass-med-hex-radio-wrapper": tongass_hex_l,
-        "tongass-lrg-hex-radio-wrapper": tongass_hex_xl,
-        "tongass-ecosection-radio-wrapper": tongass_ecosection,
-        "tongass-lta-radio-wrapper": tongass_lta
-      };
-  
-      // console.log(Object.keys(radio_button_layer_dict)[0]);
-  
-  
+      // Map over the html hooks for each available layer in layer selection list. 
       Object.keys(radio_button_layer_dict).map((r) => {
+        // Add an event listener to each radio button
         const radio_button_div = document.getElementById(r);
-        console.log(r);
-        console.log(radio_button_div);
         radio_button_div.addEventListener('click', () => {
           //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
           highlight=null
           map.remove(layer);
           layer = radio_button_layer_dict[r];
-          //view.map = null;
 
-          // const map = new Map({
-          //   basemap: "hybrid",
-          //   // layers: [group_layer_Chugach, group_layer_Tongass]
-          //   layers: [layer]
-          // });
-
-          ///view.map = map;
           map.add(layer);
-          
 
           layer.when(function(){
             view.whenLayerView(layer).then(function(layerView) {
