@@ -20,9 +20,11 @@ require([
     "modules/ToggleSidebar",
     "modules/CreateStaticTemplates",
     "modules/CreateLayersDict",
+    "modules/CreateImgLayerDict",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
+    "esri/layers/ImageryLayer",
     "esri/rest/support/Query",
     "esri/Color",
     "esri/Graphic",
@@ -49,9 +51,11 @@ require([
       ToggleSidebar,
       CreateStaticTemplates,
       CreateLayersDict,
+      CreateImgLayerDict,
       Map, 
       MapView, 
       GeoJSONLayer, 
+      ImageryLayer,
       Query,
       Color,
       Graphic,
@@ -84,10 +88,18 @@ require([
       }
     };
 
+    // Make layers accessible to dropdown
     const ld = CreateLayersDict({});
     const radio_button_layer_dict = ld.createLayersDict();
 
     let layer = radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"];
+
+    
+    const ild = CreateImgLayerDict({});
+    ild.createImgLayerButtons();
+
+    const img_layer_dict = ild.createImgLayerDict();
+
 
 
     // LOAD IN LAYERS - look in template for layer list widget. 
@@ -129,6 +141,22 @@ require([
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when().then(()=>{
+
+      let img_layer = img_layer_dict['landcover-button-wrapper'];
+      map.add(img_layer);
+
+      Object.keys(img_layer_dict).map((r) => {
+        const radio_button_div = document.getElementById(r);
+        radio_button_div.addEventListener('click', () => {
+          //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
+          highlight=null
+          map.remove(img_layer);
+          img_layer = img_layer_dict[r];
+
+          map.add(img_layer);
+          
+        })
+      })
 
       // Map over the html hooks for each available layer in layer selection list. 
       Object.keys(radio_button_layer_dict).map((r) => {
