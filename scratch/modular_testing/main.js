@@ -21,6 +21,7 @@ require([
     "modules/CreateStaticTemplates",
     "modules/CreateLayersDict",
     "modules/CreateImgLayerDict",
+    "modules/MetricSelectionButtons",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -52,6 +53,7 @@ require([
       CreateStaticTemplates,
       CreateLayersDict,
       CreateImgLayerDict,
+      MetricSelectionButtons,
       Map, 
       MapView, 
       GeoJSONLayer, 
@@ -97,6 +99,9 @@ require([
     
     const ild = CreateImgLayerDict({});
     ild.createImgLayerButtons();
+
+    const metric_button = MetricSelectionButtons({});
+    metric_button.createMetricButtons();
 
     const img_layer_dict = ild.createImgLayerDict();
 
