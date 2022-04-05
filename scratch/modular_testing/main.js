@@ -21,6 +21,7 @@ require([
     "modules/CreateStaticTemplates",
     "modules/CreateLayersDict",
     "modules/CreateImgLayerDict",
+    "modules/SelectionFunctions",
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GeoJSONLayer",
@@ -52,6 +53,7 @@ require([
       CreateStaticTemplates,
       CreateLayersDict,
       CreateImgLayerDict,
+      SelectionFunctions,
       Map, 
       MapView, 
       GeoJSONLayer, 
@@ -93,6 +95,12 @@ require([
     const radio_button_layer_dict = ld.createLayersDict();
 
     let layer = radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"];
+    //store layers that are in map
+    var featureDict = {"chugach-lrg-hex-radio-wrapper":radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"]}
+    console.log(Object.keys(featureDict)[0]+"is feature dict one")
+
+    //layer view dictionary
+    let layerDict = {"chugach-lrg-hex-radio-wrapper":null}
 
     
     const ild = CreateImgLayerDict({});
@@ -110,15 +118,7 @@ require([
     // });
 
       
-    function getArea(polygon) {
-      // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
-      const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
-      // console.log(geodesicArea+"geodes area");
-      // console.log(planarArea+"planar area")
-      return planarArea;
-
-    }
-
+   
     const map = new Map({
       basemap: "hybrid",
       layers: [layer]
@@ -136,6 +136,7 @@ require([
       // extent:
     });
     var storeResults = null;
+    var resultsDict = {};
 
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
@@ -149,7 +150,7 @@ require([
         const radio_button_div = document.getElementById(r);
         radio_button_div.addEventListener('click', () => {
           //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
-          highlight=null
+          //highlight=null
           map.remove(img_layer);
           img_layer = img_layer_dict[r];
 
@@ -162,26 +163,37 @@ require([
       Object.keys(radio_button_layer_dict).map((r) => {
         // Add an event listener to each radio button
         const radio_button_div = document.getElementById(r);
-        radio_button_div.addEventListener('click', () => {
-          //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
-          highlight=null
-          map.remove(layer);
+        radio_button_div.addEventListener('change', e => {
           layer = radio_button_layer_dict[r];
-
-          map.add(layer);
-
-          layer.when(function(){
-            view.whenLayerView(layer).then(function(layerView) {
-              statesLyrView = layerView;
-            });
-          })
+          if (e.target.checked){
+            featureDict[r]= layer;
+            highlight=null;
+            console.log("checkbox is checked")
+            map.add(layer);
+            layer.when(function(){
+              view.whenLayerView(layer).then(function(layerView) {
+                statesLyrView = layerView;
+                layerDict[r] = layerView;
+              });
+            })
+            
+          }
+          else{
+            delete featureDict[r]
+            delete layerDict[r];
+            console.log("checkbox is NOT checked..");
+            //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
+            highlight=null;
+            map.remove(layer);
+          }        
           
         })
       });
       
 
       // Zoom 2 ext of layer!
-      layer.when(()=>{
+      //Object.values(featureDict)[0]
+      Object.values(featureDict)[0].when(()=>{
         // console.log('setting extent');
         view.extent = layer.fullExtent;
       });
@@ -194,10 +206,10 @@ require([
 
       // Create a new query instance, and set some default settings. 
       let query = new Query();
-      query.returnGeometry = true;
-      query.outFields = null; 
-      query.where = "1=1";
-      query.num = 50;
+      // query.returnGeometry = true;
+      // query.outFields = null; 
+      // query.where = "1=1";
+      // query.num = 50;
 
       // *INSTANTIATE CLASSES*
 
@@ -218,7 +230,7 @@ require([
                   // If we've stopped navigating, run a query of features
                   if(!view.navigating  && viewWatched  && pastExtent !== view.extent) {
                       pastExtent = view.extent;
-                      layer.queryFeatures({
+                      Object.values(featureDict)[0].queryFeatures({
                           geometry: view.extent,
                           returnGeometry: true
                       }).then( (results) => {
@@ -238,46 +250,69 @@ require([
           }
       })
       /////////////////////////////////////////////////////////////////////////////////////////////////
-      ///// CODE TO CTRL+CLICK TO SELECT MULTIPLE POLYGONS
-      /////////////////////////////////////////////////////////////////////////////////////////////////
+      ///// CODE TO CTRL+CLICK + selection by rectangle TO SELECT MULTIPLE POLYGONS
+      ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+      /*
+      1. when checkbox is checked, make sure layer displays
+      2. when selecting, iterate through layers and select all underlying layers
+      3. when creating table, iterate through each feat. in storeResults to add new row for each
+      4. fix area calc (currently calcs total area for first feature)
+      5. in report, iterate through each feature class and create new page for each with its own charts/tables
+      */
+
+      function getArea(polygon) {
+          // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
+          const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
+          // console.log(geodesicArea+"geodes area");
+          // console.log(planarArea+"planar area")
+          return planarArea;
+    
+        }
+    
+
+      //set up variables
       const pntGraphics = new GraphicsLayer();
       let viewClickEvtHandler = null, viewMouseMoveEvtHandler = null;
-      var renderer = {
-          type: "simple", // autocasts as new SimpleRenderer()
-          symbol: {
-            type: "simple-fill", // autocasts as new SimpleFillSymbol()
-            color: [255, 255, 255, 0.5],
-            style: "none",
-            outline: {  // autocasts as new SimpleLineSymbol()
-              color: "white",
-              width: 2
-            }
-          }
-        };
-     
       let drawPnt, graphic, ctrlKey = false, moveCtrlKey = false, highlight, statesLyrView;
 
+      //set up renderers (symbologies)
+      // var renderer = {
+      //     type: "simple", // autocasts as new SimpleRenderer()
+      //     symbol: {
+      //         type: "simple-fill", // autocasts as new SimpleFillSymbol()
+      //         color: [255, 255, 255, 0.5],
+      //         style: "none",
+      //         outline: {  // autocasts as new SimpleLineSymbol()
+      //         color: "white",
+      //         width: 2
+      //         }
+      //     }
+      //     };  
+      var sym = {
+          // cursor point symbol for when selecting by point or ctrl+clicking
+              type: "simple-marker",
+              style: "circle",
+              color: [0, 255, 255, 0.6],
+              size: "8px",
+              outline: {
+              color: [0, 255, 255, 1],
+              width: 1
+              }
+          };         
 
-      layer.when(function(){
-        view.whenLayerView(layer).then(function(layerView) {
+      //initialize layer view to current layer view
+      Object.values(featureDict)[0].when(function(){
+          view.whenLayerView(Object.values(featureDict)[0]).then(function(layerView) {
           statesLyrView = layerView;
-        });
+          layerDict[Object.keys(featureDict)[0]] = layerView;
+          });
       })
 
       const draw = new Draw({
-        view: view
-      });
-
-      var sym = {
-        type: "simple-marker",
-        style: "circle",
-        color: [0, 255, 255, 0.6],
-        size: "8px",
-        outline: {
-          color: [0, 255, 255, 1],
-          width: 1
-        }
-      };
+          view: view
+      });           
 
       // view.ui.add("point-button", "top-left");
 
@@ -291,334 +326,359 @@ require([
       //     });
       //   });
       // }
-    
+      let highlights = []
+      
       function drawPoint() {
-        if(viewMouseMoveEvtHandler){
+          if(viewMouseMoveEvtHandler){
           viewMouseMoveEvtHandler.remove()
           viewMouseMoveEvtHandler = null
-        }
-        if(viewClickEvtHandler){
+          }
+          if(viewClickEvtHandler){
           viewClickEvtHandler.remove()
           viewClickEvtHandler = null
-        }
-        const action = draw.create("point");
-        viewMouseMoveEvtHandler = view.on('pointer-move', (evt) => {
+          }
+          const action = draw.create("point");
+          viewMouseMoveEvtHandler = view.on('pointer-move', (evt) => {
           //when mouse is moved, check if ctrl key is pressed
           if (evt.native.ctrlKey) {moveCtrlKey = true;}
           else{moveCtrlKey = false;}
-        })
-        viewClickEvtHandler = view.on('pointer-down', (evt)=>{
+          })
+          viewClickEvtHandler = view.on('pointer-down', (evt)=>{
           //when mouse is clicked, check if ctrl key is pressed
           if (evt.native.ctrlKey) {
-            console.log("ctrl: "+evt.native.ctrlKey)
-            ctrlKey = true;
+              console.log("ctrl: "+evt.native.ctrlKey)
+              ctrlKey = true;
           }else{
-            ctrlKey = false;
+              ctrlKey = false;
           }
-        })
-        //removed any existing highlight
-        if (highlight) {
-          highlight.remove();
+          })
+          //removed any existing highlight
+          // Object.values(layerDict).forEach((l)=>{
+          //   if (highlight) {
+          //     highlight.remove();
+          //     }
+
+          // });  
+        //remove highlight from multiple layers at once
+        if (highlights.length > 0) {
+          console.log(highlights.length+"len of highlight")
+          highlights.forEach(function(highlight) {
+            highlight.remove();
+          });
+          highlights = [];
+        }else if(highlight){
+          highlight.remove()
+          highlights = [];
         }
-  
-        action.on("cursor-update", function (evt) {
-          view.graphics.removeAll();
-          drawPnt = new Point({
-            x: evt.coordinates[0],
-            y: evt.coordinates[1],
-            spatialReference: view.spatialReference
+
+          action.on("cursor-update", function (evt) {
+            view.graphics.removeAll();
+            drawPnt = new Point({
+                x: evt.coordinates[0],
+                y: evt.coordinates[1],
+                spatialReference: view.spatialReference
           });
           graphic = new Graphic({
-            geometry: drawPnt,
-            symbol: sym
+              geometry: drawPnt,
+              symbol: sym
           });
           view.graphics.add(graphic);
           if(ctrlKey && !moveCtrlKey){  //
-            //if the ctrl button was held when the mouse was clicked (pointer-down) 
-            //and was NOT pressed when the cursor was moving?
-            // then reset the graphics and re-select
+              //if the ctrl button was held when the mouse was clicked (pointer-down) 
+              //and was NOT pressed when the cursor was moving?
+              // then reset the graphics and re-select
 
-            //i.e. dont run selectStates func. until mouse moves while CTRL button NOT clicked
-            //ie. if ctrl button clicked and mouse is moving -- wait
-            //if ctrl button not clicked and mouse is moving -- dont do anything
-            draw.reset(); //resets drawing by clearing active action
-            view.graphics.removeAll(); //remove graphics
-            selectStates();
+              //i.e. dont run selectStates func. until mouse moves while CTRL button NOT clicked
+              //ie. if ctrl button clicked and mouse is moving -- wait
+              //if ctrl button not clicked and mouse is moving -- dont do anything
+              draw.reset(); //resets drawing by clearing active action
+              view.graphics.removeAll(); //remove graphics
+              selectStates();
           }
-        });
+          });
 
-        action.on("draw-complete", function (evt) {
+          action.on("draw-complete", function (evt) {
           console.log("draw complete"+"ctrl: "+ctrlKey)
           drawPnt = new Point({
-            x: evt.coordinates[0],
-            y: evt.coordinates[1],
-            spatialReference: view.spatialReference
+              x: evt.coordinates[0],
+              y: evt.coordinates[1],
+              spatialReference: view.spatialReference
           });
 
           graphic = new Graphic({
-            geometry: drawPnt,
-            symbol: sym
+              geometry: drawPnt,
+              symbol: sym
           });
           pntGraphics.add(graphic);
           if (ctrlKey) {
-            drawPoint(); //recursive (this is wrapped up in drawPoint() )
+              drawPoint(); //recursive (this is wrapped up in drawPoint() )
           } else {
-            view.graphics.removeAll();
-            selectStates();
+              view.graphics.removeAll();
+              selectStates();
           }
           //view.add(graphic)
 
-        });
+          });
 
-        view.focus();
+          view.focus();
       };
-      //weird: use must move mouse from multiselected polygons in order for them to get highlighted
+      //weird: user must move mouse from multiselected polygons in order for them to get highlighted
       //ie event to trigger highlight is move of mouse without ctrl clicked
       //need to highlight selected feature as soon as as mouse clicks 
       //i.e. NOT when draw event is over I guess
+      
 
       function selectStates(){
-        ctrlKey = false
-        moveCtrlKey = false
-        if(viewMouseMoveEvtHandler){
+          console.log("selectStates")
+          ctrlKey = false
+          moveCtrlKey = false
+          if(viewMouseMoveEvtHandler){
           viewMouseMoveEvtHandler.remove()
           viewMouseMoveEvtHandler = null
-        }
-        if(viewClickEvtHandler){
+          }
+          if(viewClickEvtHandler){
           viewClickEvtHandler.remove()
           viewClickEvtHandler = null
-        }
-        let mp = new Multipoint({
+          }
+          let mp = new Multipoint({
           spatialReference: view.spatialReference
-        });
-        let pntArray = pntGraphics.graphics.map(function(gra){
+          });
+          let pntArray = pntGraphics.graphics.map(function(gra){
           mp.addPoint(gra.geometry);
-        });
-        
-        const query = {
+          });
+          
+          const query = {
           geometry: mp,
           outFields: ["*"],
           outSpatialReference: view.spatialReference,
           returnGeometry: true
-        };
-        
-        layer.queryFeatures(query,{returnGeometry:true}).then(function(results){
-
-          //zoom to selected (queried) features
-          layer.queryExtent(query).then((response) => {
-            view.goTo(response.extent.expand(1.25)).catch((error) => {
-              console.error(error);
-            })});
-
-          storeResults=results
-          console.log("results "+storeResults)
-          const graphics = results.features; 
-          //view.goTo(graphics)
-
-          console.log("setting chart from click")
-          empty_chart = CreateChart({});
-          ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
-          
+          };
           // remove existing highlighted features
-          if (highlight) {
+          if(highlight){
             highlight.remove();
           }
-
-          // highlight query results
-          highlight = statesLyrView.highlight(graphics);
-          pntGraphics.removeAll();
-          ////
-          var totalArea=0;
-          console.log("len "+results.features.length)
-          graphics.forEach(function (g) { 
-            
-          //get geometry of each selected features and turn it into a graphic for area calculation
-          var geom = g.geometry;
           
-          if (geom.type === "polygon") {     
-            var graphicTemp = new Graphic(geom); 
+
+          Object.keys(featureDict).forEach((r) =>{
             
-            totalArea += getArea(graphicTemp.geometry);
-            console.log("total area:"+totalArea)              
-          }
-        });
-        results.features[0].attributes["planarArea"] = totalArea
-                          
-          
-        }).catch(function(err){
-          console.error(err);
-        })
-      }
-       
-  
+            var layer =featureDict[r]
+            console.log("now..."+layer)
 
+            layer.queryFeatures(query,{returnGeometry:true}).then(function(results){
 
-    //       /////////////////////////////////////////////////////////////////////////////////////////////////
-    // //////// CODE TO DRAW RECTANGLE TO SELECT MULTIPLE POLYGON FEATURES 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////
-    // let myLayerView;
-    // layer
-    //   .when(() => {
-    //     view.whenLayerView(layer).then(function (layerView) {
-    //       myLayerView = layerView;
-    //     });
-    //   });
-    //   // .catch(errorCallback);
-
-    // // create a new instance of a FeatureTable
-    // const featureTable = new FeatureTable({
-    //   view: view,
-    //   layer: layer,
-    //   highlightOnRowSelectEnabled: true,
-    //   fieldConfigs: [
-    //     {
-    //       name: "outID",
-    //       label: "outID"
-    //     },       
-      
-    //   ],
-    //   container: document.getElementById("tableDiv")
-    // });
-
-    // // this array will keep track of selected feature objectIds to
-    // // sync the layerview feature effects and feature table selection
-    // let features = [];
-
-    // // Listen for the table's selection-change event
-    // featureTable.on("selection-change", (changes) => {
-    //   // if the feature is unselected then remove the objectId
-    //   // of the removed feature from the features array
-    //   changes.removed.forEach((item) => {
-    //     const data = features.find((data) => {
-    //       return data === item.outID;
-    //     });
-    //     if (data) {
-    //       features.splice(features.indexOf(data), 1);
-    //     }
-    //   });
-
-    //   // If the selection is added, push all added selections to array
-    //   changes.added.forEach((item) => {
-    //     features.push(item.outID);
-    //   });
-
-    //   // set excluded effect on the features that are not selected in the table
-    //   myLayerView.featureEffect = {
-    //     filter: {
-    //       objectIds: features
-    //     },
-    //     excludedEffect: "grayscale(50%)"//"blur(5px) grayscale(90%) opacity(40%)"
-    //   };
-    // });
-
-    // // polygonGraphicsLayer will be used by the sketchviewmodel
-    // // show the polygon being drawn on the view
-    const polygonGraphicsLayer = new GraphicsLayer();
-    map.add(polygonGraphicsLayer);
-
-    // // add the select by rectangle button the view
-     const selectButton = document.getElementById("select-by-rectangle");
-
-    // click event for the select by rectangle button
-    selectButton.addEventListener("click", () => {
-      view.graphics.removeAll();
-      draw.reset();
-      action=null
-      if (highlight){
-        highlight.remove()
-      }
-      view.popup.close();
-      sketchViewModel.create("rectangle");
-    });
-
-    // add the clear selection button the view
-    // document
-    //   .getElementById("clear-selection")
-    //   .addEventListener("click", () => {
-    //     //featureTable.clearSelection();
-    //     //featureTable.filterGeometry = null;
-    //     polygonGraphicsLayer.removeAll();
-    //     pntGraphics.removeAll();
-    //     highlight.remove();
-
-    //   });
-
-    // create a new sketch view model set its layer
-    const sketchViewModel = new SketchViewModel({
-      view: view,
-      layer: polygonGraphicsLayer
-    });
-
-    // Once user is done drawing a rectangle on the map
-    // use the rectangle to select features on the map and table
-    sketchViewModel.on("create", async (event) => {
-      if (event.state === "complete") {
-        // this polygon will be used to query features that intersect it
-        const geometries = polygonGraphicsLayer.graphics.map(function (
-          graphic
-        ) {
-          return graphic.geometry;
-        });
-        const queryGeometry = await geometryEngineAsync.union(
-          geometries.toArray()
-        );
-        selectFeatures(queryGeometry);
-      }
-    });
-
-    // This function is called when user completes drawing a rectangle
-    // on the map. Use the rectangle to select features in the layer and table
-    function selectFeatures(geometry) {
-      if (highlight){
-        highlight.remove();
-      }
-      if (statesLyrView) {
-        // create a query and set its geometry parameter to the
-        // rectangle that was drawn on the view
-        const query = {
-          geometry: geometry,
-          outFields: ["*"]
-        };
-        // query graphics from the csv layer view. Geometry set for the query
-        // can be polygon for point features and only intersecting geometries are returned
-        layer//statesLyrView
-          .queryFeatures(query)
-          .then((results) => {
-            storeResults=results
-            console.log("len "+results.features.length)
-            if (results.features.length === 0) {
-              clearSelection();
-            } else {
               //zoom to selected (queried) features
               layer.queryExtent(query).then((response) => {
-                view.goTo(response.extent.expand(1.25)).catch((error) => {
+                  view.goTo(response.extent.expand(1.25)).catch((error) => {
                   console.error(error);
-            })});
-              
-              highlight = statesLyrView.highlight(results.features);
+                  })});
 
-              // here we get to use queried features. chart here
+              storeResults=results
+              resultsDict[r] = results
+              console.log("results "+storeResults.features[0])
+              const graphics = results.features; 
+              //view.goTo(graphics)
+
+              console.log("setting chart from click")
               empty_chart = CreateChart({});
               ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+              
+              // // remove existing highlighted features
+              // if (highlight) {
+              //     highlight.remove();
+              // }
 
-              // pass in the query results to the table by calling its selectRows method.
-              // This will trigger FeatureTable's selection-change event
-              // where we will be setting the feature effect on the csv layer view
-              //featureTable.filterGeometry = geometry;
-              //featureTable.selectRows(results.features);
-            }
+              // highlight query results
+              console.log(layerDict[r]+" is layer dict [r]")
+              highlight = layerDict[r].highlight(graphics);
+              highlights.push(highlight);
+              pntGraphics.removeAll();
+              ////
+              var totalArea=0;
+              console.log("len "+results.features.length)
+              var j=-1
+              graphics.forEach(function (g) {         
+                  j+=1                
+                  //get geometry of each selected features and turn it into a graphic for area calculation
+                  var geom = g.geometry;                  
+                  if (geom.type === "polygon") {     
+                      var graphicTemp = new Graphic(geom);                            
+                      totalArea += getArea(graphicTemp.geometry);
+                      console.log("total area:"+totalArea)  
+                      results.features[j].attributes["planarArea"] = getArea(graphicTemp.geometry);             
+                  }
+              });
+              //results.features[0].attributes["planarArea"] = totalArea //stores area for all selected polygons not just the first feature
+                                              
+          }).catch(function(err){
+          console.error(err);
+          })
+
+          })
+          
+          
+      }      
+      /////////////////////// SELECT BY RECTANGLE ////////////////////////////////////////
+  
+      // // polygonGraphicsLayer will be used by the sketchviewmodel
+      // // show the polygon being drawn on the view
+      const polygonGraphicsLayer = new GraphicsLayer();
+      map.add(polygonGraphicsLayer);
+
+      // // add the select by rectangle button the view
+      const selectButton = document.getElementById("select-by-rectangle");
+
+      // click event for the select by rectangle button
+      selectButton.addEventListener("click", () => {
+          view.graphics.removeAll();
+          draw.reset();
+          action=null
+          if (highlight){
+              highlight.remove()
+          }
+          view.popup.close();
+          sketchViewModel.create("rectangle");
+      });
+
+      // add the clear selection button the view
+      // document
+      //   .getElementById("clear-selection")
+      //   .addEventListener("click", () => {
+      //     //featureTable.clearSelection();
+      //     //featureTable.filterGeometry = null;
+      //     polygonGraphicsLayer.removeAll();
+      //     pntGraphics.removeAll();
+      //     highlight.remove();
+
+      //   });
+
+      // create a new sketch view model set its layer
+      const sketchViewModel = new SketchViewModel({
+        view: view,
+        layer: polygonGraphicsLayer
+      });
+
+      // Once user is done drawing a rectangle on the map
+      // use the rectangle to select features on the map and table
+      sketchViewModel.on("create", async (event) => {
+      if (event.state === "complete") {
+          // this polygon will be used to query features that intersect it
+          const geometries = polygonGraphicsLayer.graphics.map(function (
+          graphic
+          ) {
+          return graphic.geometry;
           });
-          polygonGraphicsLayer.removeAll();//view.graphics.removeAll()
-          // .catch(errorCallback);
+          const queryGeometry = await geometryEngineAsync.union(
+            geometries.toArray()
+          );
+          selectFeatures(queryGeometry);
       }
-    }
+      });
 
-    function errorCallback(error) {
+      // This function is called when user completes drawing a rectangle
+      // on the map. Use the rectangle to select features in the layer and table
+      function selectFeatures(geometry) {
+          if (highlight){
+              highlight.remove();
+          }
+
+
+          if (statesLyrView) {
+              // create a query and set its geometry parameter to the
+              // rectangle that was drawn on the view
+              const query = {
+              geometry: geometry,
+              outFields: ["*"]
+              };
+              // query graphics from the csv layer view. Geometry set for the query
+              // can be polygon for point features and only intersecting geometries are returned
+              layer//statesLyrView
+              .queryFeatures(query, {returnGeometry:true})
+              .then((results) => {
+                  storeResults=results
+                  resultsDict[r] = results
+                  console.log("len "+results.features.length)
+                  if (results.features.length === 0) {
+                    clearSelection();
+                  } else {
+                  //zoom to selected (queried) features
+                  layer.queryExtent(query).then((response) => {
+                      view.goTo(response.extent.expand(1.25)).catch((error) => {
+                      console.error(error);
+                  })});
+
+                  // var j=-1
+                  // var totalArea=0
+                  // console.log(results.features[0].geometry)
+                  // var graphics = results.features
+                  // for (let j=0; j<results.features.length; j++){
+                  //   console.log(j+" is j")
+                  //   var geom= graphics[j].geometry;
+                    
+                  //   var graphicTemp= new Graphic(geom);
+                  //   console.log("geom: "+geom);
+                  //   console.log("graphic temp: "+graphicTemp);
+                  //   var thisArea = getArea(graphicTemp.geometry);
+                  //   results.features[j].attributes["planarArea"] = thisArea
+                  //   console.log(thisArea+"is area")
+
+                  // }
+                  var totalArea=0;
+                  const newGraphics = results.features;
+                  var k=-1
+                  newGraphics.forEach(function (g) {         
+                      k+=1                
+                      //get geometry of each selected features and turn it into a graphic for area calculation
+                      var geom = g.geometry;                  
+                      if (geom.type === "polygon") {     
+                          var graphicTemp = new Graphic(geom);                            
+                          // totalArea += getArea(graphicTemp.geometry);
+                           console.log("total area:"+totalArea)  
+                          // results.features[k].attributes["planarArea"] = getArea(graphicTemp.geometry);             
+                      }
+                  });
+
+
+
+                  // graphics.forEach(function (g) { 
+                    
+                  //     j+=1                
+                  //     //get geometry of each selected features and turn it into a graphic for area calculation
+                  //     var geom = g.geometry;    
+                  //     console.log("graphics"+geom)                      
+                  //     if (geom.type === "polygon") {     
+                  //         var graphicTemp = new Graphic(geom);                            
+                  //         totalArea += getArea(graphicTemp.geometry);
+                  //         console.log("total area:"+totalArea)  
+                  //         results.features[j].attributes["planarArea"] = getArea(graphicTemp.geometry);             
+                  //     }
+                  // });
+                  
+                  highlight = statesLyrView.highlight(results.features);
+                  highlights.push(highlight);
+
+                  // here we get to use queried features. chart here
+                  empty_chart = CreateChart({});
+                  ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+
+                  // pass in the query results to the table by calling its selectRows method.
+                  // This will trigger FeatureTable's selection-change event
+                  // where we will be setting the feature effect on the csv layer view
+                  //featureTable.filterGeometry = geometry;
+                  //featureTable.selectRows(results.features);
+                  }
+              });
+              polygonGraphicsLayer.removeAll();//view.graphics.removeAll()
+              // .catch(errorCallback);
+          }
+      }
+
+      function errorCallback(error) {
       console.log("error happened:", error.message);
-    }
+      }
+      console.log("final store results"+storeResults);
 
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////
+      
+      // ////////////////////////////////////////////////////////////////////////////////////////////////
       
       
       // TOGGLE SIDEBAR VISIBILITY ***
@@ -689,94 +749,28 @@ require([
 
       return layer
     })
-    
-    // .then(function (layer) {
+
+    // PDF Download Class
+    const d_pdf = DownloadPDF({});
 
 
-    //     // * RESPOND TO USER MOUSE CLICK ON A FEATURE *
-    //     // This function will listen for user click, and then apply above query to features, activating our plotting class.
-        
-    //     // Take a screenshot at the same resolution of the current view  
-    //     view.on("click", eventAction);
-    //     //view.on("mouse-drag",eventAction);
-    //     function eventAction(e){
-    //       //click -> query -> zoom to selection -> highlight feature
-    //       view.graphics.removeAll(); // make sure to remmove previous highlighted feature
-    //       var query = new Query();
-    //       query.returnGeometry = true;
-    //       query.maxAllowableOffset = 0;
-    //       query.outFields = null;
-    //       query.where = "1=1";
-    //       query.num = 50;
-    //       query.geometry = e.mapPoint;          
-    //       layer.queryFeatures(query).then((results) => {
-    //         view.goTo({ target: results.features[0].geometry })
-    //         return results;
-    //       }).then((results)=>{             
-    //            //.then(function() {//, zoom:12});
-    //           if (view.extent) {  
-    //             // console.log("results len: " + results.features.length);  
-    //             if (results.features.length > 0) { 
-    //               //highlight selected feature
-    //               //view.whenLayerView(results).then(function(layerView){
-    //                 view.hitTest(e.mapPoint).then(function (response) {
-    //                 var graphics = response.results;
-    //                 // graphics.forEach(function (g) {
-    //                 //   // console.log('graphic:' + g);
-  
-    //                 //   var geom = g.graphic.geometry;
-    //                 //   if (geom.type === "polygon") {
-    //                 //     // var symbol = new SimpleFillSymbol({
-    //                 //     //   color: [205, 66, 47, .0001],
-    //                 //     //   style: "solid",
-    //                 //     //   outline: {
-    //                 //     //     color: [249, 226, 76],
-    //                 //     //     width: 1
-    //                 //     //   }
-    //                 //     // });
-    //                 //     var graphic = new Graphic(geom);//, symbol);
-                        
-    //                 //     results.features[0].attributes["planarArea"] = getArea(graphic.geometry);
-  
-    //                 //     //view.graphics.add(graphic);
-    //                 //   }
-    //                 // });
-    //               });
-    //             //});
-    //             // Chart class
-    //               // const c = CreateChart({});
-    //               // c.createOutputObj(results, ["Change---Fast Loss"], "side-chart"); // OOF, CHANGE THIS, THIS IS JUST HARDCODED 
-    //               // c.setContentInfo(results, "Land_Cover", "side-chart")  
-    //               // c.createOutputObj(results, [button_relationships[document.getElementById("tree-shrub-question").value]])
-    //               // storeResults = results;
-    //             }
-    //           } //)
-    //         });
+    document.getElementById("pdf-button").addEventListener("click", () => {
+      view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
 
-    //       }
+        const imageElement = document.getElementsByClassName(
+          "js-screenshot-image"
+        )[0];
 
-          
-    //     });
-        // PDF Download Class
-        const d_pdf = DownloadPDF({});
+        imageElement.src = screenshot.dataUrl;
+        imageElement.height = screenshot.data.height;
+        imageElement.width = screenshot.data.width;
+        console.log("store results:"+storeResults)
+        d_pdf.downloadPDF(resultsDict); //wait 7 ms before running function to let charts load (does this work?)
+
+      });
 
 
-        document.getElementById("pdf-button").addEventListener("click", () => {
-          view.takeScreenshot({ format: 'png', width: 2048, height: 2048 }).then(function (screenshot) {
-
-            const imageElement = document.getElementsByClassName(
-              "js-screenshot-image"
-            )[0];
-
-            imageElement.src = screenshot.dataUrl;
-            imageElement.height = screenshot.data.height;
-            imageElement.width = screenshot.data.width;
-            d_pdf.downloadPDF(storeResults); //wait 7 ms before running function to let charts load (does this work?)
-
-          });
-
-
-        });
+    });
       //})
   }
 );
