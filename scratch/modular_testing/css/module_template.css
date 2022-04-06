@@ -223,19 +223,19 @@ canvas {
   display: none;
 }
 
-/* CHECK BUTTON Radio button formatting */
-.check-button-label, .radio-button-label {
+/* Radio button formatting */
+.radio-button-label, .check-button-label, .checkbox-label {
   cursor: pointer;
   text-align: center;
   font-size: 16px;
   display: inline;
 }
 
-.layer-check-button, .layer-radio-button {
+.layer-radio-button, .layer-check-button, .layer-checkbox {
   display: inline;
 }
 
-.check-button-wrapper, .radio-button-wrapper {
+.radio-button-wrapper, .checkbox-wrapper {
   display: block;
   padding: 1em;
 }
