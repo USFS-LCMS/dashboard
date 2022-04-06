@@ -1,9 +1,11 @@
 define([
     "dojo/_base/declare",
-    "modules/ToggleSidebar"
+    "modules/ToggleSidebar",
+    "modules/MetricToggleDict"
 ], function(
     declare,
-    ToggleSidebar
+    ToggleSidebar,
+    MetricToggleDict
     ){
  
     return declare(null,{
@@ -14,6 +16,8 @@ define([
            
         createMetricButtons: function(html_hook = "#multilevel-accordion-menu-elems", h1_id = "lcms-metric-selection", title = "LCMS Metric Selection") {
 
+            mtd = MetricToggleDict({});
+
             ts = ToggleSidebar({});
 
 
@@ -23,7 +27,7 @@ define([
             <ul id="${h1_id}-items"></ul>
             `
 
-            // // Write this to the document
+            // Write this to the document
             $(html_hook).append(html_wrapper);
             
             // Get a list of names of things
@@ -34,6 +38,18 @@ define([
             }
 
             // *** BUTTON CREATION AND DICTIONARY BUILDING *** //
+
+            // Create on-off dictionary
+            const on_off_dict = {
+                "Change": {},
+                "Land_Cover": {},
+                "Land_Use": {}
+            }
+
+
+
+            // console.log(on_off_dict);
+            // console.log(on_off_dict['Change'])
 
             // Loop over keys to make them display one by one as buttons
             Object.keys(names).forEach((n) => {
@@ -54,15 +70,34 @@ define([
 
                     // Create a radio button for each metric subtype
                     const metric_subtype_html = `
-                    <div align="left" class="checkbox-wrapper" id="${t_nospace}-checkbox-wrapper">
-                        <input type="checkbox" class="layer-checkbox" id="${t_nospace}-checkbox-select" name="layer-checkbox" value="${t_nospace}-checkbox-select">
-                        <label for="${t_nospace}-checkbox-select" class="checkbox-label">${t}</label>
+                    <div align="left" class="checkbox-wrapper" id="${n}-${t_nospace}-checkbox-wrapper">
+                        <input type="checkbox" class="layer-checkbox" id="${n}-${t_nospace}-checkbox-select" name="layer-checkbox" value="${n}-${t_nospace}-checkbox-select">
+                        <label for="${n}-${t_nospace}-checkbox-select" class="checkbox-label">${t}</label>
                     </div>  
                     `
 
                     // Append radio button to class wrapper list
                     $(`#${n}-${h1_id}-items`).append(metric_subtype_html);
 
+
+                    // Make a list to check which is really true??
+                    let tfarray = [];
+
+                    // const tfarray2 = [];
+
+                    $(`#${n}-${t_nospace}-checkbox-wrapper`).on('click', () => {
+                        tfarray.push($(`#${n}-${t_nospace}-checkbox-select:checked`).attr("id")===undefined);
+                        console.log(tfarray[0]);
+                        if (tfarray.length > 1){
+                            // tfarray2.push(tfarray[0])
+                            on_off_dict[n][`${n}-${t_nospace}-checkbox-wrapper`] = tfarray[0]
+                            console.log($(`#${n}-${t_nospace}-checkbox-select`).attr("id"))
+                            console.log(tfarray[0])
+
+                            tfarray = [];
+                            console.log(on_off_dict)
+                        } 
+                    })
                 });
 
                 // Text align sub headings
@@ -81,6 +116,17 @@ define([
 
             });
 
+            // Write false values to the dictionary for each type
+            Object.keys(on_off_dict).forEach((in_type) => { 
+                $.map($(`#${in_type}-lcms-metric-selection-items > div`), div => {
+                    on_off_dict[in_type][div.id] = false
+                    // console.log(in_type)
+                    // console.log(div.id);
+                })
+            });
+
+            console.log(on_off_dict)
+
             // *** BUTTON CREATION AND DICTIONARY BUILDING *** //
 
 
@@ -96,11 +142,6 @@ define([
             // Toggle categories
             ts.hamburgerToggle(`${h1_id}`, `${h1_id}-items`);
 
-        },
-
-        toggleMetrics: function() {
-            
         }
-
     })
 });
