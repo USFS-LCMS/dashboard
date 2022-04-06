@@ -455,7 +455,8 @@ require([
           };
           // remove existing highlighted features
           if(highlight){
-            highlight.remove();
+            console.log("highlight removed within selectStates function")
+            highlight.remove();//possible issue with removing highglights bc we don't reset highlights the list to []
           }
           
 
@@ -532,9 +533,17 @@ require([
           view.graphics.removeAll();
           draw.reset();
           action=null
-          if (highlight){
-              highlight.remove()
+          if (highlights.length > 0) {
+            console.log(highlights.length+"len of highlight")
+            highlights.forEach(function(highlight) {
+              highlight.remove();
+            });
+            highlights = [];
+          }else if(highlight){
+            highlight.remove()
+            highlights = [];
           }
+  
           view.popup.close();
           sketchViewModel.create("rectangle");
       });
@@ -578,16 +587,21 @@ require([
       // on the map. Use the rectangle to select features in the layer and table
       function selectFeatures(geometry) {
           if (highlight){
-              highlight.remove();
+              highlight.remove(); //possible isse with removing from highlights[]
           }
-
-
-          if (statesLyrView) {
+          Object.keys(featureDict).forEach((r) =>{            
+            var layer =featureDict[r];
+            var layrView = layerDict[r];
+            console.log("now..."+layer)
+          if (layrView) {
               // create a query and set its geometry parameter to the
               // rectangle that was drawn on the view
+            
               const query = {
               geometry: geometry,
-              outFields: ["*"]
+              outFields: ["*"],
+              outSpatialReference: view.spatialReference,
+              returnGeometry:true
               };
               // query graphics from the csv layer view. Geometry set for the query
               // can be polygon for point features and only intersecting geometries are returned
@@ -606,22 +620,6 @@ require([
                       console.error(error);
                   })});
 
-                  // var j=-1
-                  // var totalArea=0
-                  // console.log(results.features[0].geometry)
-                  // var graphics = results.features
-                  // for (let j=0; j<results.features.length; j++){
-                  //   console.log(j+" is j")
-                  //   var geom= graphics[j].geometry;
-                    
-                  //   var graphicTemp= new Graphic(geom);
-                  //   console.log("geom: "+geom);
-                  //   console.log("graphic temp: "+graphicTemp);
-                  //   var thisArea = getArea(graphicTemp.geometry);
-                  //   results.features[j].attributes["planarArea"] = thisArea
-                  //   console.log(thisArea+"is area")
-
-                  // }
                   var totalArea=0;
                   const newGraphics = results.features;
                   var k=-1
@@ -630,30 +628,13 @@ require([
                       //get geometry of each selected features and turn it into a graphic for area calculation
                       var geom = g.geometry;                  
                       if (geom.type === "polygon") {     
-                          var graphicTemp = new Graphic(geom);                            
+                          //var graphicTemp = new Graphic(geom);                            
                           // totalArea += getArea(graphicTemp.geometry);
                            console.log("total area:"+totalArea)  
                           // results.features[k].attributes["planarArea"] = getArea(graphicTemp.geometry);             
                       }
                   });
-
-
-
-                  // graphics.forEach(function (g) { 
-                    
-                  //     j+=1                
-                  //     //get geometry of each selected features and turn it into a graphic for area calculation
-                  //     var geom = g.geometry;    
-                  //     console.log("graphics"+geom)                      
-                  //     if (geom.type === "polygon") {     
-                  //         var graphicTemp = new Graphic(geom);                            
-                  //         totalArea += getArea(graphicTemp.geometry);
-                  //         console.log("total area:"+totalArea)  
-                  //         results.features[j].attributes["planarArea"] = getArea(graphicTemp.geometry);             
-                  //     }
-                  // });
-                  
-                  highlight = statesLyrView.highlight(results.features);
+                  highlight = layrView.highlight(results.features);
                   highlights.push(highlight);
 
                   // here we get to use queried features. chart here
@@ -670,6 +651,7 @@ require([
               polygonGraphicsLayer.removeAll();//view.graphics.removeAll()
               // .catch(errorCallback);
           }
+        });
       }
 
       function errorCallback(error) {
