@@ -224,18 +224,18 @@ canvas {
 }
 
 /* Radio button formatting */
-.radio-button-label {
+.radio-button-label, .checkbox-label {
   cursor: pointer;
   text-align: center;
   font-size: 16px;
   display: inline;
 }
 
-.layer-radio-button {
+.layer-radio-button, .layer-checkbox {
   display: inline;
 }
 
-.radio-button-wrapper {
+.radio-button-wrapper, .checkbox-wrapper {
   display: block;
   padding: 1em;
 }

@@ -75,46 +75,29 @@ require([
       Multipoint
       ) => {
 
-    // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
-    
-    // Dictionary object that is supplied to the layer - visibility parameters.
-    const renderer = {
-      type: "simple",  
-      symbol: {
-        type: "simple-fill",  
-        color: [ 75, 75, 75, 0.3 ],
-        outline: {  
-          width: 1.3,
-          color:'#00897B'
-        }
-      }
-    };
+
+    // *** CREATE DROPDOWN MENUS USING OUR MODULES *** // 
 
     // Make layers accessible to dropdown
     const ld = CreateLayersDict({});
     const radio_button_layer_dict = ld.createLayersDict();
 
+    // Set the first (default) visible layer
     let layer = radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"];
-
     
+    // Create Image Layer buttons
     const ild = CreateImgLayerDict({});
     ild.createImgLayerButtons();
+    // Add functionality to image layer buttons - link to actual image layers
+    const img_layer_dict = ild.createImgLayerDict();
+    // Set first (default) image layer
+    let img_layer = img_layer_dict['landcover-button-wrapper'];
 
+    // Create metric selection buttons
     const metric_button = MetricSelectionButtons({});
     metric_button.createMetricButtons();
 
-    const img_layer_dict = ild.createImgLayerDict();
-
-
-
-    // LOAD IN LAYERS - look in template for layer list widget. 
-
-    // const layer = new GeoJSONLayer({
-    //   url: "../../geojson/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",//"https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries-Chugach_National_Forest_Ecosection-outID.geojson",
-    //   renderer: renderer
-    // });
-
-      
+    // Function used in area selector.
     function getArea(polygon) {
       // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
       const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
@@ -123,6 +106,9 @@ require([
       return planarArea;
 
     }
+
+
+    // *** BELOW SEE ARCGIS SETUP STEPS - RENDERING LAYER AND MAP ETC. ***
 
     const map = new Map({
       basemap: "hybrid",
@@ -136,9 +122,6 @@ require([
       highlightOptions: {
         color: "orange"
       }
-      // zoom: 6,
-      // center: [-90, 37]
-      // extent:
     });
     var storeResults = null;
 
@@ -146,10 +129,10 @@ require([
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when().then(()=>{
-
-      let img_layer = img_layer_dict['landcover-button-wrapper'];
+      
       map.add(img_layer);
 
+      // Add selection functionality to image layers
       Object.keys(img_layer_dict).map((r) => {
         const radio_button_div = document.getElementById(r);
         radio_button_div.addEventListener('click', () => {
@@ -157,13 +140,13 @@ require([
           highlight=null
           map.remove(img_layer);
           img_layer = img_layer_dict[r];
-
+          
           map.add(img_layer);
           
         })
-      })
+      });
 
-      // Map over the html hooks for each available layer in layer selection list. 
+      // Map over the html hooks for each available layer in vector layer selection list. 
       Object.keys(radio_button_layer_dict).map((r) => {
         // Add an event listener to each radio button
         const radio_button_div = document.getElementById(r);
@@ -180,10 +163,9 @@ require([
               statesLyrView = layerView;
             });
           })
-          
         })
       });
-      
+
 
       // Zoom 2 ext of layer!
       layer.when(()=>{
@@ -204,10 +186,8 @@ require([
       query.where = "1=1";
       query.num = 50;
 
-      // *INSTANTIATE CLASSES*
-
+      // Create an empty chart object/canvas to fill with LCMS metrics
       empty_chart = CreateChart({});
-      // empty_chart.updateChartContent(view, layer);
 
       // Below, watch for movement of map and update charts based on visible features.
       let pastExtent = view.extent;

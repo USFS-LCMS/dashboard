@@ -31,15 +31,17 @@ define([
                         'Land_Cover':["Trees",
             "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
                         'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
-                        }
+            }
+
+            // *** BUTTON CREATION AND DICTIONARY BUILDING *** //
 
             // Loop over keys to make them display one by one as buttons
             Object.keys(names).forEach((n) => {
 
                 // Create a subtitle and sublist for each lcms metric type
                 const metric_type_html = `
-                <h2 id="${h1_id}-${n}">${n}</h2>
-                <ul id="${h1_id}-${n}-items"></ul>
+                <h2 id="${n}-${h1_id}">${n}</h2>
+                <ul id="${n}-${h1_id}-items"></ul>
                 `
 
                 // Append this new sub-list into the outside 'wrapper' list
@@ -47,34 +49,42 @@ define([
 
                 names[n].forEach((t) => {
 
+
+                    const t_nospace = t.replace(/[^A-Z0-9]+/ig, "_");
+
                     // Create a radio button for each metric subtype
                     const metric_subtype_html = `
-                    <div align="left" class="radio-button-wrapper" id="${t}-button-wrapper">
-                        <input type="radio" class="layer-radio-button" id="${t}-radio-select" name="layer-button" value="${t}-radio-select">
-                        <label for="${t}-radio-select" class="radio-button-label">${t}</label>
+                    <div align="left" class="checkbox-wrapper" id="${t_nospace}-checkbox-wrapper">
+                        <input type="checkbox" class="layer-checkbox" id="${t_nospace}-checkbox-select" name="layer-checkbox" value="${t_nospace}-checkbox-select">
+                        <label for="${t_nospace}-checkbox-select" class="checkbox-label">${t}</label>
                     </div>  
                     `
 
                     // Append radio button to class wrapper list
-                    $(`#${h1_id}-${n}-items`).append(metric_subtype_html);
-
-                    
+                    $(`#${n}-${h1_id}-items`).append(metric_subtype_html);
 
                 });
 
                 // Text align sub headings
-                $(`#${h1_id}-${n}`).css("text-align", "left");
-                $(`#${h1_id}-${n}`).css("cursor", "pointer");
+                $(`#${n}-${h1_id}`).css("text-align", "left");
+                $(`#${n}-${h1_id}`).css("cursor", "pointer");
                 
                 
                 // Hide sub-type names and options buttons.
-                // $(`#${h1_id}-${n}`).css("display", "none");
-                $(`#${h1_id}-${n}-items`).css("display", "none");
+                // $(`#${n}-${h1_id}`).css("display", "none");
+                $(`#${n}-${h1_id}-items`).css("display", "none");
 
                 // Create event listener to toggle sub-menu visibility.
-                ts.hamburgerToggle(`${h1_id}-${n}`, `${h1_id}-${n}-items`);
+                ts.hamburgerToggle(`${n}-${h1_id}`, `${n}-${h1_id}-items`);
+
+
 
             });
+
+            // *** BUTTON CREATION AND DICTIONARY BUILDING *** //
+
+
+            // *** FORMATTING *** //
 
             // Text align the top header
             $(`#${h1_id}`).css("text-align", "left");
@@ -83,9 +93,13 @@ define([
             // Hide sublist
             $(`#${h1_id}-items`).css("display", "none");
 
-            
+            // Toggle categories
             ts.hamburgerToggle(`${h1_id}`, `${h1_id}-items`);
 
+        },
+
+        toggleMetrics: function() {
+            
         }
 
     })
