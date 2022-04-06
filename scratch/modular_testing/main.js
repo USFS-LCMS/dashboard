@@ -173,6 +173,7 @@ require([
           else{
             delete featureDict[r]
             delete layerDict[r];
+            delete resultsDict[r]
             console.log("checkbox is NOT checked..");
             //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
             highlight=null;
@@ -255,8 +256,7 @@ require([
       function getArea(polygon) {
           // const geodesicArea = geometryEngine.geodesicArea(polygon, "square-kilometers");
           const planarArea = geometryEngine.planarArea(polygon, "square-kilometers");
-          // console.log(geodesicArea+"geodes area");
-          // console.log(planarArea+"planar area")
+         
           return planarArea;
     
         }
@@ -618,10 +618,10 @@ require([
                       //get geometry of each selected features and turn it into a graphic for area calculation
                       var geom = g.geometry;                  
                       if (geom.type === "polygon") {     
-                          //var graphicTemp = new Graphic(geom);                            
+                          var graphicTemp = new Graphic(geom);                            
                           // totalArea += getArea(graphicTemp.geometry);
-                           console.log("total area:"+totalArea)  
-                          // results.features[k].attributes["planarArea"] = getArea(graphicTemp.geometry);             
+                          // console.log("total area:"+totalArea)  
+                          results.features[k].attributes["planarArea"] = getArea(graphicTemp.geometry);             
                       }
                   });
                   highlight = layrView.highlight(results.features);
@@ -736,7 +736,7 @@ require([
         imageElement.src = screenshot.dataUrl;
         imageElement.height = screenshot.data.height;
         imageElement.width = screenshot.data.width;
-        console.log("store results:"+storeResults)
+        console.log("dictionary of results: "+resultsDict)
         d_pdf.downloadPDF(resultsDict); //wait 7 ms before running function to let charts load (does this work?)
 
       });

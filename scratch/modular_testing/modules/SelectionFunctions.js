@@ -253,14 +253,14 @@ define([
 
             // click event for the select by rectangle button
             selectButton.addEventListener("click", () => {
-            view.graphics.removeAll();
-            draw.reset();
-            action=null
-            if (highlight){
-                highlight.remove()
-            }
-            view.popup.close();
-            sketchViewModel.create("rectangle");
+                view.graphics.removeAll();
+                draw.reset();
+                action=null
+                if (highlight){
+                    highlight.remove()
+                }
+                view.popup.close();
+                sketchViewModel.create("rectangle");
             });
 
             // add the clear selection button the view
