@@ -1,7 +1,8 @@
 define([
     "dojo/_base/declare",
     "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js", // import chart js
-], function(declare, Chart){
+    "modules/UpdateChartsOnSelection"
+], function(declare, Chart, UpdateChartsOnSelection){
 
     return declare(null,{
 
@@ -17,7 +18,8 @@ define([
             /*
             Create a chart object and insert it into the chart div in main html
             */
-            
+
+
             // Check whether the user has selected anything - more info in main js
             if ( results != null ){
 

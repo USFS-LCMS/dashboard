@@ -19,6 +19,7 @@ require([
     "modules/CreateLayersDict",
     "modules/CreateImgLayerDict",
     "modules/MetricSelectionButtons",
+    "modules/UpdateChartsOnSelection",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -46,6 +47,7 @@ require([
       CreateLayersDict,
       CreateImgLayerDict,
       MetricSelectionButtons,
+      UpdateChartsOnSelection,
       Map, 
       MapView, 
       Query,
@@ -98,12 +100,10 @@ require([
       "Land_Use": {}
     }
     const metric_button = MetricSelectionButtons({});
-    metric_button.createMetricButtons(on_off_dict);
+    metric_button.createMetricButtons();
 
-
-
-
-
+    update_charts_watcher = UpdateChartsOnSelection({});
+    update_charts_watcher.updateChartOnMetricSelection(on_off_dict);
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
@@ -207,6 +207,9 @@ require([
       // Create an empty chart object/canvas to fill with LCMS metrics
       empty_chart = CreateChart({});
 
+      // Make sure chart updates when click event happens on layer selection buttons
+
+
       // Below, watch for movement of map and update charts based on visible features.
       let pastExtent = view.extent;
 
@@ -231,6 +234,9 @@ require([
                               // Call function below
                               // console.log(metric_button.on_off_dict)
                               ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+                              $('.checkbox-wrapper').on('click', (() => {
+                                ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+                              } ))
                               stillComputing = false;
                               viewWatched = false;
                           }else{
@@ -473,6 +479,9 @@ require([
               console.log("setting chart from click")
               empty_chart = CreateChart({});
               ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+              $('.checkbox-wrapper').on('click', (() => {
+                ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+              } ))
               
               // // remove existing highlighted features
               // if (highlight) {
