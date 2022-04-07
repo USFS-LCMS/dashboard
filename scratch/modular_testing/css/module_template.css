@@ -228,16 +228,20 @@ canvas {
   cursor: pointer;
   text-align: center;
   font-size: 16px;
-  display: inline;
+  font-family: 'Roboto Condensed', 'sans-serif';
+  display: inline-block;
+  margin-bottom: 0em;
+  margin-top: 0em;
+  vertical-align: middle;
+  padding:0%;
 }
 
 .layer-radio-button, .layer-check-button, .layer-checkbox {
-  display: inline;
+  display: inline; /* prev inline*/
 }
 
-.radio-button-wrapper, .checkbox-wrapper {
+.radio-button-wrapper, .checkbox-wrapper, .check-button-wrapper {
   display: block;
-  padding: 1em;
 }
 
 #fh-popout-1, #fh-popout-2, #fh-popout-3 {
