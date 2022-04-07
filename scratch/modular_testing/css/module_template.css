@@ -210,7 +210,11 @@ canvas {
   text-align: left;
 }
 
-#accordion-item-1-a , #accordion-item-1-b , #accordion-item-1-c , #accordion-item-1-d, #accordion-item-1-e, #accordion-item-1-f, #accordion-item-1-g, #accordion-item-1-h,#accordion-item-1-i, #accordion-item-1-j, #accordion-item-1-k, #accordion-item-2-a, #accordion-item-2-b, #accordion-item-2-c, #accordion-item-2-d, #accordion-item-3-a, #accordion-item-3-b, #accordion-item-3-c {
+#accordion-item-1-a , #accordion-item-1-b , #accordion-item-1-c , #accordion-item-1-d, 
+#accordion-item-1-e, #accordion-item-1-f, #accordion-item-1-g, #accordion-item-1-h,
+#accordion-item-1-i, #accordion-item-1-j, #accordion-item-1-k, #accordion-item-2-a, 
+#accordion-item-2-b, #accordion-item-2-c, #accordion-item-2-d, #accordion-item-3-a, 
+#accordion-item-3-b, #accordion-item-3-c {
   display: none;
   cursor: pointer;
   text-align: left;
@@ -235,8 +239,10 @@ canvas {
   vertical-align: middle;
   padding:0%;
   position:relative;
+  color:white;
 }
 .collapsible-label{  
+  /* label for collapsible class (dropdown menu headings with +/-) */
   cursor: pointer;
   text-align: left;
   font-size: 19px;
@@ -248,21 +254,34 @@ canvas {
   padding:2%;
   position:relative;
 }
-.radio-button-label:hover,.check-button-label:hover, .checkbox-label:hover,
-.radio-button-label:focus,.check-button-label:focus, .checkbox-label:focus{
+.radio-button-label:hover,.check-button-label:hover, .checkbox-label:hover, .question-label-class:hover,
+.radio-button-label:focus,.check-button-label:focus, .checkbox-label:focus, .question-label-class:focus {
   color:  rgba(15, 223, 223, 0.7);
+  cursor:pointer;
+}
+.collapsible{
+  outline:white;
+  font-size: 18px;  
+
 }
 
 .collapsible:after{
-  content:'\02795';
-  font-size: 13px;  
-  float: right;
-  padding-right: 5px;
-  padding-left: 1px;
-  margin-left:14px;  
+  content:'\002B';
+  color:white;
+  float: right;  
+  
+  
+  
 }
 .active:after {
-  content:"\2796";
+  content:"\2212";
+}
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
 }
 
 .layer-radio-button, .layer-check-button, .layer-checkbox {
