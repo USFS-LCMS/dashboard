@@ -43,12 +43,10 @@ define([
                 
                 // Swap!
                 if ( inside_sidebar_elem.style.display === 'none' ) {
-                    console.log("display=none in burger")
                     inside_sidebar_elem.style.display = 'block';
                 }
                 else {
                     inside_sidebar_elem.style.display = 'none';
-                    console.log("dis not none for 1st") //on first click does nothing;registeres this
                 }
                 // inside_sidebar_elem.style.overflow = 'auto';
             })
@@ -69,11 +67,9 @@ define([
                 
                 if ( elem_list.style.display === 'none') {
                     elem_list.style.display = 'block';
-                    console.log("and other display is none..")
                 }
                 else {
                     elem_list.style.display = 'none';
-                    console.log("display is not none for other")
                 }
 
             })

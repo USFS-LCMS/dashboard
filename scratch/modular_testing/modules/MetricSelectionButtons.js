@@ -45,7 +45,7 @@ define([
 
                 // Create a subtitle and sublist for each lcms metric type
                 const metric_type_html = `
-                <h2 id="${n}-${h1_id}">${n}</h2>
+                <h2 class=collapsible id="${n}-${h1_id}">${n}</h2>
                 <ul id="${n}-${h1_id}-items"></ul>
                 `
 
