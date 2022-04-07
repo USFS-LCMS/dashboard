@@ -15,17 +15,12 @@ require([
     "dojo/_base/array",
     "modules/CreateChart",
     "modules/DownloadPDF",
-    "modules/UserQuestionSelection_01",
-    "modules/CreateDropdown",
     "modules/ToggleSidebar",
-    "modules/CreateStaticTemplates",
     "modules/CreateLayersDict",
     "modules/CreateImgLayerDict",
     "modules/MetricSelectionButtons",
     "esri/Map",
     "esri/views/MapView",
-    "esri/layers/GeoJSONLayer",
-    "esri/layers/ImageryLayer",
     "esri/rest/support/Query",
     "esri/Color",
     "esri/Graphic",
@@ -47,17 +42,12 @@ require([
       arrayUtils,
       CreateChart,
       DownloadPDF,
-      UserQuestionSelection,
-      CreateDropdown,
       ToggleSidebar,
-      CreateStaticTemplates,
       CreateLayersDict,
       CreateImgLayerDict,
       MetricSelectionButtons,
       Map, 
       MapView, 
-      GeoJSONLayer, 
-      ImageryLayer,
       Query,
       Color,
       Graphic,
@@ -101,8 +91,18 @@ require([
     let img_layer = img_layer_dict['landcover-button-wrapper'];
 
     // Create metric selection buttons
+
+    let on_off_dict = {
+      "Change": {},
+      "Land_Cover": {},
+      "Land_Use": {}
+    }
     const metric_button = MetricSelectionButtons({});
-    metric_button.createMetricButtons();
+    metric_button.createMetricButtons(on_off_dict);
+
+
+
+
 
 
     // LOAD IN LAYERS - look in template for layer list widget. 
@@ -229,7 +229,8 @@ require([
                           stillComputing = true;
                           if(results.features.length>0){
                               // Call function below
-                              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+                              // console.log(metric_button.on_off_dict)
+                              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
                               stillComputing = false;
                               viewWatched = false;
                           }else{
@@ -471,7 +472,7 @@ require([
 
               console.log("setting chart from click")
               empty_chart = CreateChart({});
-              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
               
               // // remove existing highlighted features
               // if (highlight) {
@@ -505,7 +506,6 @@ require([
           })
 
           })
-          
           
       }      
       /////////////////////// SELECT BY RECTANGLE ////////////////////////////////////////
@@ -629,7 +629,7 @@ require([
 
                   // here we get to use queried features. chart here
                   empty_chart = CreateChart({});
-                  ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart"));
+                  ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart",on_off_dict));
 
                   // pass in the query results to the table by calling its selectRows method.
                   // This will trigger FeatureTable's selection-change event

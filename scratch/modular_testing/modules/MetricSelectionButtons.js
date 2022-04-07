@@ -10,11 +10,12 @@ define([
  
     return declare(null,{
 
-        constructor: function(options){
-            
+        constructor: function(){
+
+
         },
            
-        createMetricButtons: function(html_hook = "#multilevel-accordion-menu-elems", h1_id = "lcms-metric-selection", title = "LCMS Metric Selection") {
+        createMetricButtons: function(on_off_dict, html_hook = "#multilevel-accordion-menu-elems", h1_id = "lcms-metric-selection", title = "LCMS Metric Selection") {
 
             mtd = MetricToggleDict({});
 
@@ -39,18 +40,6 @@ define([
 
             // *** BUTTON CREATION AND DICTIONARY BUILDING *** //
 
-            // Create on-off dictionary
-            const on_off_dict = {
-                "Change": {},
-                "Land_Cover": {},
-                "Land_Use": {}
-            }
-
-
-
-            // console.log(on_off_dict);
-            // console.log(on_off_dict['Change'])
-
             // Loop over keys to make them display one by one as buttons
             Object.keys(names).forEach((n) => {
 
@@ -70,7 +59,7 @@ define([
 
                     // Create a radio button for each metric subtype
                     const metric_subtype_html = `
-                    <div align="left" class="checkbox-wrapper" id="${n}-${t_nospace}-checkbox-wrapper">
+                    <div align="left" class="checkbox-wrapper" id="${n}---${t_nospace}-checkbox-wrapper" name="${n}---${t}">
                         <input type="checkbox" class="layer-checkbox" id="${n}-${t_nospace}-checkbox-select" name="layer-checkbox" value="${n}-${t_nospace}-checkbox-select">
                         <label for="${n}-${t_nospace}-checkbox-select" class="checkbox-label">${t}</label>
                     </div>  
@@ -85,14 +74,16 @@ define([
 
                     // const tfarray2 = [];
 
-                    $(`#${n}-${t_nospace}-checkbox-wrapper`).on('click', () => {
+                    $(`#${n}---${t_nospace}-checkbox-wrapper`).on('click', () => {
+                        // console.log("somethin")
                         tfarray.push($(`#${n}-${t_nospace}-checkbox-select:checked`).attr("id")===undefined);
                         console.log(tfarray[0]);
                         if (tfarray.length > 1){
                             // tfarray2.push(tfarray[0])
-                            on_off_dict[n][`${n}-${t_nospace}-checkbox-wrapper`] = tfarray[0]
-                            console.log($(`#${n}-${t_nospace}-checkbox-select`).attr("id"))
-                            console.log(tfarray[0])
+                            on_off_dict[n][`${n}---${t}`] = tfarray[0]
+                            // console.log($(`#${n}-${t_nospace}-checkbox-select`).attr("id"))
+                            // console.log(tfarray[0])
+                            // console.log(on_off_dict);
 
                             tfarray = [];
                             console.log(on_off_dict)
@@ -119,13 +110,11 @@ define([
             // Write false values to the dictionary for each type
             Object.keys(on_off_dict).forEach((in_type) => { 
                 $.map($(`#${in_type}-lcms-metric-selection-items > div`), div => {
-                    on_off_dict[in_type][div.id] = false
-                    // console.log(in_type)
-                    // console.log(div.id);
+                    on_off_dict[in_type][div.getAttribute('name')] = false
                 })
             });
 
-            console.log(on_off_dict)
+            // console.log(on_off_dict)
 
             // *** BUTTON CREATION AND DICTIONARY BUILDING *** //
 

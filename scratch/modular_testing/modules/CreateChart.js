@@ -182,13 +182,13 @@ define([
         },
 
         // Create a chart in the side panel based on which of the metric groupings is selected.
-        setContentInfo: function(results, which_one, chart_div) {
+        setContentInfo: function(results, which_one, chart_div, on_off_dict) {
 
             function range(start, end) {
                 if(start === end) return [start];
                 return [start, ...range(start + 1, end)];
             }
-      
+
 
             var years = range(1985,2020).map(i => i.toString());
             var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
@@ -198,109 +198,127 @@ define([
                         'Land_Cover':["Trees",
             "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
                         'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
-                        }
+            }
 
+            // Print out the members of the dictionary that are true
+            const class_dict = on_off_dict[which_one];
+            const toggled_elems = Object.keys(class_dict).reduce(function (filtered, key) {
+              if (class_dict[key] === true) filtered[key] = class_dict[key];
+              return filtered;
+            }, {});
 
+            // Create a list of toggled elements and allow that to be what feeds the chart function
+            const fieldNames = Object.keys(toggled_elems);
 
-            var stacked = false;
-            var fieldNames = names[which_one].map(w => which_one + '---'+w);
-            var chartID = 'chart-canvas-'+which_one
-            var colorsI = 0;
+            const stacked = false;
+            const chartID = 'chart-canvas-'+which_one
+            let colorsI = 0;
             const total_area_fieldname = 'total_area';
-            // if(results.features.length>3){
-            //   var area_names = 'LCMS Summary for '+results.features.length.toString()+ ' areas'
-            // }else{
-            //   var area_names = results.features.map((f)=>f.attributes[titleField]).join(', ');
-            // }
-            
-            // console.log(area_names)
-            // var name =area_names + ' - '+which_one.replace('_',' ');
-            ///////////////////////////////////////////////////////////////////////
-            //Iterate across each field name and add up totals 
-            //First get 2-d array of all areas for each then sum the columns and divide by total area
-            var t = fieldNames.map(function(k){
-              var total_area = 0;
-              var total = [];
-              results.features.map(function(f){
-                var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
-                total_area = total_area + total_areaF;
-                total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
-               })
-              
-              var colSums = [];
-              for(var col = 0;col < total[0].length;col++){
-                var colSum = 0;
-                for(var row = 0;row < total.length;row++){
-                  colSum = colSum + total[row][col];
-                }
-                colSums.push(colSum);
-              };
-              //Convert back to pct
-              colSums = colSums.map((n)=>n/total_area*100)
+
+
+            if ( fieldNames.length > 0 ) {
               ///////////////////////////////////////////////////////////////////////
-              //Set up chart object
-                var out = {'borderColor':colors[which_one][colorsI],
-                'fill':false,
-                'data':colSums,
-                'label':k.split('---')[1],
-                pointStyle: 'line',
-                pointRadius:1,
-                'lineTension':0,
-                'borderWidth':2,
-                'steppedLine':false,
-                'showLine':true,
-                'spanGaps':true,
-                'fill' : stacked,
-                'backgroundColor':colors[which_one][colorsI]}
-                colorsI ++;
-                return out;
-              })
-    
-          //Clean out existing chart  
-          try{
-            chartJSChart.destroy(); 
-          }
-          catch(err){};
-          $(`#${chartID}`).remove(); 
-    
-          //Add new chart
-          $(`#${chart_div}`).append(`<canvas class = "chart" id="${chartID}"><canvas>`);
-          // $('#chartDiv').append('<hr>');
-          //Set up chart object
-          var chartJSChart = new Chart($(`#${chartID}`),{
-            type: 'line',
-            data: {"labels": years,
-            "datasets":t},
-            options:{
-              responsive: true,
-              maintainAspectRatio: true,
-              aspectRatio: 1/0.6,
-              devicePixelRatio:2,
-               title: {
-                    display: true,
-                    position:'top',
-                    // text: name,
-                    fontSize: 16
-                },
-                legend:{
-                  display:true,
-                  position:'bottom',
-                  fontSize:6,
-                  labels : {
-                    boxWidth:5,
-                    usePointStyle: true
+              //Iterate across each field name and add up totals 
+              //First get 2-d array of all areas for each then sum the columns and divide by total area
+              var t = fieldNames.map(function(k){
+                var total_area = 0;
+                var total = [];
+                results.features.map(function(f){
+                  var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
+                  total_area = total_area + total_areaF;
+                  total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
+                })
+                
+                var colSums = [];
+                for(var col = 0;col < total[0].length;col++){
+                  var colSum = 0;
+                  for(var row = 0;row < total.length;row++){
+                    colSum = colSum + total[row][col];
                   }
-                },
-                chartArea: {
-                    backgroundColor: '#D6D1CA'
-                },
-                scales: {
-                  yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'% Area'}}],
-                  xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
+                  colSums.push(colSum);
+                };
+                //Convert back to pct
+                colSums = colSums.map((n)=>n/total_area*100)
+                ///////////////////////////////////////////////////////////////////////
+                //Set up chart object
+                  var out = {'borderColor':colors[which_one][colorsI],
+                  'fill':false,
+                  'data':colSums,
+                  'label':k.split('---')[1],
+                  pointStyle: 'line',
+                  pointRadius:1,
+                  'lineTension':0,
+                  'borderWidth':2,
+                  'steppedLine':false,
+                  'showLine':true,
+                  'spanGaps':true,
+                  'fill' : stacked,
+                  'backgroundColor':colors[which_one][colorsI]}
+                  colorsI ++;
+                  return out;
+                })
+      
+            //Clean out existing chart  
+            try{
+              chartJSChart.destroy(); 
+            }
+            catch(err){};
+            $(`#${chartID}`).remove(); 
+      
+            //Add new chart
+            $(`#${chart_div}`).append(`<canvas class = "chart" id="${chartID}"><canvas>`);
+            // $('#chartDiv').append('<hr>');
+            //Set up chart object
+            var chartJSChart = new Chart($(`#${chartID}`),{
+              type: 'line',
+              data: {"labels": years,
+              "datasets":t},
+              options:{
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 1/0.6,
+                devicePixelRatio:2,
+                title: {
+                      display: true,
+                      position:'top',
+                      // text: name,
+                      fontSize: 16
+                  },
+                  legend:{
+                    display:true,
+                    position:'bottom',
+                    fontSize:6,
+                    labels : {
+                      boxWidth:5,
+                      usePointStyle: true
+                    }
+                  },
+                  chartArea: {
+                      backgroundColor: '#D6D1CA'
+                  },
+                  scales: {
+                    yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'% Area'}}],
+                    xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
+                  }
                 }
+              });
+            }
+            else{
+              try{
+                chartJSChart.destroy(); 
               }
-            });
-          // $(`#${chartID}`).height(350);
+              catch(err){};
+              $(`#${chartID}`).remove(); 
+        
+              //Add new chart
+              $(`#${chart_div}`).append(`<canvas class = "chart" id="${chartID}"><canvas>`);
+            }
+
+            
+            // var stacked = false;
+            // var fieldNames = names[which_one].map(w => which_one + '---'+w);
+            
+            
         },
 
         updateChartContent: function(in_view, in_layer) {
