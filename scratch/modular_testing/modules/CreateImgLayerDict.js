@@ -76,7 +76,7 @@ define([
 
         createImgLayerButtons: function() {
             const button_template = `
-            <h1 id="map-img-layer-selection">Image Layer Selection</h1>
+            <h1 class=collapsible id="map-img-layer-selection">Image Layer Selection</h1>
             <ul id="map-img-layer-selection-items">
 
               <div align="left" class="radio-button-wrapper" id="landcover-button-wrapper">

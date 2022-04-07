@@ -122,23 +122,29 @@
 
         <ul id="multilevel-accordion-menu" data-accordion-menu>
           <div id="multilevel-accordion-menu-elems">
-            <h1 id="accordion-item-1">R10 Questions</h1>
+            <h1 class=collapsible id="accordion-item-1">R10 Questions</h1>
             <ul id="r10-questions" data-accordion-menu>
-              <div id="climate-qs"><h1>CLIMATE CHANGE</h1></div>
+              <div class=collapsible id="climate-qs">
+                <label class=collapsible-label for="climate-qs">CLIMATE CHANGE</label>
+              </div>
               <ul id="accordion-item-1-a">
                   <input type="checkbox" name="q1-checkbox" id="q1" value="q1-True">
                   <label for="q1-a-checkbox" >Impacts of Climate Change</label>                  
                   <div id ="label-popout" class="q1-label-popout"><h3>Is climate change affecting landscapes and ecosystems on National Forest system lands?</h3></div>
               </ul>
 
-              <div id="encroachment-qs"><h1>ENCROACHMENT</h1></div>
+              <div class=collapsible id="encroachment-qs">
+                <label class=collapsible-label for="encroachment-qs">ENCROACHMENT</label>                
+              </div>
               <ul id="accordion-item-1-b">                
                   <input type="checkbox" name="q2-checkbox" id="q2" value="q2-True">
                   <label for="q2-checkbox" >Tree/Shrub Encroachment</label>                  
                   <div id ="label-popout" class="q2-label-popout"><h3>What is the annual change in acres of trees and shrub communities into previously unoccupied alpine and recently deglaciated habitat?</h3></div>
               </ul>
               
-              <div id="forest-health-qs"><h1>FOREST HEALTH</h1> </div>
+              <div class=collapsible id="forest-health-qs">
+                <label class=collapsible-label for="forest-health-qs">FOREST HEALTH</label>
+              </div>
               <ul id="accordion-item-1-c">                  
                   <input type="checkbox" name="q3-checkbox" id="q3" value="q3-True">
                   <label for="q3-checkbox" >Vegetation Cover Change</label>
@@ -167,7 +173,8 @@
 
               
 
-              <div id="snow-glacier-qs"><h1>SNOW AND GLACIERS</h1> </div>
+              <div class=collapsible id="snow-glacier-qs">
+                <label class=collapsible-label for="snow-glacier-qs">SNOW AND GLACIERS</label> </div>
               <ul id="accordion-item-1-h">                  
                   <input type="checkbox" name="q8-checkbox" id="q8" value="q8-True">
                   <label for="q8-checkbox" >Deglaciation</label>
@@ -210,13 +217,13 @@
             </ul>
           
 
-            <h1 id="accordion-item-2">Tools</h1>
+            <h1 class=collapsible id="accordion-item-2">Tools</h1>
               <ul class="menu vertical sublevel-1" id="accordion-item-2-a">
                 <div><a class="subitem" href="#">Area Selector</a></div>
                 <div><a class="subitem" href="#">Polygonselector</a></div>
               </ul>
 
-            <h1 id="map-layer-selection">Layer Selection</h1>
+            <h1 class="collapsible" id="map-layer-selection">Layer Selection</h1>
             <ul id="map-layer-selection-items">
 
               <div align="left" class="check-button-wrapper" id="chugach-huc10-radio-wrapper">

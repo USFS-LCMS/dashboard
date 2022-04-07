@@ -21,6 +21,8 @@ define([
             // Grab the list thing under the sidebar just in case...
             const inside_sidebar_elem = document.getElementById(div2);
 
+            inside_sidebar_elem.style.display = 'none'
+
             // display: none;
             // overflow: hidden;
 
@@ -32,13 +34,21 @@ define([
                 // sidebar.toggle("active");
                 // Above does not work! Let's try just making sure something happens.
                 console.log("burger")
+                if (div1 =="hamburger"){
+                    console.log("don't add +/- for main menu")
+                }else{
+                    this.classList.toggle("active")
+                }
+                
                 
                 // Swap!
                 if ( inside_sidebar_elem.style.display === 'none' ) {
+                    console.log("display=none in burger")
                     inside_sidebar_elem.style.display = 'block';
                 }
                 else {
                     inside_sidebar_elem.style.display = 'none';
+                    console.log("dis not none for 1st") //on first click does nothing;registeres this
                 }
                 // inside_sidebar_elem.style.overflow = 'auto';
             })
@@ -59,9 +69,11 @@ define([
                 
                 if ( elem_list.style.display === 'none') {
                     elem_list.style.display = 'block';
+                    console.log("and other display is none..")
                 }
                 else {
                     elem_list.style.display = 'none';
+                    console.log("display is not none for other")
                 }
 
             })
@@ -82,6 +94,7 @@ define([
             inner_elem.style.display = 'none';
 
             outer_elem.addEventListener("click", function () {
+                this.classList.toggle("active")
                 if (inner_elem.style.display === "none") {
                     inner_elem.style.display = "block";
                 }

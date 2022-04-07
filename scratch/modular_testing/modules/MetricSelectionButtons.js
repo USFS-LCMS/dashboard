@@ -24,7 +24,7 @@ define([
 
             // create html block for header 
             const html_wrapper = `
-            <h1 id="${h1_id}">${title}</h1>
+            <h1 class=collapsible id="${h1_id}">${title}</h1>
             <ul id="${h1_id}-items"></ul>
             `
 

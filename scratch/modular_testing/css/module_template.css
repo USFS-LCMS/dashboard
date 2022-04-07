@@ -234,6 +234,35 @@ canvas {
   margin-top: 0em;
   vertical-align: middle;
   padding:0%;
+  position:relative;
+}
+.collapsible-label{  
+  cursor: pointer;
+  text-align: left;
+  font-size: 19px;
+  font-family: 'Roboto Condensed', 'sans-serif';
+  display: inline-block;
+  margin-bottom: 0em;
+  margin-top: 0em;
+  vertical-align: middle;
+  padding:2%;
+  position:relative;
+}
+.radio-button-label:hover,.check-button-label:hover, .checkbox-label:hover,
+.radio-button-label:focus,.check-button-label:focus, .checkbox-label:focus{
+  color:  rgba(15, 223, 223, 0.7);
+}
+
+.collapsible:after{
+  content:'\02795';
+  font-size: 13px;  
+  float: right;
+  padding-right: 5px;
+  padding-left: 1px;
+  margin-left:14px;  
+}
+.active:after {
+  content:"\2796";
 }
 
 .layer-radio-button, .layer-check-button, .layer-checkbox {
