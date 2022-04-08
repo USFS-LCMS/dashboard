@@ -422,6 +422,29 @@ input[type="checkbox"]+label {
   display:none;
 }
 
+.infobutton {
+  background-color: #7e7e7e; /* Green */
+  border: none;
+  color: white;
+  padding: 2px;
+  text-align: center;
+  vertical-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 2px 2px;
+  cursor: pointer;
+  border-radius: 50%;
+  height: 18px;
+  width: 18px;
+  transition: all ease-in-out 0.2s;
+}
+.infobutton:hover, .infobutton:focus{
+  background-color: #00897B;
+
+}
+
+
 /* #forest-health-question-1 {
   display: none;
 } */

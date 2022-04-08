@@ -704,7 +704,7 @@ require([
       let p = document.createElement("p");
       div.append(p);
 
-      // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS.
+      // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS. !!??
       document.getElementById("accordion-item-1-a").onclick = () => {
         if (document.getElementById("chart-canvas") != null){
           document.getElementById("chart-canvas").remove();
@@ -724,7 +724,7 @@ require([
           // if no blank value, clear out the chart 
           p.textContent = "";
 
-          p.textContent = c.createOutputObj(null, ["null"]);
+          p.textContent = c.createOutputObj(null, ["null"]); //NOTE!!!?? ** c is not defined
         }
       }
 

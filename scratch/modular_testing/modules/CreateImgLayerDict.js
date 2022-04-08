@@ -60,6 +60,7 @@ define([
 
             // Create a dictionary of imagery layers
             const img_layer_dict = {
+                'nolayer-button-wrapper': null,
                 'landcover-button-wrapper': annual_landcover,
                 'landuse-button-wrapper': annual_landuse, 
                 'fastloss-button-wrapper': most_rec_year_fast_loss,
@@ -78,6 +79,11 @@ define([
             const button_template = `
             <h1 class=collapsible id="map-img-layer-selection">Image Layer Selection</h1>
             <ul id="map-img-layer-selection-items">
+
+              <div align="left" class="radio-button-wrapper" id="nolayer-button-wrapper">
+                <input type="radio" class="layer-radio-button" id="nolayer-radio-select" name="layer-button" value="nolayer-radio-select" checked>
+                <label for="nolayer-radio-select" class="radio-button-label">None</label>
+              </div>
 
               <div align="left" class="radio-button-wrapper" id="landcover-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="landcover-radio-select" name="layer-button" value="landcover-radio-select" checked>
@@ -114,10 +120,12 @@ define([
                 <label for="hi-prob-gain-radio-select" class="radio-button-label">Highest Prob. Gain Year</label>
               </div>
 
-              <div align="left" class="radio-button-wrapper" id="hi-prob-slowloss-button-wrapper">
+              <div align="left" class="radio-button-wrapper" id="hi-prob-slowloss-button-wrapper">              
                 <input type="radio" class="layer-radio-button" id="hi-prob-slowloss-radio-select" name="layer-button" value="hi-prob-slowloss-radio-select">
                 <label for="hi-prob-slowloss-radio-select" class="radio-button-label">Highest Prob. Slow Loss Year</label>
+                <button class="infobutton" title="some information.." type="button">  i  </button>
               </div>  
+              
 
             </ul>`
 
