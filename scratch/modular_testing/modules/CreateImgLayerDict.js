@@ -117,14 +117,17 @@ define([
 
               <div align="left" class="radio-button-wrapper" id="hi-prob-gain-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="hi-prob-gain-radio-select" name="layer-button" value="hi-prob-gain-radio-select">
-                <label for="hi-prob-gain-radio-select" class="radio-button-label">Highest Prob. Gain Year</label>
+                <label for="hi-prob-gain-radio-select" title="my text here" class="radio-button-label">Highest Prob. Gain Year</label>
               </div>
 
               <div align="left" class="radio-button-wrapper" id="hi-prob-slowloss-button-wrapper">              
                 <input type="radio" class="layer-radio-button" id="hi-prob-slowloss-radio-select" name="layer-button" value="hi-prob-slowloss-radio-select">
                 <label for="hi-prob-slowloss-radio-select" class="radio-button-label">Highest Prob. Slow Loss Year</label>
-                <button class="infobutton" title="some information.." type="button">  i  </button>
-              </div>  
+                <button class="infobutton">i
+                  <span class="tooltiptext">Tooltip text</span>
+                  </button>
+               
+                </div>  
               
 
             </ul>`

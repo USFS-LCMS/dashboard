@@ -428,6 +428,7 @@ input[type="checkbox"]+label {
   color: white;
   padding: 2px;
   text-align: center;
+  
   vertical-align: center;
   text-decoration: none;
   display: inline-block;
@@ -438,10 +439,61 @@ input[type="checkbox"]+label {
   height: 18px;
   width: 18px;
   transition: all ease-in-out 0.2s;
+  position: relative;
+
 }
 .infobutton:hover, .infobutton:focus{
   background-color: #00897B;
+}
 
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 110%;
+}
+
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.infobutton .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+.infobutton:hover .tooltiptext {
+  visibility: visible;
+}
+
+title{
+  color:yellow;
+  border: #00897B;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+.title{
+  color:yellow;
+  border: #00897B;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
 
