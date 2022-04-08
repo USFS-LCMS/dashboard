@@ -14,8 +14,8 @@ define([
 
 
         },
-           
-        createMetricButtons: function(on_off_dict, html_hook = "#multilevel-accordion-menu-elems", h1_id = "lcms-metric-selection", title = "LCMS Metric Selection") {
+        
+        createMetricButtons: function(html_hook = "#multilevel-accordion-menu-elems", h1_id = "lcms-metric-selection", title = "LCMS Metric Selection") {
 
             mtd = MetricToggleDict({});
 
@@ -58,37 +58,43 @@ define([
                     const t_nospace = t.replace(/[^A-Z0-9]+/ig, "_");
 
                     // Create a radio button for each metric subtype
-                    const metric_subtype_html = `
-                    <div align="left" class="checkbox-wrapper" id="${n}---${t_nospace}-checkbox-wrapper" name="${n}---${t}">
-                        <input type="checkbox" class="layer-checkbox" id="${n}-${t_nospace}-checkbox-select" name="layer-checkbox" value="${n}-${t_nospace}-checkbox-select">
-                        <label for="${n}-${t_nospace}-checkbox-select" class="checkbox-label">${t}</label>
-                    </div>  
-                    `
 
-                    // Append radio button to class wrapper list
-                    $(`#${n}-${h1_id}-items`).append(metric_subtype_html);
+                    // Checked layers to put up immediately.
+                    const checked_layers = [
+                        "Change---Fast Loss", "Change---Slow Loss", "Change---Gain",
+                        "Land_Cover---Trees", "Land_Cover---Grass/Forb/Herb & Shrubs Mix", "Land_Cover---Snow or Ice",
+                        "Land_Use---Forest", "Land_Use---Forest", "Land_Use---Developed"
+                     ];
+
+                    if (checked_layers.indexOf(`${n}---${t}`) != -1) {
+                        const metric_subtype_html = `
+                        <div align="left" class="checkbox-wrapper" id="${n}---${t_nospace}-checkbox-wrapper" name="${n}---${t}">
+                            <input type="checkbox" class="layer-checkbox" id="${n}-${t_nospace}-checkbox-select" name="${n}---${t}" value="${n}-${t_nospace}-checkbox-select" checked>
+                            <label for="${n}-${t_nospace}-checkbox-select" class="checkbox-label">${t}</label>
+                        </div>  
+                        `
+                        // Append check button to class wrapper list
+                        $(`#${n}-${h1_id}-items`).append(metric_subtype_html);
+                    }
+                    else {
+                        const metric_subtype_html = `
+                        <div align="left" class="checkbox-wrapper" id="${n}---${t_nospace}-checkbox-wrapper" name="${n}---${t}">
+                            <input type="checkbox" class="layer-checkbox" id="${n}-${t_nospace}-checkbox-select" name="${n}---${t}" value="${n}-${t_nospace}-checkbox-select">
+                            <label for="${n}-${t_nospace}-checkbox-select" class="checkbox-label">${t}</label>
+                        </div>  
+                        `
+
+                        $(`#${n}-${h1_id}-items`).append(metric_subtype_html);
+                    }
+
+
+
 
 
                     // Make a list to check which is really true??
                     let tfarray = [];
 
-                    // const tfarray2 = [];
 
-                    $(`#${n}---${t_nospace}-checkbox-wrapper`).on('click', () => {
-                        // console.log("somethin")
-                        tfarray.push($(`#${n}-${t_nospace}-checkbox-select:checked`).attr("id")===undefined);
-                        console.log(tfarray[0]);
-                        if (tfarray.length > 1){
-                            // tfarray2.push(tfarray[0])
-                            on_off_dict[n][`${n}---${t}`] = tfarray[0]
-                            // console.log($(`#${n}-${t_nospace}-checkbox-select`).attr("id"))
-                            // console.log(tfarray[0])
-                            // console.log(on_off_dict);
-
-                            tfarray = [];
-                            console.log(on_off_dict)
-                        } 
-                    })
                 });
 
                 // Text align sub headings
@@ -104,20 +110,9 @@ define([
                 ts.hamburgerToggle(`${n}-${h1_id}`, `${n}-${h1_id}-items`);
 
 
-
             });
-
-            // Write false values to the dictionary for each type
-            Object.keys(on_off_dict).forEach((in_type) => { 
-                $.map($(`#${in_type}-lcms-metric-selection-items > div`), div => {
-                    on_off_dict[in_type][div.getAttribute('name')] = false
-                })
-            });
-
-            // console.log(on_off_dict)
 
             // *** BUTTON CREATION AND DICTIONARY BUILDING *** //
-
 
             // *** FORMATTING *** //
 
