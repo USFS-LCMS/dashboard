@@ -27,7 +27,7 @@
   <body>
 
     <!-- A flexbox wrapper that stores all other divs -->
-    <div class="wrapper">
+    <div id= 'mainwrapperid' class="wrapper">
       
 
       <!-- This is the main map div - pretty sure everything sits right in here -->
@@ -370,11 +370,8 @@
 
         <button
             id="pdf-button"
-            class="action-button esri-widget"
-            aria-label="Download PDF"
-            title="Download PDF"
-            style="font-family:Arial, Helvetica, sans-serif;position:relative; padding:5px;"
-            
+            class="action-button esri-widget"            
+            title="Download PDF"            
           >
             Generate Report
         </button>
@@ -397,13 +394,7 @@
           <div id="tableDiv"></div>
         </div>
       </div>
-      <div id="myModal" class="modal">
-        <!-- Modal content: source https://www.w3schools.com/howto/howto_css_modals.asp -->
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <p>Some text in the Modal describing LCMS data product here..</p>
-        </div>      
-      </div>
+     
     
     </div>
     
