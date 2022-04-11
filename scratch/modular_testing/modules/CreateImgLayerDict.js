@@ -14,6 +14,7 @@ define([
         constructor: function(options){
             
         },
+       
 
         createImgLayerDict: function() {
             // Get an assortment of raster layers from image server
@@ -75,7 +76,7 @@ define([
 
         }, 
 
-        createImgLayerButtons: function() {
+        createImgLayerButtons: function() {            
             const button_template = `
             <h1 class=collapsible id="map-img-layer-selection">Image Layer Selection</h1>
             <ul id="map-img-layer-selection-items">
@@ -88,45 +89,51 @@ define([
               <div align="left" class="radio-button-wrapper" id="landcover-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="landcover-radio-select" name="layer-button" value="landcover-radio-select" checked>
                 <label for="landcover-radio-select" class="radio-button-label">Annual Land Cover</label>
+                <button id=span_popup2 title="Click for more information" class="infobutton">i</button>  
               </div>
 
               <div align="left" class="radio-button-wrapper" id="landuse-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="landuse-radio-select" name="layer-button" value="landuse-radio-select">
                 <label for="landuse-radio-select" class="radio-button-label">Annual Land Use</label>
+                <button id=span_popup3 title="Click for more information" class="infobutton">i</button>  
               </div>
 
               <div align="left" class="radio-button-wrapper" id="fastloss-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="fastloss-radio-select" name="layer-button" value="fastloss-radio-select">
                 <label for="fastloss-radio-select" class="radio-button-label">Most Recent Fast Loss Year</label>
+                <button id=span_popup4 title="Click for more information" class="infobutton">i</button>  
               </div>
 
               <div align="left" class="radio-button-wrapper" id="gain-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="gain-radio-select" name="layer-button" value="gain-radio-select">
                 <label for="gain-radio-select" class="radio-button-label">Most Recent Gain Year</label>
+                <button id=span_popup5 title="Click for more information" class="infobutton">i</button>  
               </div>
 
               <div align="left" class="radio-button-wrapper" id="slowloss-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="slowloss-radio-select" name="layer-button" value="slowloss-radio-select">
                 <label for="slowloss-radio-select" class="radio-button-label">Most Recent Slow Loss Year</label>
+                <button id=span_popup6 title="Click for more information" class="infobutton">i</button>  
               </div>
 
               <div align="left" class="radio-button-wrapper" id="hi-prob-fastloss-button-wrapper">
                 <input type="radio" class="layer-radio-button" id="hi-prob-fastloss-radio-select" name="layer-button" value="hi-prob-fastloss-radio-select">
                 <label for="hi-prob-fastloss-radio-select" class="radio-button-label">Highest Prob. Fast Loss Year</label>
-              </div>
+                <button id=span_popup7 title="Click for more information" class="infobutton">i
+                  </button>               
+                </div>
 
               <div align="left" class="radio-button-wrapper" id="hi-prob-gain-button-wrapper">
-                <input type="radio" class="layer-radio-button" id="hi-prob-gain-radio-select" name="layer-button" value="hi-prob-gain-radio-select">
-                <label for="hi-prob-gain-radio-select" title="my text here" class="radio-button-label">Highest Prob. Gain Year</label>
+                <input type="radio" class="layer-radio-button" title="testing title for button.." id="hi-prob-gain-radio-select" name="layer-button" value="hi-prob-gain-radio-select">
+                <label for="hi-prob-gain-radio-select" class="radio-button-label">Highest Prob. Gain Year</label>
+                <button id=span_popup8 title="Click for more information" class="infobutton">i</button>                  
+
               </div>
 
               <div align="left" class="radio-button-wrapper" id="hi-prob-slowloss-button-wrapper">              
                 <input type="radio" class="layer-radio-button" id="hi-prob-slowloss-radio-select" name="layer-button" value="hi-prob-slowloss-radio-select">
                 <label for="hi-prob-slowloss-radio-select" class="radio-button-label">Highest Prob. Slow Loss Year</label>
-                <button class="infobutton">i
-                  <span class="tooltiptext">Tooltip text</span>
-                  </button>
-               
+                <button id=span_popup1 title="Click for more information" class="infobutton">i</button>               
                 </div>  
               
 

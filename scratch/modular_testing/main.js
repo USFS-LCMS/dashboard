@@ -83,14 +83,45 @@ require([
     //layer view dictionary
     let layerDict = {"chugach-lrg-hex-radio-wrapper":null}
 
-    
-    // Create Image Layer buttons
     const ild = CreateImgLayerDict({});
     ild.createImgLayerButtons();
     // Add functionality to image layer buttons - link to actual image layers
     const img_layer_dict = ild.createImgLayerDict();
     // Set first (default) image layer
     let img_layer = img_layer_dict['landcover-button-wrapper'];
+    
+    /////////////////// modal
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("span_popup1");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+
+    ///////// end of modal
+
+
+   
 
     // Create metric selection buttons
 
@@ -140,15 +171,20 @@ require([
       // Add selection functionality to image layers
       Object.keys(img_layer_dict).map((r) => {
         const radio_button_div = document.getElementById(r);
-        radio_button_div.addEventListener('click', () => {
-          //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
-          //highlight=null
+        if (img_layer_dict[r] !=null){
+          radio_button_div.addEventListener('click', () => {
+            //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
+            //highlight=null                    
+              map.remove(img_layer);
+              img_layer = img_layer_dict[r];            
+              map.add(img_layer);        
+            
+          })
+      }else{ //button to clear all
+        radio_button_div.addEventListener('click',()=>{
           map.remove(img_layer);
-          img_layer = img_layer_dict[r];
-          
-          map.add(img_layer);
-          
         })
+      }
       });
 
       // Map over the html hooks for each available layer in vector layer selection list. 

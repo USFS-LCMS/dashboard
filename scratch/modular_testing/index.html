@@ -28,9 +28,11 @@
 
     <!-- A flexbox wrapper that stores all other divs -->
     <div class="wrapper">
+      
 
       <!-- This is the main map div - pretty sure everything sits right in here -->
       <div class="main" id="main-map">
+               
 
         <!-- This is the top left sidebar containing our Accordion menu -->
         <nav id="sidebar-left-container">
@@ -216,8 +218,21 @@
 
             <h1 class=collapsible id="accordion-item-2">Tools</h1>
               <ul class="menu vertical sublevel-1" id="accordion-item-2-a">
-                <div><a class="subitem" href="#">Area Selector</a></div>
-                <div><a class="subitem" href="#">Polygonselector</a></div>
+                
+                <div
+                id = "point-button"
+                class="esri-widget esri-widget--button esri-widget esri-interactive customPoint"
+                title="Select features by point"
+              >
+                <span class="esri-icon-map-pin"></span>
+              </div>
+               <div
+                id="select-by-rectangle"
+                class="esri-widget esri-widget--button esri-widget esri-interactive customPoint"
+                title="Select features by rectangle"
+              >
+                <span class="esri-icon-checkbox-unchecked"></span>
+              </div>
               </ul>
 
             <h1 class="collapsible" id="map-layer-selection">Layer Selection</h1>
@@ -342,15 +357,6 @@
         <h3>LCMS Outputs</h3>
         <div id="viewDiv" class="esri-widget" style="background-color:black;font-family: 'Times New Roman', Times, serif; width:300px">
           
-        
-        <div
-          id="select-by-rectangle"
-          class="esri-widget esri-widget--button esri-widget esri-interactive customPoint"
-          title="Select features by rectangle"
-        >
-          <span class="esri-icon-checkbox-unchecked"></span>
-        </div>
-
         <!-- <div
           id="clear-selection"
           class="esri-widget esri-widget--button esri-widget esri-interactive"
@@ -360,13 +366,7 @@
         </div>
        -->
 
-        <div
-          id = "point-button"
-          class="esri-widget esri-widget--button esri-widget esri-interactive customPoint"
-          title="Select features by point"
-        >
-          <span class="esri-icon-map-pin"></span>
-        </div>
+        
 
         <button
             id="pdf-button"
@@ -377,7 +377,7 @@
             
           >
             Generate Report
-          </button>
+        </button>
         </div>
         <div id="screenshotDiv" class="hide">
           <img class="js-screenshot-image" />        
@@ -396,6 +396,13 @@
         <div class="container">
           <div id="tableDiv"></div>
         </div>
+      </div>
+      <div id="myModal" class="modal">
+        <!-- Modal content: source https://www.w3schools.com/howto/howto_css_modals.asp -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Some text in the Modal describing LCMS data product here..</p>
+        </div>      
       </div>
     
     </div>
