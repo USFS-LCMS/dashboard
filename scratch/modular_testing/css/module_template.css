@@ -577,7 +577,10 @@ input[type="checkbox"]+label {
   border: 1px solid #888;
   width: 80%;
   color:#000;
-  font-size: 16px;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 14px;
 }
 
 /* The Close Button */
