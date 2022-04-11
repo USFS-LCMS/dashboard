@@ -6,7 +6,7 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <title>Load a basic WebMap | Sample | ArcGIS API for JavaScript 4.22</title>
+    <title>LCMS Data Explorer: Region 10</title>
 
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css"/>
@@ -375,10 +375,18 @@
           >
             Generate Report
         </button>
+        <button id=span_popup_graph title="Click for information about graphs" class="infobutton">i</button>  
+
         </div>
         <div id="screenshotDiv" class="hide">
           <img class="js-screenshot-image" />        
           
+        </div>
+        <div id="myModal_graph" class="modal">
+          <div class="modal-content">
+            <span id="close_graph" class="close">&times;</span>
+            <p>This is some info about how the graphs are created.</p>
+          </div>      
         </div>
         
   
