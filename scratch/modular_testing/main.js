@@ -120,10 +120,7 @@ require([
     //     modal.style.display = "none";
     //   }
     // }
-    const modalinfos = CreateInfoModalDict({});
-    modalinfos.createModals();
-    modalinfos.createInfoModalDict();
-
+    
     var modal = document.getElementById("myModal_graph");
 
     // Get the button that opens the modal for graphs
@@ -171,6 +168,13 @@ require([
 
     const info_dropdown = addInformationDropdown({});
     info_dropdown.addInfo();
+
+    //modal
+
+    const modalinfos = CreateInfoModalDict({});
+    modalinfos.createModals();
+    modalinfos.createInfoModalDict();
+
     
 
     // LOAD IN LAYERS - look in template for layer list widget. 
