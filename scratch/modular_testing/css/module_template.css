@@ -115,6 +115,11 @@ canvas {
   display: flex;
 }
 
+#viewDiv{
+  background-color: black;
+}
+
+
 #sidebar-left-container {
   position: absolute;
   max-height: 708px;
@@ -403,7 +408,12 @@ input[type="checkbox"]+label {
   color: white;
   cursor: pointer;
   font-family: "Roboto Condensed", sans-serif;
+  /* justify-content: center;
+  align-items: center; */
+  margin-left: 30px;
   
+  /* margin: 8px;   */
+
   
 }
 
@@ -414,7 +424,7 @@ input[type="checkbox"]+label {
 }
 
 #side-chart {
-  width: 40%;
+  width: 30%;
   overflow-y: auto;
 }
 
@@ -597,11 +607,43 @@ input[type="checkbox"]+label {
   text-decoration: none;
   cursor: pointer;
 }
+
+#span_popup_graph{  
+  /* info button modal to explain graphs in right panel
+  position: relative;
+  top: 18px;
+  left:190px; */
+  float: right;
+  position: relative;
+  bottom: -25px;
+  margin-right: 6px;
+
+}
   
 
   /* end of modal */
 
 
+  /* these dont work */
+  .esri-zoom,.esri-component,.esri-icon-minus{
+    position: absolute;
+    bottom:0px;
+  }
+
+/*   
+  <div class="esri-component esri-zoom esri-widget">
+  <div class="esri-widget--button esri-widget esri-interactive" role="button" tabindex="0" title="Zoom in">
+  <span aria-hidden="true" role="presentation" class="esri-icon esri-icon-plus"></span>
+  <span class="esri-icon-font-fallback-text">Zoom in</span>
+  </div>
+  <div class="esri-widget--button esri-widget esri-interactive" role="button" tabindex="0" title="Zoom out">
+  <span aria-hidden="true" role="presentation"
+   class="esri-icon esri-icon-minus"></span>
+   <span class="esri-icon-font-fallback-text">Zoom out</span></div></div>
+ */
+
+
+  
 /* #forest-health-question-1 {
   display: none;
 } */

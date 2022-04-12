@@ -32,10 +32,10 @@ define([
             $(html_hook).append(html_wrapper);
             
             // Get a list of names of things
-            const names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
-                        'Land_Cover':["Trees",
+            const names = {'Change':["Select All","Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
+                        'Land_Cover':["Select All","Trees",
             "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
-                        'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
+                        'Land_Use':["Select All","Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
             }
 
             // *** BUTTON CREATION AND DICTIONARY BUILDING *** //

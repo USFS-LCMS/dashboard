@@ -185,6 +185,10 @@ define([
 
         // Create a chart in the side panel based on which of the metric groupings is selected.
         setContentInfo: function(results, which_one, chart_div, on_off_dict) {
+          delete on_off_dict["Change"]["Change---Select All"]
+          delete on_off_dict["Land_Cover"]["Land_Cover---Select All"]
+          delete on_off_dict["Land_Use"]["Land_Use---Select All"];
+
 
             function range(start, end) {
                 if(start === end) return [start];

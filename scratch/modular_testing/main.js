@@ -166,6 +166,8 @@ require([
 
     update_charts_watcher = UpdateChartsOnSelection({});
     update_charts_watcher.updateChartOnMetricSelection(on_off_dict);
+    console.log("og on off; ")
+    console.log(on_off_dict)
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
@@ -299,7 +301,6 @@ require([
                           stillComputing = true;
                           if(results.features.length>0){
                               // Call function below
-                              // console.log(metric_button.on_off_dict)
                               ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
                               $('.checkbox-wrapper').on('click', (() => {
                                 ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
