@@ -640,13 +640,17 @@ input[type="checkbox"]+label {
     color:#00897B;
   }
   a:link{
-    color:white;
+    color:#00BFA5;
   }
   a:visited{
-    color:white;
+    color:#00BFA5;
   }
   a:hover{
     color:#00897B;
+  }
+
+  .infomodal_link{
+    color:black;
   }
 
 /*   
