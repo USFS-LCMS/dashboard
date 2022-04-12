@@ -21,6 +21,7 @@ require([
     "modules/MetricSelectionButtons",
     "modules/UpdateChartsOnSelection",
     "modules/CreateInfoModalDict",
+    "modules/addInformationDropdown",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -50,6 +51,7 @@ require([
       MetricSelectionButtons,
       UpdateChartsOnSelection,
       CreateInfoModalDict,
+      addInformationDropdown,
       Map, 
       MapView, 
       Query,
@@ -166,8 +168,10 @@ require([
 
     update_charts_watcher = UpdateChartsOnSelection({});
     update_charts_watcher.updateChartOnMetricSelection(on_off_dict);
-    console.log("og on off; ")
-    console.log(on_off_dict)
+
+    const info_dropdown = addInformationDropdown({});
+    info_dropdown.addInfo();
+    
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
