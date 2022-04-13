@@ -155,7 +155,6 @@ define([
                     const total_area_fieldname = 'total_area';
 
 
-
                     // create chart wrapper - probably #1 thing to look at for pdf generation
                     let chart_div_html = `
                     <div id=${in_layer}-chart-div>
