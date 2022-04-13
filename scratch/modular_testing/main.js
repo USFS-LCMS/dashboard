@@ -751,7 +751,7 @@ require([
       //toggleSidebar.hamburgerToggle("accordion-item-4", "accordion-item-4-a");
 
       toggleSidebar.hamburgerToggle("accordion-item-1", "r10-questions");
-      toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
+      // toggleSidebar.hamburgerToggle("climate-qs", "accordion-item-1-a");
       toggleSidebar.hamburgerToggle("encroachment-qs", "accordion-item-1-b");
 
       toggleSidebar.hamburgerToggle("forest-health-qs", "accordion-item-1-c");
