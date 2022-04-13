@@ -26,10 +26,45 @@ define([
             const html_wrapper = `
             <h1 class=collapsible id="${h1_id}">${title}</h1>
             <ul id="${h1_id}-items"></ul>
+                     
             `
 
             // Write this to the document
             $(html_hook).append(html_wrapper);
+
+            //////////// add radio buttons to toggle area //////////////////////////
+
+            graph_area_wrapper=` 
+                <h2 class=collapsible id="graph-y-axis">Area for Graph Y-Axis</h2>
+                <ul id="graph-y-axis-items"></ul>                 
+                `
+            $(`#${h1_id}-items`).append(graph_area_wrapper);
+
+            graph_area_options=` 
+            <div align="left" class="radio-button-wrapper" id="acres_wrapper">
+                <input type="radio" title="Set y-axis on graph to acres" class="layer-radio-button" id="acres-radio-select" name="area-button" value="acres-radio-select" checked>
+                <label for="acres-radio-select" class="radio-button-label">Acres</label>
+            </div>
+
+            <div align="left" class="radio-button-wrapper" id="pct_area_wrapper">
+                <input type="radio" title="Set y-axis on graph to % area" class="layer-radio-button" id="pct-area-radio-select" name="area-button" value="pct-area-radio-select">
+                <label for="pct-area-radio-select" class="radio-button-label">Percent Area</label>
+            </div>      `
+
+            $("#graph-y-axis-items").append(graph_area_options)
+                
+
+            // // Text align sub headings
+            $("#graph-y-axis").css("text-align", "left");
+            $("#graph-y-axis").css("cursor", "pointer");
+            
+            
+            // Hide sub-type names and options buttons.
+            $("#graph-y-axis-items").css("display", "none");
+            // Create event listener to toggle sub-menu visibility.
+            ts.hamburgerToggle("graph-y-axis", "graph-y-axis-items");
+
+            //////////////////////////////////////////////////////////////////////////////
             
             // Get a list of names of things
             const names = {'Change':["Select All","Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
@@ -120,10 +155,6 @@ define([
                         }
                     }
 
-
-
-
-
                     // Make a list to check which is really true??
                     let tfarray = [];
 
@@ -158,6 +189,7 @@ define([
 
             // Toggle categories
             ts.hamburgerToggle(`${h1_id}`, `${h1_id}-items`);
+            
 
         }
     })
