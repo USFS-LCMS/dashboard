@@ -426,7 +426,6 @@ input[type="checkbox"]+label {
 #side-chart {
   width: 30%;
   overflow-y: auto;
-
 }
 
 #map-layer-selection-accordion-items{

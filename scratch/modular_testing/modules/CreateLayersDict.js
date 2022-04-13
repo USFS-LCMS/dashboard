@@ -120,71 +120,88 @@ define([
             const radio_button_layer_dict = {
                 "chugach-huc10-radio-wrapper": {
                     'layer_var': chugach_huc10,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. HUC 10'
                 } ,
                 "chugach-huc8-radio-wrapper": {
                     'layer_var': chugach_huc8,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. HUC 8'
                 } ,
                 "chugach-huc6-radio-wrapper": {
                     'layer_var': chugach_huc6,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. HUC 6'
                 } ,
                 "chugach-small-hex-radio-wrapper": {
                     'layer_var': chugach_natl_forest_hex_m,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. Hexagons - small'
                 } ,
                 "chugach-med-hex-radio-wrapper": {
                     'layer_var': chugach_natl_forest_hex_l,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. Hexagons - med.'
                 },
                 "chugach-lrg-hex-radio-wrapper": {
                     'layer_var': chugach_natl_forest_hex_xl,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. Hexagons - large'
                 },
                 "chugach-ecosection-radio-wrapper": {
                     'layer_var': chugach_natl_forest_ecosection,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. Ecological Subsections'
                 },
                 "chugach-lta-radio-wrapper": {
                     'layer_var': chugach_natl_forest_lta,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. Land Type Associations'
                 },
                 "chugach-boundary-radio-wrapper": {
                     'layer_var': chugach_natl_forest_boundary,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. Boundary'
                 },
                 "tongass-huc10-radio-wrapper": {
                     'layer_var': tongass_huc_10,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. HUC 10'
                 },
                 "tongass-huc8-radio-wrapper": {
                     'layer_var': tongass_huc_8,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. HUC 8'
                 },
                 "tongass-huc6-radio-wrapper": {
                     'layer_var': tongass_huc_6,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. HUC 6'
                 },
                 "tongass-small-hex-radio-wrapper": {
                     'layer_var': tongass_hex_m,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. Hexagons - small'
                 },
                 "tongass-med-hex-radio-wrapper": {
                     'layer_var': tongass_hex_l,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. Hexagons - med.'
                 },
                 "tongass-lrg-hex-radio-wrapper": {
                     'layer_var': tongass_hex_xl,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. Hexagons - large'
                 },
                 "tongass-ecosection-radio-wrapper": {
                     'layer_var': tongass_ecosection,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. Ecological Subsections'
                 },
                 "tongass-lta-radio-wrapper": {
                     'layer_var': tongass_lta,
-                    'is_visible': false
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. Land Type Associations'
                 }
               };
 
