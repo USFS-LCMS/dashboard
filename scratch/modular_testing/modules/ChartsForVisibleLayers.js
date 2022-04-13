@@ -138,31 +138,30 @@ define([
                     'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","808080","4780f3","1B1716"].map(c =>'#'+c),
                     'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
 
+                    // Class field names is a list of the field names for this 
+                    // specific metric type "which one"
                     const class_fieldNames = [];
+
+                    // Make sure that only the correct metric type makes it in.
                     fieldNames.forEach((in_field) => {
                          const metric_type = in_field.split('---')[0]
                          if ( which_one === metric_type ) {
                              class_fieldNames.push(in_field);
-                         } 
-                    }); 
+                         }
+                    });
 
                     let colorsI = 0;
-                    // const which_one = 'Change';
+                    
                     
                     const stacked = false;
                     const chartID = 'chart-canvas-'+which_one;
                     const total_area_fieldname = 'total_area';
 
 
-                    // create chart wrapper - probably #1 thing to look at for pdf generation
-                    let chart_div_html = `
-                    <div id=${in_layer}-chart-div>
-                        <h2>${layers_dict[in_layer]['display_name']}</h2>
-                    </div>`
 
 
-                    // put chart wrapper in outer wrapper 
-                    $(`#${outer_chart_div_id}`).append(chart_div_html);
+
+
 
                     // create query for layer 
                     curr_layer = layers_dict[in_layer]['layer_var'];
@@ -296,16 +295,32 @@ define([
                 }); 
             });
 
-            console.log(layers_dict);
+            console.log("ooo", layers_dict);
             // Iterate over visible layers and make charts in the side div
             if ( Object.keys(layers_dict).length > 0 ) {
 
                 // This is where we go through each visible layer.
+
+
+
                 Object.keys(layers_dict).forEach((l) => {
 
-                    ['Change', 'Land_Cover', 'Land_Use'].map((w) => {
-                        chart_one_metric(w, l, fieldNames, layers_dict, outer_chart_div_id);
-                    });
+                    if (layers_dict[l]['is_visible'] === true){
+                        // create chart wrapper - probably #1 thing to look at for pdf generation
+                        let chart_div_html = `
+                        <div id=${l}-chart-div>
+                            <h2>${layers_dict[l]['display_name']}</h2>
+                        </div>`
+
+                        // put chart wrapper in outer wrapper 
+                        $(`#${outer_chart_div_id}`).append(chart_div_html);
+
+                        ['Change', 'Land_Cover', 'Land_Use'].map((w) => {
+                            chart_one_metric(w, l, fieldNames, layers_dict, outer_chart_div_id);
+                        });
+                    }
+
+
 
                 });
             }
