@@ -15,7 +15,7 @@ define([
             console.log("onoff: ")
             console.log(on_off_dict);
             // Create a proxy object and listen for any change
-            var targetProxy = new Proxy(on_off_dict, {
+            const targetProxy = new Proxy(on_off_dict, {
                 set: function (target, key, value) {
                     console.log(`${key} set to ${value}`);
                     target[key] = value;
@@ -27,7 +27,7 @@ define([
             console.log(targetProxy);
 
 
-            // Proxy must be updated on user click
+            // Proxy must be updated on user click - simpler solution now?
 
             // $(`#${n}---${t_nospace}-checkbox-wrapper`).on('click', () => {
             //     // console.log("somethin")
@@ -44,7 +44,6 @@ define([
             //         console.log(on_off_dict)
             //     } 
             // })
-
 
             // Create checked elements updater function
             const checked_elems_update = () => {
@@ -96,7 +95,12 @@ define([
             checked_elems_update();
 
             // Make sure chart is updated when click event happens
-            $('.checkbox-wrapper').on('click', (()=>{checked_elems_update()}));
+            $('.checkbox-wrapper').on('click', (()=>{
+                
+                checked_elems_update()
+                
+                console.log(on_off_dict);
+            }));
 
 
         }

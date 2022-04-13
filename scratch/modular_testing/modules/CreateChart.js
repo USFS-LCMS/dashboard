@@ -14,109 +14,71 @@ define([
 
         // Create a single chart object based on an input list of features 
         // and field names
-        createOutputObj: function(results, fieldNames, outer_div_id){
-            /*
-            Create a chart object and insert it into the chart div in main html
-            */
+        createOutputObj: function(results, which_one, on_off_dict){
 
+          var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
+                        'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","808080","4780f3","1B1716"].map(c =>'#'+c),
+                        'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
 
-            // Check whether the user has selected anything - more info in main js
-            if ( results != null ){
+          // Print out the members of the dictionary that are true
+          const class_dict = on_off_dict[which_one];
+          const toggled_elems = Object.keys(class_dict).reduce(function (filtered, key) {
+            if (class_dict[key] === true) filtered[key] = class_dict[key];
+            return filtered;
+          }, {});
 
-                // Create a x value list for the chart based on the 0th feature found
-                years = results.features[0].attributes["years"].split(",");
+          // Create a list of toggled elements and allow that to be what feeds the chart function
+          const fieldNames = Object.keys(toggled_elems);
 
-                // Employ Ian's function. 
-                //Iterate across each field name and add up totals 
-                //First get 2-d array of all areas for each then sum the columns and divide by total area
-                const colors = ["#e34a33", "#3182bd", "#31a354", "#dd1c77"];
-                let col_i = 0;
+          const stacked = false;
+          let colorsI = 0;
+          const total_area_fieldname = 'total_area';
+          if ( fieldNames.length > 0 ) {
+            ///////////////////////////////////////////////////////////////////////
+            //Iterate across each field name and add up totals 
+            //First get 2-d array of all areas for each then sum the columns and divide by total area
+            var t = fieldNames.map(function(k){
+              var total_area = 0;
+              var total = [];
+              results.features.map(function(f){
+                var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
+                total_area = total_area + total_areaF;
+                total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
+              });
 
-                // Map over input field names - put in from main function.
-                var t = fieldNames.map(function(k){
-                    var total_area = 0;
-                    var total = [];
+              const colSums = [];
+              for(let col = 0;col < total[0].length;col++){
+                let colSum = 0;
+                for(let row = 0;row < total.length;row++){
+                  colSum = colSum + total[row][col];
+                }
+                colSums.push(colSum);
+              };
 
-                    // Get total area for each feature selected.
-                    results.features.map(function(f){
-                        var total_areaF = parseFloat(f.attributes['total_area']);
-                        total_area = total_area + total_areaF;
-                        // document.write(total_area);
-                        total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
-                    })
-                    
-                    // Create 
-                    let colSums = [];
-                    for(var col = 0;col < total[0].length;col++){
-                        var colSum = 0;
-                        for(var row = 0;row < total.length;row++){
-                            colSum = colSum + total[row][col];
-                        }
-                        colSums.push(colSum);
-                    };
-                    //Convert back to pct
-                    colSums = colSums.map((n)=>n/total_area*100)
-                    const years = results.features[0].attributes['years'].split(",").map(i => parseInt(i));
-                    ///////////////////////////////////////////////////////////////////////
-                    //Set up chart object
-                    const out = {
-                        'borderColor': colors[col_i],
-                        'data': colSums,
-                        'label': k
-                    }
-                    col_i ++;
-                        return out;
-                });
+              //Convert back to pct
+              colSums = colSums.map((n)=>n/total_area*100)
+              ///////////////////////////////////////////////////////////////////////
+              //Set up chart object
+                var out = {'borderColor':colors[which_one][colorsI],
+                'fill':false,
+                'data':colSums,
+                'label':k.split('---')[1],
+                pointStyle: 'line',
+                pointRadius:1,
+                'lineTension':0,
+                'borderWidth':2,
+                'steppedLine':false,
+                'showLine':true,
+                'spanGaps':true,
+                'fill' : stacked,
+                'backgroundColor':colors[which_one][colorsI]}
+                colorsI ++;
+                return out;
+            })
 
-                // Replace existing chart canvas if exists
-                if (document.getElementById("chart-canvas") != null){
-                    document.getElementById("chart-canvas").remove();
-                };
-                
-                // Assign self output object to dictionary of chart values
-                this.outputObj = t;
+            return t;
 
-                // Create a canvas element within the right side div
-                chart_loc = document.getElementById(outer_div_id);
-                let my_canvas = document.createElement("canvas");
-                my_canvas.setAttribute("id", "chart-canvas");
-                chart_loc.appendChild(my_canvas);
-                
-
-                const chartJSChart = new Chart(("chart-canvas"),{
-                    type: 'line',
-                    data: {"labels": years,
-                    "datasets":t},
-                    options:{
-                    devicePixelRatio:2,//increase resolution of output chart
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 1/0.6,
-                    devicePixelRatio:2,
-                    title: {
-                            display: true,
-                            position:'top',
-                            text: name,
-                            fontSize: 16
-                        },
-                        legend:{
-                        display:true,
-                        position:'bottom',
-                        fontSize:6,
-                        labels : {
-                            boxWidth:5,
-                            usePointStyle: true
-                        }
-                        },
-                        chartArea: {
-                            backgroundColor: '#D6D1CA'
-                        }
-                    }
-                });
-            }
-            else {
-                return "Please select a polygon to output a chart."
-            }
+          }
         },
 
         // Fetch the features that are visible to the user,
@@ -194,7 +156,6 @@ define([
                 if(start === end) return [start];
                 return [start, ...range(start + 1, end)];
             }
-
 
             var years = range(1985,2020).map(i => i.toString());
             var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
