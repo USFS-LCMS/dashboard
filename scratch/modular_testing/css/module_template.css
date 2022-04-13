@@ -664,6 +664,13 @@ input[type="checkbox"]+label {
   .infomodal_link{
     color:black;
   }
+/* 
+  .esri-button-label{
+    font-size: 8px;
+    float:right;
+  } */
+
+  
 
 /*   
   <div class="esri-component esri-zoom esri-widget">

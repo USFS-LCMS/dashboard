@@ -16,39 +16,48 @@ define([
         addInfo: function(html_hook = "#multilevel-accordion-menu-elems", h1_id = "more-info-dropdown", title = "More Information"){
             ts = ToggleSidebar({});
 
+            function downloadMethods(version){
+                var link = document.createElement("a");
+                var methods_name ='LCMS_'+version+'_Methods.pdf';
+                link.href = './tutorials/'+methods_name;
+                // link.href = 'https://data.fs.usda.gov/geodata/rastergateway/LCMS/'+methods_name;
+                  link.target = '_blank';
+                link.click();
+                ga('send', 'event',mode+'-download', 'methods-download', methods_name);
+                // link.setAttribute("download", filename);
+              };
+
 
             const html_wrapper = `
             <h1 class=collapsible id="${h1_id}">${title}</h1>
             <ul id="${h1_id}-items">
-            <div align="left" class="info-panel" id="infoPanel1">
-                <a href="https://apps.fs.usda.gov/lcms-viewer/">Click to view the full LCMS Data Explorer</a>
-            </div>
-            <p></p>
-            <div align="left" class="info-panel" id="infoPanel2">
-                <a href="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Descriptions.html">Click for a full description of LCMS Products</a>
-            </div>
+            <section align="left" class="info-panel" id="infoPanel1">
+                <a href="https://apps.fs.usda.gov/lcms-viewer/">View the Full LCMS Data Explorer</a>
+            </section>
             <p></p>
 
-            <div align="left" class="info-panel" id="infoPanel3">
+            <section align="left" class="info-panel" id="infoPanel2">
+                <a href="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Descriptions.html">Description of LCMS Products</a>
+            </section>
+            <p></p>
+
+            <section align="left" class="info-panel" id="infoPanel3">
+                <a href="https://usfs-lcms.github.io/lcms-viewer/tutorials/LCMS_v2021-7_Methods.pdf">LCMS Methods Document</a>
+            </section>
+            <p></p>
+            
+            <section align="left" class="info-panel" id="infoPanel4">
             <address>
-                <a href="mailto:robert.vaughan@usda.gov">Contact: Robert.Vaughan@usda.gov</a>
+                <a href="mailto:sm.fs.lcms@usda.gov">Contact LCMS Support: sm.fs.lcms@usda.gov</a>
             </address>                
-            </div>
+            </section>
             
             </ul>
             `
 
+
             // Write this to the document
-            $(html_hook).append(html_wrapper);
-
-            // add info in dropdown
-            const info_panel_html1 = `
-                <div align="left" class="info-panel" id="infoPanel1">
-                <h3>Click to view the full LCMS Viewer</h3>
-            </div>`
-            // Append check button to class wrapper list
-            //$(`${h1_id}-items`).append(info_panel_html1);
-
+            $(html_hook).append(html_wrapper);            
 
             // Text align the top header
             $(`#${h1_id}`).css("text-align", "left");
