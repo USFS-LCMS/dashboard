@@ -34,13 +34,13 @@ define([
 
             //////////// add radio buttons to toggle area //////////////////////////
 
-            graph_area_wrapper=` 
-                <h2 class=collapsible id="graph-y-axis">Area for Graph Y-Axis</h2>
+            var graph_area_wrapper=` 
+                <h2 class=collapsible id="graph-y-axis">Area Metric (Graph Y-Axis)</h2>
                 <ul id="graph-y-axis-items"></ul>                 
                 `
             $(`#${h1_id}-items`).append(graph_area_wrapper);
 
-            graph_area_options=` 
+            var graph_area_options=` 
             <div align="left" class="radio-button-wrapper" id="acres_wrapper">
                 <input type="radio" title="Set y-axis on graph to acres" class="layer-radio-button" id="acres-radio-select" name="area-button" value="acres-radio-select" checked>
                 <label for="acres-radio-select" class="radio-button-label">Acres</label>
@@ -51,7 +51,7 @@ define([
                 <label for="pct-area-radio-select" class="radio-button-label">Percent Area</label>
             </div>      `
 
-            $("#graph-y-axis-items").append(graph_area_options)
+            $("#graph-y-axis-items").append(graph_area_options);
                 
 
             // // Text align sub headings
@@ -65,6 +65,41 @@ define([
             ts.hamburgerToggle("graph-y-axis", "graph-y-axis-items");
 
             //////////////////////////////////////////////////////////////////////////////
+            //time slide
+            ///////////////////////////////////////////////////////////////////////////////
+            var year_slider_wrapper=` 
+                <h2 class=collapsible id="year-slider">Years of Analysis (Graph X-Axis)</h2>
+                <ul id="year-slider-items"></ul>                 
+                `
+            $(`#${h1_id}-items`).append(year_slider_wrapper);
+
+            //this is the actual slider html code: NEED TO EDIT/THIS CHUNK FAILS
+            var year_slider = `
+            <div id="analysis-year-slider-container" class="dual-range-slider-container px-1" title="Years of LCMS data to include for land cover, land use, loss, and gain">
+                <div class="dual-range-slider-name pt-2 pb-3">Choose analysis year range:</div>
+                <div id="analysis-year-slider" class="dual-range-slider-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" href="#">
+                    <div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 0%; width: 100%;"></div>
+                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 0%;"></span>
+                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 100%;"></span>
+                </div>
+                <div id="analysis-year-slider-update" class="dual-range-slider-value p-2">1985 - 2020</div>
+            </div>     
+            `
+            $(`#year-slider-items`).append(year_slider);
+
+            
+            // // Text align sub headings
+            $("#year-slider").css("text-align", "left");
+            $("#year-slider").css("cursor", "pointer");
+            
+            
+            // Hide sub-type names and options buttons.
+            $("#year-slider-items").css("display", "none");
+            // Create event listener to toggle sub-menu visibility.
+            ts.hamburgerToggle("year-slider", "year-slider-items");
+                                                
+                // #analysis-year-slider-container
+            /////////////////////////////////////////////////////////////////// end of slider code /////////////
             
             // Get a list of names of things
             const names = {'Change':["Select All","Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
