@@ -426,6 +426,7 @@ input[type="checkbox"]+label {
 #side-chart {
   width: 30%;
   overflow-y: auto;
+
 }
 
 #map-layer-selection-accordion-items{
@@ -476,6 +477,18 @@ input[type="checkbox"]+label {
   top: 100%; /* At the bottom of the tooltip */
   left: 50%;  
   z-index: 1;
+}
+
+#side-chart-3 {
+  display: block;
+  /* min-height: 300px; */
+  position: relative;
+}
+#side-chart-2 {
+  display: block;
+  /* min-height: 300px; */
+  position: relative;
+
 }
 
 /* .infobutton .tooltiptext::after {

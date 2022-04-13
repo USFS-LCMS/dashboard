@@ -118,23 +118,74 @@ define([
 
             // Create a layer dictionary to return 
             const radio_button_layer_dict = {
-                "chugach-huc10-radio-wrapper": chugach_huc10,
-                "chugach-huc8-radio-wrapper": chugach_huc8,
-                "chugach-huc6-radio-wrapper": chugach_huc6,
-                "chugach-small-hex-radio-wrapper": chugach_natl_forest_hex_m,
-                "chugach-med-hex-radio-wrapper": chugach_natl_forest_hex_l,
-                "chugach-lrg-hex-radio-wrapper": chugach_natl_forest_hex_xl,
-                "chugach-ecosection-radio-wrapper": chugach_natl_forest_ecosection,
-                "chugach-lta-radio-wrapper": chugach_natl_forest_lta,
-                "chugach-boundary-radio-wrapper": chugach_natl_forest_boundary,
-                "tongass-huc10-radio-wrapper": tongass_huc_10,
-                "tongass-huc8-radio-wrapper": tongass_huc_8,
-                "tongass-huc6-radio-wrapper": tongass_huc_6,
-                "tongass-small-hex-radio-wrapper": tongass_hex_m,
-                "tongass-med-hex-radio-wrapper": tongass_hex_l,
-                "tongass-lrg-hex-radio-wrapper": tongass_hex_xl,
-                "tongass-ecosection-radio-wrapper": tongass_ecosection,
-                "tongass-lta-radio-wrapper": tongass_lta
+                "chugach-huc10-radio-wrapper": {
+                    'layer_var': chugach_huc10,
+                    'is_visible': false
+                } ,
+                "chugach-huc8-radio-wrapper": {
+                    'layer_var': chugach_huc8,
+                    'is_visible': false
+                } ,
+                "chugach-huc6-radio-wrapper": {
+                    'layer_var': chugach_huc6,
+                    'is_visible': false
+                } ,
+                "chugach-small-hex-radio-wrapper": {
+                    'layer_var': chugach_natl_forest_hex_m,
+                    'is_visible': false
+                } ,
+                "chugach-med-hex-radio-wrapper": {
+                    'layer_var': chugach_natl_forest_hex_l,
+                    'is_visible': false
+                },
+                "chugach-lrg-hex-radio-wrapper": {
+                    'layer_var': chugach_natl_forest_hex_xl,
+                    'is_visible': false
+                },
+                "chugach-ecosection-radio-wrapper": {
+                    'layer_var': chugach_natl_forest_ecosection,
+                    'is_visible': false
+                },
+                "chugach-lta-radio-wrapper": {
+                    'layer_var': chugach_natl_forest_lta,
+                    'is_visible': false
+                },
+                "chugach-boundary-radio-wrapper": {
+                    'layer_var': chugach_natl_forest_boundary,
+                    'is_visible': false
+                },
+                "tongass-huc10-radio-wrapper": {
+                    'layer_var': tongass_huc_10,
+                    'is_visible': false
+                },
+                "tongass-huc8-radio-wrapper": {
+                    'layer_var': tongass_huc_8,
+                    'is_visible': false
+                },
+                "tongass-huc6-radio-wrapper": {
+                    'layer_var': tongass_huc_6,
+                    'is_visible': false
+                },
+                "tongass-small-hex-radio-wrapper": {
+                    'layer_var': tongass_hex_m,
+                    'is_visible': false
+                },
+                "tongass-med-hex-radio-wrapper": {
+                    'layer_var': tongass_hex_l,
+                    'is_visible': false
+                },
+                "tongass-lrg-hex-radio-wrapper": {
+                    'layer_var': tongass_hex_xl,
+                    'is_visible': false
+                },
+                "tongass-ecosection-radio-wrapper": {
+                    'layer_var': tongass_ecosection,
+                    'is_visible': false
+                },
+                "tongass-lta-radio-wrapper": {
+                    'layer_var': tongass_lta,
+                    'is_visible': false
+                }
               };
 
             return radio_button_layer_dict;

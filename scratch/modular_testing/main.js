@@ -22,6 +22,7 @@ require([
     "modules/UpdateChartsOnSelection",
     "modules/CreateInfoModalDict",
     "modules/addInformationDropdown",
+    "modules/ChartsForVisibleLayers",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -52,6 +53,7 @@ require([
       UpdateChartsOnSelection,
       CreateInfoModalDict,
       addInformationDropdown,
+      ChartsForVisibleLayers,
       Map, 
       MapView, 
       Query,
@@ -79,9 +81,9 @@ require([
     const radio_button_layer_dict = ld.createLayersDict();
 
     // Set the first (default) visible layer
-    let layer = radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"];
+    let layer = radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"]['layer_var'];
     //store layers that are in map
-    var featureDict = {"chugach-lrg-hex-radio-wrapper":radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"]}
+    var featureDict = {"chugach-lrg-hex-radio-wrapper":radio_button_layer_dict["chugach-lrg-hex-radio-wrapper"]['layer_var']}
     console.log(Object.keys(featureDict)[0]+"is feature dict one")
 
     //layer view dictionary
@@ -184,6 +186,10 @@ require([
     //   renderer: renderer
     // });
 
+
+    // Set up chart for visible layer class object
+    const charts_for_vis_layers = ChartsForVisibleLayers({});
+
       
    
     const map = new Map({
@@ -233,7 +239,7 @@ require([
         // Add an event listener to each radio button
         const radio_button_div = document.getElementById(r);
         radio_button_div.addEventListener('change', e => {
-          layer = radio_button_layer_dict[r];
+          layer = radio_button_layer_dict[r]['layer_var'];
           if (e.target.checked){
             featureDict[r]= layer;
             highlight=null;
@@ -301,24 +307,39 @@ require([
                   // If we've stopped navigating, run a query of features
                   if(!view.navigating  && viewWatched  && pastExtent !== view.extent) {
                       pastExtent = view.extent;
-                      Object.values(featureDict)[0].queryFeatures({
-                          geometry: view.extent,
-                          returnGeometry: true
-                      }).then( (results) => {
-                          // console.log(results.features.length);
-                          stillComputing = true;
-                          if(results.features.length>0){
-                              // Call function below
-                              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
-                              $('.checkbox-wrapper').on('click', (() => {
-                                ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
-                              } ))
-                              stillComputing = false;
-                              viewWatched = false;
-                          }else{
-                              viewWatched = false; 
-                          };
-                      } )
+
+                      // console.log(on_off_dict)
+
+                      // Temporarily clear all side chart divs
+                      $('side-chart').innerHTML = '';
+
+                      charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+
+                      charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart', on_off_dict);
+
+
+                      // Object.values(featureDict)[0].queryFeatures({
+                      //     geometry: view.extent,
+                      //     returnGeometry: true
+                      // }).then( (results) => {
+                      //     // console.log(results.features.length);
+                      //     stillComputing = true;
+                      //     if(results.features.length>0){
+                      //         // Call function below
+                      //         // console.log(metric_button.on_off_dict)
+                      //         // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+                      //         // $('.checkbox-wrapper').on('click', (() => {
+                      //         //   ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+                      //         // } ))
+                      //         stillComputing = false;
+                      //         viewWatched = false;
+                      //     }else{
+                      //         viewWatched = false; 
+                      //     };
+                      // })
+
+                      // Get a dictionary and list of visible layers - update.
+                      
                   }
               }, 1000)
           }
