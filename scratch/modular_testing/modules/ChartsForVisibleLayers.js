@@ -130,7 +130,6 @@ define([
                 */
 
                 if (layers_dict[in_layer]['is_visible'] === false) {
-                    console.log("no dice for ", layers_dict[in_layer]['display_name'])
                     return;
                 }
                 ///////////////////////////////////////////////////////////////////////////////
@@ -176,7 +175,6 @@ define([
                         }).then ( (results) => {
                             if(results.features.length > 0) {
 
-                                console.log(results.features);
 
                                 // // append a chart - attempt new chart here.
                                 $(`#${in_layer}-chart-div`).append(`<canvas class="chart" id="${chartID}-${in_layer}"></canvas>`); // add a new id element here. 
@@ -297,6 +295,7 @@ define([
                     }
                 }); 
             });
+
             console.log(layers_dict);
             // Iterate over visible layers and make charts in the side div
             if ( Object.keys(layers_dict).length > 0 ) {
@@ -304,15 +303,21 @@ define([
                 // This is where we go through each visible layer.
                 Object.keys(layers_dict).forEach((l) => {
 
-                    
-
-                    
                     ['Change', 'Land_Cover', 'Land_Use'].map((w) => {
                         chart_one_metric(w, l, fieldNames, layers_dict, outer_chart_div_id);
                     });
 
                 });
             }
+
+            // Should just be able to add onclick functionality and be done with it.
+            // $('.layer-check-button').on('click', () => {
+            //     ['Change', 'Land_Cover', 'Land_Use'].map((w) => {
+            //         chart_one_metric(w, l, fieldNames, layers_dict, outer_chart_div_id);
+            //     }); 
+            // })
+
+
         },
 
 

@@ -72,7 +72,9 @@ require([
       Polygon,
       Multipoint
       ) => {
+    
 
+    // const user_poly_selection_listener = ListentoUserLayerSelection({});
 
     // *** CREATE DROPDOWN MENUS USING OUR MODULES *** // 
 
@@ -208,6 +210,9 @@ require([
     var storeResults = null;
     var resultsDict = {};
 
+    // Call the user selection listener for results dict
+    // user_poly_selection_listener.listenToSelection(resultsDict);
+
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
@@ -291,6 +296,11 @@ require([
       empty_chart = CreateChart({});
 
       // Make sure chart updates when click event happens on layer selection buttons
+
+      $('.check-button-wrapper').on('click', () => {
+        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict);
+      })
 
 
       // Below, watch for movement of map and update charts based on visible features.
