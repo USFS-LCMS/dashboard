@@ -64,6 +64,7 @@ var pastExtent;
 ///////////////////////////////////////////////////////////////////////
 // Start ESRI js api and set everything up
 require([
+    "esri/config",
     "esri/Map",
     "esri/views/MapView",
     "esri/PopupTemplate",
@@ -79,11 +80,11 @@ require([
     "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js",
     "dojo/domReady!",
   ],
-  function (Map, MapView, PopupTemplate, FeatureLayer, GeoJSONLayer,Expand,
+  function (esriConfig,Map, MapView, PopupTemplate, FeatureLayer, GeoJSONLayer,Expand,
         BasemapGallery,
         LayerList,
         WebTileLayer,Popup,watchUtils, Query, Chart) {
-
+    esriConfig.request.trustedServers.push("*");
     //Add in GEE support
     addLayer = function(eeImage,vizParams,name,visible){
     if(vizParams == undefined){vizParams = {}}
@@ -154,7 +155,7 @@ require([
       var gainYearPalette = ['c5ee93', '00a398'];
       var startYear = 1985;
       var endYear = 2020;
-      var lcms_output_collections = ['USFS/GTAC/LCMS/v2020-5','USFS/GTAC/LCMS/v2020-6'];
+      var lcms_output_collections = ['USFS/GTAC/LCMS/v2020-6','USFS/GTAC/LCMS/v2020-5'];//'projects/lcms-292214/assets/Final_Outputs/2021-7/LCMS'];
       var lcms_output = ee.ImageCollection(ee.FeatureCollection(lcms_output_collections.map((c)=>ee.ImageCollection(c))).flatten());
       var change = lcms_output.select(['Change']);
       // Convert to year collection for a given code.
@@ -175,7 +176,7 @@ require([
     ///////////////////////////////////////////////////////////////////////
     //Set up the template and renderer for the geojson areas
     const template = {
-          title: "{DISTRICTNA}"
+          title: "{outID}"
         };
     var renderer = {
           type: "simple",  // autocasts as new SimpleRenderer()
@@ -204,14 +205,15 @@ require([
           },
           // labelPlacement: "above-right",
           labelExpressionInfo: {
-            expression: "$feature.DISTRICTNA"
+            expression: "$feature.outID"
           }
         };
     ///////////////////////////////////////////////////////////////////////
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
-      url: './geojson/LCMS-Summaries-DISTRICTNA_compressed.geojson',
-      title:"USFS Districts",
+      // url: './geojson/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
+      url:'https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
+      title:"Summary Areas",
       copyright: "USDA USFS GTAC",
       // popupTemplate: template,
       legendEnabled:true,
@@ -247,7 +249,7 @@ require([
           return [start, ...range(start + 1, end)];
       }
       // Set up everything to handle the LCMS data
-      var years = range(1985,2020).map(i => i.toString());
+      // var years = range(1985,2021).map(i => i.toString());
       var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
                     'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
                     'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
@@ -256,7 +258,7 @@ require([
       "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
                   'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
                   }
-      var titleField = 'DISTRICTNA';
+      var titleField = 'outID';
       var chartWhich = ['Change','Land_Cover','Land_Use'];
       var query = new Query();
       query.returnGeometry = true;
@@ -271,7 +273,7 @@ require([
       // This method tries to ensure the user is finished panning/zooming before tabulating the graphs
       function updateSelectionList(selectedFeatures){
         $('#selected-area-list').empty();
-      
+       
         var i = 1;
         selectedAreaNameList = [];
         selectedFeatures.map((f)=>{var nm = f.attributes[titleField];
@@ -299,6 +301,7 @@ require([
                   console.log(results.features.length);
                  stillComputing = true;
                 if(results.features.length>0){
+                    results.features = results.features.slice(0,800) // Limit total results possible
                    updateSelectionList(results.features);
                    chartWhich.map((w) => setContentInfo(results,w));
                    $('.lcms-icon').removeClass('fa-spin');
@@ -391,8 +394,8 @@ require([
       });
       // Function to tabulate results and create graphs
       function setContentInfo(results,whichOne){
-      
-        var stacked = false;
+        
+        var stacked = true;
         var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
         var chartID = 'chart-canvas-'+whichOne
         var colorsI = 0;
@@ -407,13 +410,26 @@ require([
         ///////////////////////////////////////////////////////////////////////
         //Iterate across each field name and add up totals 
         //First get 2-d array of all areas for each then sum the columns and divide by total area
+        var startYear = 2005;
+        var endYear = 2015;
         var t = fieldNames.map(function(k){
           var total_area = 0;
           var total = [];
           results.features.map(function(f){
-            var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
-            total_area = total_area + total_areaF;
-            total.push(f.attributes[k].split(',').map(n => parseFloat(n)*total_areaF));
+            
+            try{
+              years = f.attributes.years.split(',');
+              var startI = years.indexOf(startYear.toString());
+              var endI = years.indexOf((endYear+1).toString());
+              years = years.slice(startI,endI);
+              total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)));
+              var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
+              total_area = total_area + total_areaF;
+            }catch(err){
+              console.log('No LCMS summary for: '+f.attributes['outID']);
+              // console.log(err);
+            }
+            
            })
           
           var colSums = [];
@@ -425,7 +441,7 @@ require([
             colSums.push(colSum);
           };
           //Convert back to pct
-          colSums = colSums.map((n)=>n/total_area*100)
+          colSums = colSums.map((n)=>n/total_area*100);
           ///////////////////////////////////////////////////////////////////////
           //Set up chart object
             var out = {'borderColor':colors[whichOne][colorsI],
