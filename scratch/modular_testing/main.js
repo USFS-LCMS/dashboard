@@ -153,7 +153,7 @@ require([
     ///////// end of modal
 
 
-   
+  
 
     // Create metric selection buttons
 
@@ -311,12 +311,13 @@ require([
                       // console.log(on_off_dict)
 
                       // Temporarily clear all side chart divs
-                      $('side-chart').innerHTML = '';
+                      $('#side-chart').append(`<div id="side-chart-canvas-container"></div>`);
+
+                      $('#side-chart-canvas-container').innerHTML = '';
 
                       charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-                      charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart', on_off_dict);
-
+                      charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict);
 
                       // Object.values(featureDict)[0].queryFeatures({
                       //     geometry: view.extent,
@@ -572,6 +573,8 @@ require([
               console.log("results "+storeResults.features[0])
               const graphics = results.features; 
               //view.goTo(graphics)
+
+              console.log("RESULT DICT FORMAT ", resultsDict);
 
               console.log("setting chart from click")
               empty_chart = CreateChart({});
