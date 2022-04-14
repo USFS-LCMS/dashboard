@@ -342,10 +342,11 @@ require([
 
       // Make sure chart updates when click event happens on layer selection buttons
 
-      // $('.check-button-wrapper').on('click', () => {
-      //   charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-      //   charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
-      // })
+      $('.check-button-wrapper').on('click', () => {
+        thisDict={}
+        // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+        // charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+      })
 
 
       // Below, watch for movement of map and update charts based on visible features.
