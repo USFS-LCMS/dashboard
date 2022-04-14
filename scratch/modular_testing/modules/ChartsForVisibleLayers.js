@@ -104,7 +104,7 @@ define([
         },
 
         // Create a way to take the dictionary and iterate over, making divs and charts
-        makeVisibleLayerCharts: function(layers_dict, geometry, outer_chart_div_id, toggled_elems) {
+        makeVisibleLayerCharts: function(layers_dict, resultsDict, outer_chart_div_id, toggled_elems) {
             /*
             This function makes charts for each visible layer. 
             */
@@ -124,13 +124,13 @@ define([
                 /*
                 This function takes three inputs: 
                 - which_one -> which metric class we're charting: Change, Land_Cover, Land_Use
-                - in_layer -> one of our visible layers
+                - in_layer -> one of our visible layers (e.g."chugac-small-hex-radio-wrapper")
                 - fieldNames -> A list of field names in the format ["Change---Fast Loss", "Land_Cover---Trees", "Land_Use---Agriculture", ... , etc]
                 The function will create a new chart div, containing three charts, for each  layer visible (assuming that metrics are selected for each chart's metric class).
                 */
 
                 if (layers_dict[in_layer]['is_visible'] === false) {
-                    console.log("no dice for ", layers_dict[in_layer]['display_name'])
+                    // console.log("no dice for ", layers_dict[in_layer]['display_name'])
                     return;
                 }
                 ///////////////////////////////////////////////////////////////////////////////
@@ -166,17 +166,23 @@ define([
                     $(`#${outer_chart_div_id}`).append(chart_div_html);
 
                     // create query for layer 
-                    curr_layer = layers_dict[in_layer]['layer_var'];
+                    //curr_layer = layers_dict[in_layer]['layer_var'];
 
-                    // load layer and query. 
-                    curr_layer.when((cl) => {
-                        cl.queryFeatures({
-                            geometry: geometry,
-                            returnGeometry: true
-                        }).then ( (results) => {
+                    // // load layer and query. 
+                    // curr_layer.when((cl) => {
+                    //     cl.queryFeatures({
+                    //         geometry: geometry,
+                    //         returnGeometry: true
+                    //     }).then ( (results) => {
+                        // console.log("IS RESULTS DICT "+which_one)
+                        // console.log(resultsDict)
+                        //Object.keys(resultsDict).forEach((k) => {
+
+                            console.log(in_layer+" is now charting...")
+                            var results = resultsDict[in_layer]//resultsDict[k]//curr_layer//layers_dict[in_layer];
+                           
                             if(results.features.length > 0) {
 
-                                console.log(results.features);
 
                                 // // append a chart - attempt new chart here.
                                 $(`#${in_layer}-chart-div`).append(`<canvas class="chart" id="${chartID}-${in_layer}"></canvas>`); // add a new id element here. 
@@ -272,9 +278,10 @@ define([
                                     }
                                 });
 
-                            }
-                        });
-                    });
+                            };
+                       // });// end of iterating through results dict
+                     //   });
+                   // });
                     
                 ///////////////////////////////////////////////////////////////////////////////
             }
@@ -297,19 +304,20 @@ define([
                     }
                 }); 
             });
-            console.log(layers_dict);
+            // console.log(layers_dict);
             // Iterate over visible layers and make charts in the side div
             if ( Object.keys(layers_dict).length > 0 ) {
 
                 // This is where we go through each visible layer.
-                Object.keys(layers_dict).forEach((l) => {
-
-                    
-
+                Object.keys(layers_dict).forEach((l) => {  
                     
                     ['Change', 'Land_Cover', 'Land_Use'].map((w) => {
+                        //w = which one e.g., Land_Cover
+                        //l=layer (key in layers_dict)
+                        //charts one metric for one result
                         chart_one_metric(w, l, fieldNames, layers_dict, outer_chart_div_id);
                     });
+
 
                 });
             }
