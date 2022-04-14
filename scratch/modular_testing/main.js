@@ -216,8 +216,8 @@ require([
           console.log(`${key} set to ${value}`);
           target[key] = value;
 
-          charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-          charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+          // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+          // charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
 
           return true;
       }
@@ -332,10 +332,10 @@ require([
 
       // Make sure chart updates when click event happens on layer selection buttons
 
-      $('.check-button-wrapper').on('click', () => {
-        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
-      })
+      // $('.check-button-wrapper').on('click', () => {
+      //   charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+      //   charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+      // })
 
 
       // Below, watch for movement of map and update charts based on visible features.
@@ -388,7 +388,7 @@ require([
                                 }
                               });
 
-                              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict);
+                              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
                             }
                               // Call function below
                               // console.log(metric_button.on_off_dict)
@@ -652,7 +652,7 @@ require([
               
               charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict);
+              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
 
 
               // empty_chart = CreateChart({});
@@ -823,7 +823,7 @@ require([
                   
                   charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-                  charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict);
+                  charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
 
 
                   // empty_chart = CreateChart({});

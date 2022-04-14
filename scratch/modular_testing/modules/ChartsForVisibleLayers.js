@@ -106,8 +106,7 @@ define([
         },
 
         // Create a way to take the dictionary and iterate over, making divs and charts
-        makeVisibleLayerCharts: function(layers_dict, resultsDict, outer_chart_div_id, toggled_elems) {
-        makeVisibleLayerCharts: function(layers_dict, geometry, outer_chart_div_id, toggled_elems, startYear, endYear) {
+        makeVisibleLayerCharts: function(layers_dict, resultsDict, outer_chart_div_id, toggled_elems, startYear, endYear) {
             /*
             This function makes charts for each visible layer. 
             */
@@ -158,16 +157,26 @@ define([
                 var t = fieldNames.map(function(k){
                   var total_area = 0;
                   var total = [];
+                  console.log(results.features[0].attributes)
+                  console.log('is results')
                   results.features.map(function(f){
                     
                     try{
+                        
                       years = f.attributes.years.split(',');
+                      console.log(years)
                     //   console.log("Content Info Results years: ", years);
                       var startI = years.indexOf(startYear.toString());
+                      console.log(startI)
+                      console.log("THIS IS HAPPENING")
                       var endI = years.indexOf((endYear+1).toString());
                       years = years.slice(startI,endI);
                       total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)));
                       var total_areaF = parseFloat(f.attributes['total_area']);
+                      console.log(' is total areaF');
+
+                      console.log(total_areaF)
+
                       total_area = total_area + total_areaF;
                     }catch(err){
                       console.log('No LCMS summary for: '+f.attributes['outID']);
@@ -175,7 +184,10 @@ define([
                     }
                     
                    })
+
+                   
                   
+                   //some error here:
                   var colSums = [];
                   for(var col = 0;col < total[0].length;col++){
                     var colSum = 0;
@@ -184,6 +196,8 @@ define([
                     }
                     colSums.push(colSum);
                   };
+
+                  console.log("also done")
                   //Convert back to pct
                   colSums = colSums.map((n)=>n/total_area*100);
                   ///////////////////////////////////////////////////////////////////////
@@ -308,6 +322,7 @@ define([
 
                             console.log(in_layer+" is now charting...")
                             var results = resultsDict[in_layer]//resultsDict[k]//curr_layer//layers_dict[in_layer];
+                            console.log(results);
                            
                             if(results.features.length > 0) {
 
@@ -443,17 +458,17 @@ define([
                 }); 
             });
             // Iterate over visible layers and make charts in the side div
-            if ( Object.keys(layers_dict).length > 0 ) {
+            // if ( Object.keys(layers_dict).length > 0 ) {
 
-                // This is where we go through each visible layer.
-                Object.keys(layers_dict).forEach((l) => {  
+            //     // This is where we go through each visible layer.
+            //     Object.keys(layers_dict).forEach((l) => {  
                     
-                    ['Change', 'Land_Cover', 'Land_Use'].map((w) => {
-                        //w = which one e.g., Land_Cover
-                        //l=layer (key in layers_dict)
-                        //charts one metric for one result
-                        chart_one_metric(w, l, fieldNames, layers_dict, outer_chart_div_id);
-                    });
+            //         ['Change', 'Land_Cover', 'Land_Use'].map((w) => {
+            //             //w = which one e.g., Land_Cover
+            //             //l=layer (key in layers_dict)
+            //             //charts one metric for one result
+            //             chart_one_metric(w, l, fieldNames, layers_dict, outer_chart_div_id);
+            //         });
                 Object.keys(layers_dict).forEach((l) => {
 
                     if (layers_dict[l]['is_visible'] === true){
@@ -485,7 +500,7 @@ define([
             // })
 
 
-        },
+        //},
 
 
         // Create a function that listens to user clicks on 

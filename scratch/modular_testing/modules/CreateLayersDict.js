@@ -127,7 +127,7 @@ define([
                 title: 'Chugach Hexagons (Med.)'
             });
             const chugach_natl_forest_hex_xl = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForest_HEX_L-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForest_HEX_XL-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach Hexagons (Lrg.)'
             });
