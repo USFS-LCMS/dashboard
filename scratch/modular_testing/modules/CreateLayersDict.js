@@ -59,34 +59,40 @@ define([
                 title: 'Tongass Hexagon (Lrg.)'
             });
             const tongass_ecosection = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-TongassNationalForestEcologicalSubsections-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestEcologicalSubsections-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass Eco. Subsections'
             });
             const tongass_lta = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-TongassNationalForestLandTypeAssociations-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestLandTypeAssociations-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass LTAs'
             });
+            const tongass_natl_forest_boundary = new GeoJSONLayer({
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Tongass_Proclaimed_Boundary-outID_compressed.geojson",
+                renderer: renderer,
+                title: 'Tongass NF Boundary'
+            })
         
             // Create all Chugach layers here
             const chugach_huc10 = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-ChugachHuc10-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC10-outID_compressed.geojson",
+                     
                 renderer: renderer,
                 title: 'Chugach HUC 10'
             });
             const chugach_huc8 = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-ChugachHuc8-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC8-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach HUC 8'
             });
             const chugach_huc6 = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-ChugachHuc6-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach HUC 6'
             });
             const chugach_natl_forest_boundary = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Chugach_National_Forest_Boundary-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestBoundary-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach NF Boundary'
             });
@@ -95,18 +101,23 @@ define([
                 renderer: renderer,
                 title: 'Chugach Eco. Subsections'
             });
+            const chugach_natl_forest_ranger_district = new GeoJSONLayer({
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestRangerDistricts-outID_compressed.geojson",
+                renderer: renderer,
+                title: 'Chugach Ranger Districts'
+            })
             const chugach_natl_forest_lta = new GeoJSONLayer({
                 url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Chugach_National_Forest_Land_Type_Association-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach LTAs'
             });
             const chugach_natl_forest_hex_m = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_M_Chugach-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForest_HEX_M-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach Hexagaons (Sm.)'
             });
             const chugach_natl_forest_hex_l = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_L_Chugach-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForest_HEX_L-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach Hexagons (Med.)'
             });
@@ -116,6 +127,8 @@ define([
                 title: 'Chugach Hexagons (Lrg.)'
             });
 
+
+
             // Create a layer dictionary to return 
             const radio_button_layer_dict = {
                 "chugach-huc10-radio-wrapper": {
@@ -123,6 +136,11 @@ define([
                     'is_visible': false,
                     'display_name': 'Chugach N.F. HUC 10'
                 } ,
+                "chugach-ranger-district-radio-wrapper": {
+                    'layer_var': chugach_natl_forest_ranger_district,
+                    'is_visible': false,
+                    'display_name': 'Chugach N.F. Ranger Districts'
+                },
                 "chugach-huc8-radio-wrapper": {
                     'layer_var': chugach_huc8,
                     'is_visible': false,
@@ -168,6 +186,11 @@ define([
                     'is_visible': false,
                     'display_name': 'Tongass N.F. HUC 10'
                 },
+                "tongass-boundary-radio-wrapper": {
+                    'layer_var': tongass_natl_forest_boundary,
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. Boundary'
+                },
                 "tongass-huc8-radio-wrapper": {
                     'layer_var': tongass_huc_8,
                     'is_visible': false,
@@ -205,7 +228,60 @@ define([
                 }
               };
 
+
+              const json_layer_dict = {};
+
+              const bucketName = 'lcms-dashboard'
+              // ajax call here 
+              $.ajax({
+                type: 'GET',
+                url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
+            }).done(function(json){
+
+                json = json.items.filter((f)=>f .name.indexOf('Terrestrial')>-1);
+
+                "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_M_Tongass-outID_compressed.geojson"
+                
+
+                json.forEach((j) => {
+                    console.log(j);
+                    // console.log(j['selfLink'])
+                    // console.log("STUFF.. : ", j['id'].split('-')[3])
+                    // console.log("NAME: ", j['name'].split('.')[0])
+
+                    const lyr_name = j['name'].split('.')[0]
+                    // console.log("URL: URL:  https://storage.googleapis.com/lcms-dashboard/"+j['name']);
+
+                    const lyr_var = new GeoJSONLayer({
+                        url: "https://storage.googleapis.com/lcms-dashboard/"+j['name'],
+                        renderer: renderer,
+                        title: lyr_name
+                    });
+
+
+                    json_layer_dict[lyr_name+'-radio-wrapper'] = {
+                        'layer_var': lyr_var,
+                        'is_visible': false,
+                        'display_name': lyr_name
+                    };
+
+                    // console.log("LYR: ", lyr_var);
+
+                    // json_layer_dict[]
+                    
+
+                });
+
+                // console.log("JSON.. : ", json);
+                // console.log("JSON SELF LINK: ", json[0]['selfLink'])
+                // console.log(json.items);
+            })
+
+            console.log("JSONLAYERDICT: ", json_layer_dict);
+
+
             return radio_button_layer_dict;
+            // return json_layer_dict;
         }
     })
 });

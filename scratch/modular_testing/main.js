@@ -23,6 +23,7 @@ require([
     "modules/CreateInfoModalDict",
     "modules/addInformationDropdown",
     "modules/ChartsForVisibleLayers",
+    "modules/CreateSlider",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -54,6 +55,7 @@ require([
       CreateInfoModalDict,
       addInformationDropdown,
       ChartsForVisibleLayers,
+      CreateSlider,
       Map, 
       MapView, 
       Query,
@@ -74,6 +76,13 @@ require([
       ) => {
     
 
+
+      //   $.ajax({
+      //     type: 'GET',
+      //     url: `https://storage.googleapis.com/lcms-dashboard/`,
+      // }).done(function(json){
+      //     console.log(json);
+      // })
     // const user_poly_selection_listener = ListentoUserLayerSelection({});
 
     // *** CREATE DROPDOWN MENUS USING OUR MODULES *** // 
@@ -155,7 +164,8 @@ require([
     ///////// end of modal
 
 
-  
+
+
 
     // Create metric selection buttons
 
@@ -164,6 +174,8 @@ require([
       "Land_Cover": {},
       "Land_Use": {}
     }
+
+
     const metric_button = MetricSelectionButtons({});
     metric_button.createMetricButtons();
 
@@ -179,7 +191,7 @@ require([
     modalinfos.createModals();
     modalinfos.createInfoModalDict();
 
-    
+
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
@@ -192,7 +204,28 @@ require([
     // Set up chart for visible layer class object
     const charts_for_vis_layers = ChartsForVisibleLayers({});
 
-      
+    // analysis years for slider
+    const analysis_years = {
+      'start_year': 1985,
+      'end_year' : 2020
+    };
+
+    // var targetObj = {};
+    var analysis_yr_prox = new Proxy(analysis_years, {
+      set: function (target, key, value) {
+          console.log(`${key} set to ${value}`);
+          target[key] = value;
+
+          charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+          charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+
+          return true;
+      }
+    });
+
+    // slider
+    slider_create = CreateSlider({});
+    slider_create.createSlider(analysis_yr_prox);
    
     const map = new Map({
       basemap: "hybrid",
@@ -299,7 +332,7 @@ require([
 
       $('.check-button-wrapper').on('click', () => {
         charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
       })
 
 
@@ -327,7 +360,7 @@ require([
 
                       charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-                      charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict);
+                      charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
 
                       // Object.values(featureDict)[0].queryFeatures({
                       //     geometry: view.extent,
@@ -576,7 +609,7 @@ require([
               layer.queryExtent(query).then((response) => {
                   view.goTo(response.extent.expand(1.25)).catch((error) => {
                   console.error(error);
-                  })});
+                })});
 
               storeResults=results
               resultsDict[r] = results
@@ -619,7 +652,7 @@ require([
                   }
               });
               //results.features[0].attributes["planarArea"] = totalArea //stores area for all selected polygons not just the first feature
-                                              
+
           }).catch(function(err){
           console.error(err);
           })
@@ -815,28 +848,28 @@ require([
       div.append(p);
 
       // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS. !!??
-      document.getElementById("accordion-item-1-a").onclick = () => {
-        if (document.getElementById("chart-canvas") != null){
-          document.getElementById("chart-canvas").remove();
-      };
+      // document.getElementById("accordion-item-1-a").onclick = () => {
+      //   if (document.getElementById("chart-canvas") != null){
+      //     document.getElementById("chart-canvas").remove();
+      // };
 
-        p.textContent="Please Select a question.";
-        // document.getElementById("side-chart").innerHTML = "";
-        // p.innerHTML = "";
+      //   p.textContent="Please Select a question.";
+      //   // document.getElementById("side-chart").innerHTML = "";
+      //   // p.innerHTML = "";
 
-        // assumes that we have a blank dropdown menu 
-        if ( document.getElementById("accordion-item-1-a").value == "" ){
+      //   // assumes that we have a blank dropdown menu 
+      //   if ( document.getElementById("accordion-item-1-a").value == "" ){
           
-          // Ask user to select question if they have not yet.
-          p.textContent = "Please select a question.";
-        }
-        else {
-          // if no blank value, clear out the chart 
-          p.textContent = "";
+      //     // Ask user to select question if they have not yet.
+      //     p.textContent = "Please select a question.";
+      //   }
+      //   else {
+      //     // if no blank value, clear out the chart 
+      //     p.textContent = "";
 
-          p.textContent = c.createOutputObj(null, ["null"]); //NOTE!!!?? ** c is not defined
-        }
-      }
+      //     p.textContent = c.createOutputObj(null, ["null"]); //NOTE!!!?? ** c is not defined
+      //   }
+      // }
 
       return layer
     })
