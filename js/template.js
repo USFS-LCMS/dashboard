@@ -212,7 +212,7 @@ require([
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
       // url: './geojson/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
-      url:'https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
+      url:'https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestAdministrativeBoundary-outID_compressed.geojson',
       title:"Summary Areas",
       copyright: "USDA USFS GTAC",
       // popupTemplate: template,
