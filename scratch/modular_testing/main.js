@@ -23,6 +23,7 @@ require([
     "modules/CreateInfoModalDict",
     "modules/addInformationDropdown",
     "modules/ChartsForVisibleLayers",
+    "modules/CreateSlider",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -54,6 +55,7 @@ require([
       CreateInfoModalDict,
       addInformationDropdown,
       ChartsForVisibleLayers,
+      CreateSlider,
       Map, 
       MapView, 
       Query,
@@ -72,7 +74,16 @@ require([
       Polygon,
       Multipoint
       ) => {
+    
 
+
+      //   $.ajax({
+      //     type: 'GET',
+      //     url: `https://storage.googleapis.com/lcms-dashboard/`,
+      // }).done(function(json){
+      //     console.log(json);
+      // })
+    // const user_poly_selection_listener = ListentoUserLayerSelection({});
 
     // *** CREATE DROPDOWN MENUS USING OUR MODULES *** // 
 
@@ -153,7 +164,8 @@ require([
     ///////// end of modal
 
 
-  
+
+
 
     // Create metric selection buttons
 
@@ -162,6 +174,8 @@ require([
       "Land_Cover": {},
       "Land_Use": {}
     }
+
+
     const metric_button = MetricSelectionButtons({});
     metric_button.createMetricButtons();
 
@@ -177,7 +191,7 @@ require([
     modalinfos.createModals();
     modalinfos.createInfoModalDict();
 
-    
+
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
@@ -190,7 +204,28 @@ require([
     // Set up chart for visible layer class object
     const charts_for_vis_layers = ChartsForVisibleLayers({});
 
-      
+    // analysis years for slider
+    const analysis_years = {
+      'start_year': 1985,
+      'end_year' : 2020
+    };
+
+    // var targetObj = {};
+    var analysis_yr_prox = new Proxy(analysis_years, {
+      set: function (target, key, value) {
+          console.log(`${key} set to ${value}`);
+          target[key] = value;
+
+          charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+          charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+
+          return true;
+      }
+    });
+
+    // slider
+    slider_create = CreateSlider({});
+    slider_create.createSlider(analysis_yr_prox);
    
     const map = new Map({
       basemap: "hybrid",
@@ -208,12 +243,17 @@ require([
     var storeResults = null;
     var resultsDict = {};
 
+    // Call the user selection listener for results dict
+    // user_poly_selection_listener.listenToSelection(resultsDict);
+
 
     // *** BELOW SEE STEPS TAKEN AFTER MAP VIEW IS RENDERED ***
 
     view.when().then(()=>{
       
       map.add(img_layer);
+
+      // map.add(radio_button_layer_dict['tongass-boundary-radio-wrapper']['layer_var'])
 
       // Add selection functionality to image layers
       Object.keys(img_layer_dict).map((r) => {
@@ -292,6 +332,11 @@ require([
 
       // Make sure chart updates when click event happens on layer selection buttons
 
+      $('.check-button-wrapper').on('click', () => {
+        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+      })
+
 
       // Below, watch for movement of map and update charts based on visible features.
       let pastExtent = view.extent;
@@ -326,8 +371,6 @@ require([
                           if(results.features.length>0){
 
                             console.log("NOTE: Charts will display for extent if no features are selected AND the view has changed after user unselected the feature")
-                            console.log("keys of resultsdict:")
-                            console.log(Object.keys(resultsDict).length)
                             if (Object.keys(resultsDict).length==0){
                               //i.e. if user hasnt selected any features
 
@@ -344,8 +387,6 @@ require([
                                   thisDict[k]=results
                                 }
                               });
-                              console.log("thisdict")
-                              console.log(thisDict)
 
                               charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict);
                             }
@@ -593,7 +634,7 @@ require([
               layer.queryExtent(query).then((response) => {
                   view.goTo(response.extent.expand(1.25)).catch((error) => {
                   console.error(error);
-                  })});
+                })});
 
               storeResults=results
               resultsDict[r] = results
@@ -646,7 +687,7 @@ require([
                   }
               });
               //results.features[0].attributes["planarArea"] = totalArea //stores area for all selected polygons not just the first feature
-                                              
+
           }).catch(function(err){
           console.error(err);
           })
