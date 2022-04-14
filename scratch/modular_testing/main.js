@@ -216,6 +216,17 @@ require([
           console.log(`${key} set to ${value}`);
           target[key] = value;
 
+          if (Object.keys(resultsDict).length==0){
+            charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+          }else{
+            charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+          
+          }
+
+
+
           // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
           // charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
 
@@ -345,7 +356,7 @@ require([
 
       $('#side-chart').append(`<div id="side-chart-canvas-container"></div>`);
 
-      
+      var thisDict={};
 
       // Watch extent to see if user is panning or zooming
       view.watch('extent', function(evt){
@@ -357,15 +368,15 @@ require([
                   if(!view.navigating  && viewWatched  && pastExtent !== view.extent) {
                       pastExtent = view.extent;
                       // console.log(on_off_dict)
-                      console.log("featdict");
-                      console.log(featureDict); //values are actual results object
-                                        
+                      thisDict={}
+                                    
                       Object.values(featureDict).forEach((ft) =>{  
                         console.log("another feature");
                       ft.queryFeatures({
                           geometry: view.extent,
                           returnGeometry: true
                       }).then( (results) => {
+                          
                           // console.log(results.features.length);
                           stillComputing = true;
                           if(results.features.length>0){
@@ -380,7 +391,7 @@ require([
 
                               charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-                              var thisDict={};
+                              
                               console.log("results.features.len"+results.features.length)
                               Object.keys(radio_button_layer_dict).forEach((k)=>{
                                 if (radio_button_layer_dict[k]['is_visible']  ===true){
