@@ -627,8 +627,8 @@ require([
           };
           // remove existing highlighted features
           if(highlight){
-            console.log("highlight removed within selectStates function")
-            highlight.remove();//possible issue with removing highglights bc we don't reset highlights the list to []
+            console.log("highlight [used to be] removed within selectStates function")
+            //highlight.remove();//possible issue with removing highglights bc we don't reset highlights the list to []
             resultsDict={};
           }
           
@@ -648,18 +648,20 @@ require([
 
               storeResults=results
               resultsDict[r] = results
-              console.log("results "+storeResults.features[0])
+              // console.log("results "+storeResults.features[0])
               const graphics = results.features; 
               //view.goTo(graphics)
 
-              console.log("RESULT DICT FORMAT ", resultsDict);
+              // highlight query results
+              console.log(layerDict[r]+" is layer dict [r]")
+              highlight = layerDict[r].highlight(graphics);
+              highlights.push(highlight);
 
               console.log("setting chart from click")
 
               $('#side-chart-canvas-container').innerHTML = ''; 
-              console.log("resultsDict")
-              console.log(resultsDict)
               
+              //NOTE there is some error here
               charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
               charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
@@ -676,14 +678,11 @@ require([
               //     highlight.remove();
               // }
 
-              // highlight query results
-              console.log(layerDict[r]+" is layer dict [r]")
-              highlight = layerDict[r].highlight(graphics);
-              highlights.push(highlight);
+              
               pntGraphics.removeAll();
               ////
               var totalArea=0;
-              console.log("len "+results.features.length)
+              // console.log("len "+results.features.length)
               var j=-1
               graphics.forEach(function (g) {         
                   j+=1                

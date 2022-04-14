@@ -310,9 +310,9 @@ define([
                         // console.log(resultsDict)
                         //Object.keys(resultsDict).forEach((k) => {
 
-                            console.log(in_layer+" is now charting...")
+                            // console.log(in_layer+" is now charting...")
                             var results = resultsDict[in_layer]//resultsDict[k]//curr_layer//layers_dict[in_layer];
-                            console.log(results);
+                            // console.log(results);
                            
                             if(results.features.length > 0) {
 
@@ -443,7 +443,7 @@ define([
                     if (class_dict[in_class] === true) {
                         fieldNames.push(in_class);
 
-                        console.log("OOMP: ", fieldNames);
+                        // console.log("OOMP: ", fieldNames);
                     }
                 }); 
             });
