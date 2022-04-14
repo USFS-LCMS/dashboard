@@ -29,50 +29,55 @@ define([
 
             // Create all Tongass Layers
             const tongass_huc_10 = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-TongassHuc10-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestHuc10-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass HUC 10'
             });
             const tongass_huc_8 = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-TongassHuc8-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestHuc8-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass HUC 8'
             });
             const tongass_huc_6 = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-TongassHuc6-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestHuc6-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass HUC 6'
             });
             const tongass_hex_m = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_M_Tongass-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForest_HEX_M-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass Hexagon (Sm.)'
             });
             const tongass_hex_l = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_L_Tongass-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForest_HEX_L-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass Hexagon (Med.)'
             });
             const tongass_hex_xl = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_XL_Tongass-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForest_HEX_XL-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass Hexagon (Lrg.)'
             });
             const tongass_ecosection = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestEcologicalSubsections-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestEcosections-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass Eco. Subsections'
             });
             const tongass_lta = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestLandTypeAssociations-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestLTA-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass LTAs'
             });
             const tongass_natl_forest_boundary = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Tongass_Proclaimed_Boundary-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestAdministrativeBoundary-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Tongass NF Boundary'
-            })
+            });
+            const tongass_natl_forest_ranger_district = new GeoJSONLayer({
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestRangerDistricts-outID_compressed.geojson",
+                renderer: renderer,
+                title: 'Tongass NF Ranger Districts'
+            });
         
             // Create all Chugach layers here
             const chugach_huc10 = new GeoJSONLayer({
@@ -105,9 +110,9 @@ define([
                 url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestRangerDistricts-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach Ranger Districts'
-            })
+            });
             const chugach_natl_forest_lta = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Chugach_National_Forest_Land_Type_Association-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestLTA-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach LTAs'
             });
@@ -122,7 +127,7 @@ define([
                 title: 'Chugach Hexagons (Med.)'
             });
             const chugach_natl_forest_hex_xl = new GeoJSONLayer({
-                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_XL_Chugach-outID_compressed.geojson",
+                url: "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForest_HEX_L-outID_compressed.geojson",
                 renderer: renderer,
                 title: 'Chugach Hexagons (Lrg.)'
             });
@@ -186,11 +191,11 @@ define([
                     'is_visible': false,
                     'display_name': 'Tongass N.F. HUC 10'
                 },
-                "tongass-boundary-radio-wrapper": {
-                    'layer_var': tongass_natl_forest_boundary,
-                    'is_visible': false,
-                    'display_name': 'Tongass N.F. Boundary'
-                },
+                // "tongass-boundary-radio-wrapper": {
+                //     'layer_var': tongass_natl_forest_boundary,
+                //     'is_visible': false,
+                //     'display_name': 'Tongass N.F. Boundary'
+                // },
                 "tongass-huc8-radio-wrapper": {
                     'layer_var': tongass_huc_8,
                     'is_visible': false,
@@ -225,59 +230,64 @@ define([
                     'layer_var': tongass_lta,
                     'is_visible': false,
                     'display_name': 'Tongass N.F. Land Type Associations'
+                },
+                "tongass-ranger-district-radio-wrapper": {
+                    'layer_var': tongass_natl_forest_ranger_district,
+                    'is_visible': false,
+                    'display_name': 'Tongass N.F. Ranger Districts'
                 }
               };
 
 
-              const json_layer_dict = {};
+            //   const json_layer_dict = {};
 
-              const bucketName = 'lcms-dashboard'
-              // ajax call here 
-              $.ajax({
-                type: 'GET',
-                url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
-            }).done(function(json){
+            //   const bucketName = 'lcms-dashboard'
+            //   // ajax call here 
+            //   $.ajax({
+            //     type: 'GET',
+            //     url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
+            // }).done(function(json){
 
-                json = json.items.filter((f)=>f .name.indexOf('Terrestrial')>-1);
+            //     json = json.items.filter((f)=>f .name.indexOf('Terrestrial')>-1);
 
-                "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_M_Tongass-outID_compressed.geojson"
+            //     "https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries3-Hex_M_Tongass-outID_compressed.geojson"
                 
 
-                json.forEach((j) => {
-                    console.log(j);
-                    // console.log(j['selfLink'])
-                    // console.log("STUFF.. : ", j['id'].split('-')[3])
-                    // console.log("NAME: ", j['name'].split('.')[0])
+            //     json.forEach((j) => {
+            //         console.log(j);
+            //         // console.log(j['selfLink'])
+            //         // console.log("STUFF.. : ", j['id'].split('-')[3])
+            //         // console.log("NAME: ", j['name'].split('.')[0])
 
-                    const lyr_name = j['name'].split('.')[0]
-                    // console.log("URL: URL:  https://storage.googleapis.com/lcms-dashboard/"+j['name']);
+            //         const lyr_name = j['name'].split('.')[0]
+            //         // console.log("URL: URL:  https://storage.googleapis.com/lcms-dashboard/"+j['name']);
 
-                    const lyr_var = new GeoJSONLayer({
-                        url: "https://storage.googleapis.com/lcms-dashboard/"+j['name'],
-                        renderer: renderer,
-                        title: lyr_name
-                    });
+            //         const lyr_var = new GeoJSONLayer({
+            //             url: "https://storage.googleapis.com/lcms-dashboard/"+j['name'],
+            //             renderer: renderer,
+            //             title: lyr_name
+            //         });
 
 
-                    json_layer_dict[lyr_name+'-radio-wrapper'] = {
-                        'layer_var': lyr_var,
-                        'is_visible': false,
-                        'display_name': lyr_name
-                    };
+            //         json_layer_dict[lyr_name+'-radio-wrapper'] = {
+            //             'layer_var': lyr_var,
+            //             'is_visible': false,
+            //             'display_name': lyr_name
+            //         };
 
-                    // console.log("LYR: ", lyr_var);
+            //         // console.log("LYR: ", lyr_var);
 
-                    // json_layer_dict[]
+            //         // json_layer_dict[]
                     
 
-                });
+            //     });
 
                 // console.log("JSON.. : ", json);
                 // console.log("JSON SELF LINK: ", json[0]['selfLink'])
                 // console.log(json.items);
-            })
+            // })
 
-            console.log("JSONLAYERDICT: ", json_layer_dict);
+            // console.log("JSONLAYERDICT: ", json_layer_dict);
 
 
             return radio_button_layer_dict;

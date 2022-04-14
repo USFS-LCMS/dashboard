@@ -253,6 +253,8 @@ require([
       
       map.add(img_layer);
 
+      // map.add(radio_button_layer_dict['tongass-boundary-radio-wrapper']['layer_var'])
+
       // Add selection functionality to image layers
       Object.keys(img_layer_dict).map((r) => {
         const radio_button_div = document.getElementById(r);
