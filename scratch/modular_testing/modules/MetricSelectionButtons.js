@@ -74,27 +74,30 @@ define([
             $(`#${h1_id}-items`).append(year_slider_wrapper);
 
             //this is the actual slider html code: NEED TO EDIT/THIS CHUNK FAILS
-            var year_slider = `
-            <div id="analysis-year-slider-container" class="dual-range-slider-container px-1" title="Years of LCMS data to include for land cover, land use, loss, and gain">
-                <div class="dual-range-slider-name pt-2 pb-3">Choose analysis year range:</div>
-                <div id="analysis-year-slider" class="dual-range-slider-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" href="#">
-                    <div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 0%; width: 100%;"></div>
-                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 0%;"></span>
-                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 100%;"></span>
-                </div>
-                <div id="analysis-year-slider-update" class="dual-range-slider-value p-2">1985 - 2020</div>
-            </div>     
-            `
-            $(`#year-slider-items`).append(year_slider);
+            // var year_slider = `
+            // <div id="analysis-year-slider-container" class="dual-range-slider-container px-1" title="Years of LCMS data to include for land cover, land use, loss, and gain">
+            //     <div class="dual-range-slider-name pt-2 pb-3">Choose analysis year range:</div>
+            //     <div id="analysis-year-slider" class="dual-range-slider-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" href="#">
+            //         <div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 0%; width: 100%;"></div>
+            //         <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 0%;"></span>
+            //         <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 100%;"></span>
+            //     </div>
+            //     <div id="analysis-year-slider-update" class="dual-range-slider-value p-2">1985 - 2020</div>
+            // </div>     
+            // `
+            // $(`#year-slider-items`).append(year_slider);
 
-            
-            // // Text align sub headings
-            $("#year-slider").css("text-align", "left");
-            $("#year-slider").css("cursor", "pointer");
-            
-            
-            // Hide sub-type names and options buttons.
-            $("#year-slider-items").css("display", "none");
+
+            // 2nd try at slider code
+            // let jquery_testing_slider = `
+            // <form>
+            //     <div data-role="rangeslider" id="year-range-slider"></div>
+            // </form>
+            // `
+
+            // $(`#year-slider-items`).append(jquery_testing_slider);
+
+
             // Create event listener to toggle sub-menu visibility.
             ts.hamburgerToggle("year-slider", "year-slider-items");
                                                 
@@ -150,7 +153,7 @@ define([
                             `
                             // Append check button to class wrapper list
                             $(`#${n}-${h1_id}-items`).append(metric_subtype_html);
-                            console.log("id for butn is:"+ `span_popup_change${idx}`);
+                            // console.log("id for butn is:"+ `span_popup_change${idx}`);
                         }
                         else {
                             var idx=idxDict[t];

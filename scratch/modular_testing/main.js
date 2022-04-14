@@ -23,6 +23,7 @@ require([
     "modules/CreateInfoModalDict",
     "modules/addInformationDropdown",
     "modules/ChartsForVisibleLayers",
+    "modules/CreateSlider",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -54,6 +55,7 @@ require([
       CreateInfoModalDict,
       addInformationDropdown,
       ChartsForVisibleLayers,
+      CreateSlider,
       Map, 
       MapView, 
       Query,
@@ -74,6 +76,13 @@ require([
       ) => {
     
 
+
+      //   $.ajax({
+      //     type: 'GET',
+      //     url: `https://storage.googleapis.com/lcms-dashboard/`,
+      // }).done(function(json){
+      //     console.log(json);
+      // })
     // const user_poly_selection_listener = ListentoUserLayerSelection({});
 
     // *** CREATE DROPDOWN MENUS USING OUR MODULES *** // 
@@ -155,7 +164,8 @@ require([
     ///////// end of modal
 
 
-  
+
+
 
     // Create metric selection buttons
 
@@ -164,6 +174,8 @@ require([
       "Land_Cover": {},
       "Land_Use": {}
     }
+
+
     const metric_button = MetricSelectionButtons({});
     metric_button.createMetricButtons();
 
@@ -179,7 +191,7 @@ require([
     modalinfos.createModals();
     modalinfos.createInfoModalDict();
 
-    
+
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
@@ -192,7 +204,36 @@ require([
     // Set up chart for visible layer class object
     const charts_for_vis_layers = ChartsForVisibleLayers({});
 
-      
+    // analysis years for slider
+    const analysis_years = {
+      'start_year': 1985,
+      'end_year' : 2020
+    };
+
+    // var targetObj = {};
+    var analysis_yr_prox = new Proxy(analysis_years, {
+      set: function (target, key, value) {
+          console.log(`${key} set to ${value}`);
+          target[key] = value;
+
+          if (Object.keys(resultsDict).length==0){
+            charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+          }else{
+            charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+          
+          }
+          // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+          // charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+
+          return true;
+      }
+    });
+
+    // slider
+    slider_create = CreateSlider({});
+    slider_create.createSlider(analysis_yr_prox);
    
     const map = new Map({
       basemap: "hybrid",
@@ -209,6 +250,8 @@ require([
     });
     var storeResults = null;
     var resultsDict = {};
+    var thisDict={};
+
 
     // Call the user selection listener for results dict
     // user_poly_selection_listener.listenToSelection(resultsDict);
@@ -219,6 +262,8 @@ require([
     view.when().then(()=>{
       
       map.add(img_layer);
+
+      // map.add(radio_button_layer_dict['tongass-boundary-radio-wrapper']['layer_var'])
 
       // Add selection functionality to image layers
       Object.keys(img_layer_dict).map((r) => {
@@ -297,10 +342,10 @@ require([
 
       // Make sure chart updates when click event happens on layer selection buttons
 
-      $('.check-button-wrapper').on('click', () => {
-        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict);
-      })
+      // $('.check-button-wrapper').on('click', () => {
+      //   charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+      //   charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+      // })
 
 
       // Below, watch for movement of map and update charts based on visible features.
@@ -308,6 +353,9 @@ require([
 
       let stillComputing = false;
 
+      $('#side-chart').append(`<div id="side-chart-canvas-container"></div>`);
+
+      
       // Watch extent to see if user is panning or zooming
       view.watch('extent', function(evt){
           // If something is still happening, hold off, watch, wait
@@ -317,37 +365,53 @@ require([
                   // If we've stopped navigating, run a query of features
                   if(!view.navigating  && viewWatched  && pastExtent !== view.extent) {
                       pastExtent = view.extent;
-
                       // console.log(on_off_dict)
+                      thisDict={}
+                                    
+                      Object.values(featureDict).forEach((ft) =>{  
+                        console.log("another feature");
+                      ft.queryFeatures({
+                          geometry: view.extent,
+                          returnGeometry: true
+                      }).then( (results) => {
+                          
+                          // console.log(results.features.length);
+                          stillComputing = true;
+                          if(results.features.length>0){
 
-                      // Temporarily clear all side chart divs
-                      $('#side-chart').append(`<div id="side-chart-canvas-container"></div>`);
+                            console.log("NOTE: Charts will display for extent if no features are selected AND the view has changed after user unselected the feature")
+                            if (Object.keys(resultsDict).length==0){
+                              //i.e. if user hasnt selected any features
 
-                      $('#side-chart-canvas-container').innerHTML = '';
+                              console.log("setting graph from view extent (NOT features)")
+                              // Temporarily clear all side chart divs  
+                              $('#side-chart-canvas-container').innerHTML = '';                                                                   
 
-                      charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+                              charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-                      charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict);
+                              
+                              console.log("results.features.len"+results.features.length)
+                              Object.keys(radio_button_layer_dict).forEach((k)=>{
+                                if (radio_button_layer_dict[k]['is_visible']  ===true){
+                                  thisDict[k]=results
+                                }
+                              });
 
-                      // Object.values(featureDict)[0].queryFeatures({
-                      //     geometry: view.extent,
-                      //     returnGeometry: true
-                      // }).then( (results) => {
-                      //     // console.log(results.features.length);
-                      //     stillComputing = true;
-                      //     if(results.features.length>0){
-                      //         // Call function below
-                      //         // console.log(metric_button.on_off_dict)
-                      //         // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
-                      //         // $('.checkbox-wrapper').on('click', (() => {
-                      //         //   ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
-                      //         // } ))
-                      //         stillComputing = false;
-                      //         viewWatched = false;
-                      //     }else{
-                      //         viewWatched = false; 
-                      //     };
-                      // })
+                              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+                            }
+                              // Call function below
+                              // console.log(metric_button.on_off_dict)
+                              // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+                              // $('.checkbox-wrapper').on('click', (() => {
+                              //   ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+                              // } ))
+                              stillComputing = false;
+                              viewWatched = false;
+                          }else{
+                              viewWatched = false; 
+                          };
+                      });
+                    });
 
                       // Get a dictionary and list of visible layers - update.
                       
@@ -471,9 +535,11 @@ require([
             highlight.remove();
           });
           highlights = [];
+          resultsDict={};
         }else if(highlight){
           highlight.remove()
           highlights = [];
+          resultsDict={};
         }
 
           action.on("cursor-update", function (evt) {
@@ -562,6 +628,7 @@ require([
           if(highlight){
             console.log("highlight removed within selectStates function")
             highlight.remove();//possible issue with removing highglights bc we don't reset highlights the list to []
+            resultsDict={};
           }
           
 
@@ -576,7 +643,7 @@ require([
               layer.queryExtent(query).then((response) => {
                   view.goTo(response.extent.expand(1.25)).catch((error) => {
                   console.error(error);
-                  })});
+                })});
 
               storeResults=results
               resultsDict[r] = results
@@ -587,11 +654,21 @@ require([
               console.log("RESULT DICT FORMAT ", resultsDict);
 
               console.log("setting chart from click")
-              empty_chart = CreateChart({});
-              ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
-              $('.checkbox-wrapper').on('click', (() => {
-                ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
-              } ))
+
+              $('#side-chart-canvas-container').innerHTML = ''; 
+              console.log("resultsDict")
+              console.log(resultsDict)
+              
+              charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+
+              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
+
+
+              // empty_chart = CreateChart({});
+              // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+              // $('.checkbox-wrapper').on('click', (() => {
+              //   ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+              // } ))
               
               // // remove existing highlighted features
               // if (highlight) {
@@ -619,7 +696,7 @@ require([
                   }
               });
               //results.features[0].attributes["planarArea"] = totalArea //stores area for all selected polygons not just the first feature
-                                              
+
           }).catch(function(err){
           console.error(err);
           })
@@ -648,9 +725,11 @@ require([
               highlight.remove();
             });
             highlights = [];
+            resultsDict={};
           }else if(highlight){
             highlight.remove()
             highlights = [];
+            resultsDict={};
           }
   
           view.popup.close();
@@ -747,8 +826,17 @@ require([
                   highlights.push(highlight);
 
                   // here we get to use queried features. chart here
-                  empty_chart = CreateChart({});
-                  ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart",on_off_dict));
+                  $('#side-chart-canvas-container').innerHTML = ''; 
+                  console.log("resultsDict")
+                  console.log(resultsDict)
+                  
+                  charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+
+                  charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
+
+
+                  // empty_chart = CreateChart({});
+                  // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart",on_off_dict));
 
                   // pass in the query results to the table by calling its selectRows method.
                   // This will trigger FeatureTable's selection-change event
@@ -815,28 +903,28 @@ require([
       div.append(p);
 
       // CHANGE NECESSARY HERE. NEED TO DO THIS FOR ALL QUESTIONS. !!??
-      document.getElementById("accordion-item-1-a").onclick = () => {
-        if (document.getElementById("chart-canvas") != null){
-          document.getElementById("chart-canvas").remove();
-      };
+      // document.getElementById("accordion-item-1-a").onclick = () => {
+      //   if (document.getElementById("chart-canvas") != null){
+      //     document.getElementById("chart-canvas").remove();
+      // };
 
-        p.textContent="Please Select a question.";
-        // document.getElementById("side-chart").innerHTML = "";
-        // p.innerHTML = "";
+      //   p.textContent="Please Select a question.";
+      //   // document.getElementById("side-chart").innerHTML = "";
+      //   // p.innerHTML = "";
 
-        // assumes that we have a blank dropdown menu 
-        if ( document.getElementById("accordion-item-1-a").value == "" ){
+      //   // assumes that we have a blank dropdown menu 
+      //   if ( document.getElementById("accordion-item-1-a").value == "" ){
           
-          // Ask user to select question if they have not yet.
-          p.textContent = "Please select a question.";
-        }
-        else {
-          // if no blank value, clear out the chart 
-          p.textContent = "";
+      //     // Ask user to select question if they have not yet.
+      //     p.textContent = "Please select a question.";
+      //   }
+      //   else {
+      //     // if no blank value, clear out the chart 
+      //     p.textContent = "";
 
-          p.textContent = c.createOutputObj(null, ["null"]); //NOTE!!!?? ** c is not defined
-        }
-      }
+      //     p.textContent = c.createOutputObj(null, ["null"]); //NOTE!!!?? ** c is not defined
+      //   }
+      // }
 
       return layer
     })
