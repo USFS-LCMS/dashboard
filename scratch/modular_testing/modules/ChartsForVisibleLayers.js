@@ -157,30 +157,21 @@ define([
                 var t = fieldNames.map(function(k){
                   var total_area = 0;
                   var total = [];
-                  console.log(results.features[0].attributes)
-                  console.log('is results')
+                  
                   results.features.map(function(f){
                     
                     try{
                         
                       years = f.attributes.years.split(',');
-                      console.log(years)
-                    //   console.log("Content Info Results years: ", years);
                       var startI = years.indexOf(startYear.toString());
-                      console.log(startI)
-                      console.log("THIS IS HAPPENING")
+                      
                       var endI = years.indexOf((endYear+1).toString());
                       years = years.slice(startI,endI);
                       total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)));
                       var total_areaF = parseFloat(f.attributes['total_area']);
-                      console.log(' is total areaF');
-
-                      console.log(total_areaF)
-
                       total_area = total_area + total_areaF;
                     }catch(err){
                       console.log('No LCMS summary for: '+f.attributes['outID']);
-                    //   console.log(err);
                     }
                     
                    })
@@ -197,7 +188,6 @@ define([
                     colSums.push(colSum);
                   };
 
-                  console.log("also done")
                   //Convert back to pct
                   colSums = colSums.map((n)=>n/total_area*100);
                   ///////////////////////////////////////////////////////////////////////

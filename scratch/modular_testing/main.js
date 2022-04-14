@@ -224,9 +224,6 @@ require([
             charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
           
           }
-
-
-
           // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
           // charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
 
@@ -253,6 +250,8 @@ require([
     });
     var storeResults = null;
     var resultsDict = {};
+    var thisDict={};
+
 
     // Call the user selection listener for results dict
     // user_poly_selection_listener.listenToSelection(resultsDict);
@@ -356,8 +355,7 @@ require([
 
       $('#side-chart').append(`<div id="side-chart-canvas-container"></div>`);
 
-      var thisDict={};
-
+      
       // Watch extent to see if user is panning or zooming
       view.watch('extent', function(evt){
           // If something is still happening, hold off, watch, wait
