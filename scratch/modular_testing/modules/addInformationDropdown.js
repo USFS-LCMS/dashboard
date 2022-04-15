@@ -31,6 +31,12 @@ define([
             const html_wrapper = `
             <h1 class=collapsible id="${h1_id}">${title}</h1>
             <ul id="${h1_id}-items">
+
+            <section align="left" class="info-panel" id="infoPanel0">
+            <button id=span_popup_main title="Click for website insturctions" class="infobutton">i</button>  
+            </section>
+            <p></p>
+
             <section align="left" class="info-panel" id="infoPanel1">
                 <a href="https://apps.fs.usda.gov/lcms-viewer/">View the Full LCMS Data Explorer</a>
             </section>

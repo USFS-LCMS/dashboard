@@ -31,6 +31,7 @@ define([
             //gain
             const text11="<dt><h2>Gain (Annual Product)</h2></dt><dd><dl><dt><h3>Product Description</h3></dt><dd>This product is part of the Landscape Change Monitoring System (LCMS) data suite. It shows areas LCMS detected gain for each year. </dd><br><dd>Vegetative indices indicate a positive trend over time. Gain is categorized using one specific change process classification within the training data, described below.</dd><dd><dl><dt>Class Description:</dt><dd>1 indicates gain for each year (The only unmasked value).</dd></dl></dd></dl><dl><dt><h3>Product Class Definitions</h3></dt><dd>1 : GROWTH/RECOVERY : Land exhibiting an increase in vegetation cover due to growth and succession over one or more years. Applicable to any areas that may express spectral change associated with vegetation regrowth. In developed areas, growth can result from maturing vegetation and/or newly installed lawns and landscaping. In forests, growth includes vegetation growth from bare ground, as well as the over topping of intermediate and co-dominate trees and/or lower-lying grasses and shrubs. Growth/Recovery segments recorded following forest harvest will likely transition through different land cover classes as the forest regenerates. For these changes to be considered growth/recovery, spectral values should closely adhere to an increasing trend line (e.g. a positive slope that would, if extended to ~20 years, be on the order of .10 units of NDVI) which persists for several years.</dd></dl></dd>"
             const text12="Coming soon: information about Non-Processing Area Mask"
+            const text13="Website Instructions"
             
 
 
@@ -118,6 +119,13 @@ define([
               <p>${text12}</p>
                 </div>      
             </div>
+
+            <div id="myModal_main" class="modal">
+            <div class="modal-content">
+              <span id="close_main" class="close">&times;</span>
+              <p>${text13}</p>
+                </div>      
+            </div>
           `
 
           $('#mainwrapperid').append(modal_html);
@@ -137,7 +145,8 @@ define([
                 'span_popup_change1': "myModal9",
                 'span_popup_change2': "myModal10",
                 'span_popup_change3': "myModal11",
-                'span_popup_change4': "myModal12"
+                'span_popup_change4': "myModal12",
+                'span_popup_main':"myModal_main"
 
             };
             const closeModalDict = {
@@ -152,7 +161,8 @@ define([
                 'span_popup_change1': "close9",
                 'span_popup_change2': "close10",
                 'span_popup_change3': "close11",
-                'span_popup_change4': "close12"
+                'span_popup_change4': "close12",
+                'span_popup_main': "close_main"
             };
 
             Object.keys(infoModalDict).forEach((k) => {
