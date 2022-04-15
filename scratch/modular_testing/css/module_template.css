@@ -245,6 +245,30 @@ canvas {
   position:relative;
   color:white;
 }
+
+
+.start-end-year-label {
+  font-size: 16px;
+  font-family: 'Roboto Condensed', 'sans-serif';
+  display: inline-block;
+  margin-bottom: 1em;
+  position: relative;
+  color: white;
+  /* margin-right: 2em; */
+}
+
+#slider-start-year-label {
+  margin-right: 2em;
+  /* margin-left: 1em; */
+  text-align: left;
+  display: inline;
+}
+
+#slider-end-year-label {
+  text-align: right;
+  display: inline;
+}
+
 .collapsible-label{  
   /* label for collapsible class (dropdown menu headings with +/-) */
   cursor: pointer;
@@ -327,6 +351,9 @@ canvas {
   max-height: 10px;
 }
 /* Flex parent */
+
+/* The label for the slider years */
+
 
 /* Flex parent */
 #fh-abbrev-1-checkmark {
@@ -489,6 +516,8 @@ input[type="checkbox"]+label {
   position: relative;
 
 }
+
+
 
 /* .infobutton .tooltiptext::after {
   content: "";

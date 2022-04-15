@@ -9,8 +9,6 @@ Description:
   It provides the user with a selection of questions and provides charts using LCMS data.
 */
 
-// Require is an AMD - Asynchronous Module Definition - staple.
-// AMD is useful when working with esri api and map views.
 require([
     "dojo/_base/array",
     "modules/CreateChart",
@@ -36,7 +34,8 @@ require([
     "esri/layers/GraphicsLayer",
     "esri/geometry/Extent",
     "esri/geometry/geometryEngineAsync",
-    "esri/widgets/FeatureTable",
+    "esri/widgets/Legend",
+    "esri/widgets/Expand",
     "esri/views/draw/Draw",
     "esri/geometry/Point",
     "esri/geometry/Polygon",
@@ -56,7 +55,7 @@ require([
       addInformationDropdown,
       ChartsForVisibleLayers,
       CreateSlider,
-      Map, 
+      Map,
       MapView, 
       Query,
       Color,
@@ -68,15 +67,14 @@ require([
       GraphicsLayer,
       Extent,
       geometryEngineAsync,
-      FeatureTable,
+      Legend,
+      Expand,
       Draw,
       Point,
       Polygon,
       Multipoint
       ) => {
-    
-
-
+      
       //   $.ajax({
       //     type: 'GET',
       //     url: `https://storage.googleapis.com/lcms-dashboard/`,
@@ -164,9 +162,6 @@ require([
     ///////// end of modal
 
 
-
-
-
     // Create metric selection buttons
 
     let on_off_dict = {
@@ -210,11 +205,20 @@ require([
       'end_year' : 2020
     };
 
+    slider_create = CreateSlider({});
+
+    slider_create.createSliderLabels(analysis_years);
+    // console.log($('#changing-start-year').innerHTML)
     // var targetObj = {};
     var analysis_yr_prox = new Proxy(analysis_years, {
       set: function (target, key, value) {
           console.log(`${key} set to ${value}`);
           target[key] = value;
+
+          // Update analysis years
+          // $('#changing-start-year').innerHTML = ``;
+          // $('#changing-start-year').innerHTML = `${analysis_years['start_year']}`;
+          // console.log($('changing-start-year').innerHTML);
 
           if (Object.keys(resultsDict).length==0){
             charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
@@ -232,8 +236,9 @@ require([
     });
 
     // slider
-    slider_create = CreateSlider({});
+
     slider_create.createSlider(analysis_yr_prox);
+
    
     const map = new Map({
       basemap: "hybrid",
@@ -262,6 +267,23 @@ require([
     view.when().then(()=>{
       
       map.add(img_layer);
+
+
+      // Create legend and an expand/contract widget so that user can get rid of it.
+      let legend = new Legend({
+        view: view,
+        container: document.createElement('div')
+      });
+      
+      
+
+      const legend_expand = new Expand({
+        view: view, 
+        content: legend
+      });
+      
+      view.ui.add(legend_expand, "bottom-right");
+      
 
       // map.add(radio_button_layer_dict['tongass-boundary-radio-wrapper']['layer_var'])
 
