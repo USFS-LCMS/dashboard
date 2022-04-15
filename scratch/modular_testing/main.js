@@ -9,8 +9,6 @@ Description:
   It provides the user with a selection of questions and provides charts using LCMS data.
 */
 
-// Require is an AMD - Asynchronous Module Definition - staple.
-// AMD is useful when working with esri api and map views.
 require([
     "dojo/_base/array",
     "modules/CreateChart",
@@ -74,9 +72,7 @@ require([
       Polygon,
       Multipoint
       ) => {
-    
-
-
+      
       //   $.ajax({
       //     type: 'GET',
       //     url: `https://storage.googleapis.com/lcms-dashboard/`,
@@ -164,9 +160,6 @@ require([
     ///////// end of modal
 
 
-
-
-
     // Create metric selection buttons
 
     let on_off_dict = {
@@ -210,11 +203,20 @@ require([
       'end_year' : 2020
     };
 
+    slider_create = CreateSlider({});
+
+    slider_create.createSliderLabels(analysis_years);
+    // console.log($('#changing-start-year').innerHTML)
     // var targetObj = {};
     var analysis_yr_prox = new Proxy(analysis_years, {
       set: function (target, key, value) {
           console.log(`${key} set to ${value}`);
           target[key] = value;
+
+          // Update analysis years
+          // $('#changing-start-year').innerHTML = ``;
+          // $('#changing-start-year').innerHTML = `${analysis_years['start_year']}`;
+          // console.log($('changing-start-year').innerHTML);
 
           if (Object.keys(resultsDict).length==0){
             charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
@@ -232,8 +234,9 @@ require([
     });
 
     // slider
-    slider_create = CreateSlider({});
+
     slider_create.createSlider(analysis_yr_prox);
+
    
     const map = new Map({
       basemap: "hybrid",
