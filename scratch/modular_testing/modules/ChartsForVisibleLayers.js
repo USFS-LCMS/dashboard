@@ -310,11 +310,13 @@ define([
                         // console.log(resultsDict)
                         //Object.keys(resultsDict).forEach((k) => {
 
-                            // console.log(in_layer+" is now charting...")
+                            console.log(in_layer+" is now charting...")
+                            console.log(resultsDict)
                             var results = resultsDict[in_layer]//resultsDict[k]//curr_layer//layers_dict[in_layer];
-                            // console.log(results);
+                            console.log(results);
                            
                             if(results.features.length > 0) {
+                                console.log('more than one result: YES')
 
 
                                 setContentInfo(results, which_one, outer_chart_div_id, in_layer, class_fieldNames);

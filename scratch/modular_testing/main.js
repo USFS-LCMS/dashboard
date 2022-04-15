@@ -370,7 +370,7 @@ require([
                       thisDict={}
                                     
                       Object.values(featureDict).forEach((ft) =>{  
-                        console.log("another feature");
+                        // console.log("another feature");
                       ft.queryFeatures({
                           geometry: view.extent,
                           returnGeometry: true
@@ -636,7 +636,8 @@ require([
           Object.keys(featureDict).forEach((r) =>{
             
             var layer =featureDict[r]
-            console.log("now..."+layer)
+            console.log("now...")
+            console.log(layer);
 
             layer.queryFeatures(query,{returnGeometry:true}).then(function(results){
 
@@ -647,7 +648,9 @@ require([
                 })});
 
               storeResults=results
+              console.log(r+"is R!!!")
               resultsDict[r] = results
+              console.log(resultsDict)
               // console.log("results "+storeResults.features[0])
               const graphics = results.features; 
               //view.goTo(graphics)
@@ -657,16 +660,7 @@ require([
               highlight = layerDict[r].highlight(graphics);
               highlights.push(highlight);
 
-              console.log("setting chart from click")
-
-              $('#side-chart-canvas-container').innerHTML = ''; 
               
-              //NOTE there is some error here
-              charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-
-              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
-
-
               // empty_chart = CreateChart({});
               // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
               // $('.checkbox-wrapper').on('click', (() => {
@@ -677,12 +671,24 @@ require([
               // if (highlight) {
               //     highlight.remove();
               // }
+              
+              console.log("setting chart from click")
+
+              $('#side-chart-canvas-container').innerHTML = ''; 
+              
+              //NOTE there is some error here
+              charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+
+              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+
+
+          
 
               
               pntGraphics.removeAll();
               ////
               var totalArea=0;
-              // console.log("len "+results.features.length)
+              console.log("Number of features: "+results.features.length)
               var j=-1
               graphics.forEach(function (g) {         
                   j+=1                
@@ -700,8 +706,11 @@ require([
           }).catch(function(err){
           console.error(err);
           })
+          //tried here
 
-          })
+
+          });
+          //tried here
           
       }      
       /////////////////////// SELECT BY RECTANGLE ////////////////////////////////////////
@@ -800,7 +809,10 @@ require([
                   resultsDict[r] = results
                   console.log("len "+results.features.length)
                   if (results.features.length === 0) {
-                    clearSelection();
+                    delete resultsDict[r]
+                    
+                    //clearSelection();
+
                   } else {
                   //zoom to selected (queried) features
                   layer.queryExtent(query).then((response) => {
@@ -943,7 +955,8 @@ require([
         imageElement.src = screenshot.dataUrl;
         imageElement.height = screenshot.data.height;
         imageElement.width = screenshot.data.width;
-        console.log("dictionary of results: "+resultsDict)
+        // console.log("dictionary of results: "+resultsDict)
+        //console.log(document.querySelectorAll('*[id]'))
         d_pdf.downloadPDF(resultsDict); //wait 7 ms before running function to let charts load (does this work?)
 
       });

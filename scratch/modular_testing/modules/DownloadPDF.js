@@ -173,6 +173,7 @@ define([
             currentY+= 7//blockHeight+1
             doc.setTextColor(3,74,48);//8,124,124)
             Object.keys(results).map((fc)=>{
+                console.log("results key is: "+ fc);
                 doc.text(margin*2, currentY, radio_button_layer_name_dict[fc]);//+ ' '+objectID+',') 
                 currentY+=5
             });             
@@ -202,6 +203,7 @@ define([
             //console.log(screenshotMap.src+"is screenshot map")
 
             var chartHeight = screenshotMap.height;
+            console.log("CHART H:"+chartHeight);
             var chartWidth = screenshotMap.width;
             let aspectRatio = chartWidth/chartHeight;
             let chartW = chartH*aspectRatio;
@@ -216,12 +218,28 @@ define([
 
             var figNum = 1;
             var tableNum = 1
+
+            //get list of checked questions
+            checkedQs=[];
+        
             
+            //checkedQs.forEach((thisQ)=>{ // enter rest of code here})
+
+            //dummy:
+            thisQ="Default Question example";
             Object.keys(results).map((thisFC)=>{
+                console.log("iterating over result:",thisFC)
                 //iterate through different feature classes user has checked and add new pages for each
 
                 //new page
                 doc.addPage();
+
+                //add question to top of page
+                currentY=margin
+                doc.setFontSize(16);
+                doc.text(margin, currentY, thisQ);
+                                  
+
                 var objectID =results[thisFC].features[0].attributes["outID"];
                 var forestDict = {'1':'Tongass National Forest', '2':'Chugach National Forest'}
                 var forestName = forestDict[String(objectID)[0]] // ensure that fields are attributed with forest or just splice str(outID)[0]
@@ -229,7 +247,7 @@ define([
                 doc.setFontSize(16)
                 doc.setFont("Arial",'normal');       
                 doc.setTextColor(0,0,0);
-                currentY=margin
+                currentY+=20//set to heigh of text!!!!!??**
                 doc.text(margin, currentY, "The following feature class is included in this summary:");
                 doc.setFontSize(16)
                 doc.setFont(undefined,'bold');
@@ -289,8 +307,10 @@ define([
                 //add graph
                 currentY +=5;// currentY+ chartH + margin;
                 chartW = w - margin*2;
-                const canvas = document.getElementById("chart-canvas-Change");//chart-change-div");//"chart-canvas");
-                //console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
+                const canvas = document.getElementById("chart-canvas-Change-"+thisFC); //should work if thisFC= something like: chugach-lrg-hex-radio-wrapper
+                // console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
+                // console.log(document.querySelector('*[chart-canvas*]'))
+                console.log(canvas+" is canvas")
                 chartHeight = canvas.height;
                 chartWidth = canvas.width;
                 aspectRatio = chartHeight/chartWidth;
@@ -314,7 +334,7 @@ define([
                     currentY = margin;//currentY+ chartH + 6;
                 }
                
-                const canvas2 = document.getElementById("chart-canvas-Land_Cover");//chart-change-div");//"chart-canvas");
+                const canvas2 = document.getElementById("chart-canvas-Land_Cover-"+thisFC);//chart-change-div");//"chart-canvas");
                 doc.addImage(canvas2.toDataURL("image2/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
                 currentY = currentY+ chartH + 6;
                 doc.text(margin, currentY, "Figure "+String(figNum)+". Land Cover Distribution Change Over Time");//fig 2
@@ -327,7 +347,7 @@ define([
                 }else{
                     currentY +=6
                 }
-                const canvas3 = document.getElementById("chart-canvas-Land_Use");//chart-change-div");//"chart-canvas");
+                const canvas3 = document.getElementById("chart-canvas-Land_Use-"+thisFC);//chart-change-div");//"chart-canvas");
                 doc.addImage(canvas3.toDataURL("image3/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
                 
 
