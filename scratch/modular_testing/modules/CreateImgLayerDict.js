@@ -155,7 +155,6 @@ define([
             ts = ToggleSidebar({});
             ts.hamburgerToggle("map-img-layer-selection", "map-img-layer-selection-items");
 
-
         }
 
     })

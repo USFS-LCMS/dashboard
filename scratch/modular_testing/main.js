@@ -34,7 +34,8 @@ require([
     "esri/layers/GraphicsLayer",
     "esri/geometry/Extent",
     "esri/geometry/geometryEngineAsync",
-    "esri/widgets/FeatureTable",
+    "esri/widgets/Legend",
+    "esri/widgets/Expand",
     "esri/views/draw/Draw",
     "esri/geometry/Point",
     "esri/geometry/Polygon",
@@ -54,7 +55,7 @@ require([
       addInformationDropdown,
       ChartsForVisibleLayers,
       CreateSlider,
-      Map, 
+      Map,
       MapView, 
       Query,
       Color,
@@ -66,7 +67,8 @@ require([
       GraphicsLayer,
       Extent,
       geometryEngineAsync,
-      FeatureTable,
+      Legend,
+      Expand,
       Draw,
       Point,
       Polygon,
@@ -265,6 +267,23 @@ require([
     view.when().then(()=>{
       
       map.add(img_layer);
+
+
+      // Create legend and an expand/contract widget so that user can get rid of it.
+      let legend = new Legend({
+        view: view,
+        container: document.createElement('div')
+      });
+      
+      
+
+      const legend_expand = new Expand({
+        view: view, 
+        content: legend
+      });
+      
+      view.ui.add(legend_expand, "bottom-right");
+      
 
       // map.add(radio_button_layer_dict['tongass-boundary-radio-wrapper']['layer_var'])
 
