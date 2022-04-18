@@ -173,7 +173,6 @@ define([
             currentY+= 7//blockHeight+1
             doc.setTextColor(3,74,48);//8,124,124)
             Object.keys(results).map((fc)=>{
-                console.log("results key is: "+ fc);
                 doc.text(margin*2, currentY, radio_button_layer_name_dict[fc]);//+ ' '+objectID+',') 
                 currentY+=5
             });             
@@ -203,7 +202,6 @@ define([
             //console.log(screenshotMap.src+"is screenshot map")
 
             var chartHeight = screenshotMap.height;
-            console.log("CHART H:"+chartHeight);
             var chartWidth = screenshotMap.width;
             let aspectRatio = chartWidth/chartHeight;
             let chartW = chartH*aspectRatio;
@@ -228,7 +226,6 @@ define([
             //dummy:
             thisQ="Default Question example";
             Object.keys(results).map((thisFC)=>{
-                console.log("iterating over result:",thisFC)
                 //iterate through different feature classes user has checked and add new pages for each
 
                 //new page
@@ -305,16 +302,20 @@ define([
                 tableNum+=1
 
                 //add graph
+                //current error: background on whichever chart is first is black
                 currentY +=5;// currentY+ chartH + margin;
                 chartW = w - margin*2;
+                
                 const canvas = document.getElementById("chart-canvas-Change-"+thisFC); //should work if thisFC= something like: chugach-lrg-hex-radio-wrapper
                 // console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
                 // console.log(document.querySelector('*[chart-canvas*]'))
-                console.log(canvas+" is canvas")
                 chartHeight = canvas.height;
                 chartWidth = canvas.width;
                 aspectRatio = chartHeight/chartWidth;
                 chartH = chartW*aspectRatio;
+
+                // doc.setFillColor(204,204,204,0);
+                // doc.rect(margin,currentY,chartW, chartH)
 
                 var addPageAfterChart2=false
                 if (currentY+chartH+margin >h){//threshold that should mean overflow of chart creates new page
@@ -322,8 +323,9 @@ define([
                     currentY = 5
                     addPageAfterChart2=true //whether to add page break bw charts 1/2 or 2/3 (false = add break between chart 2 and 3)
                 }
-
-                doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+                
+                //for some reason chaning this first one to a png (not jpeg) fixes issue with black chart background
+                doc.addImage(canvas.toDataURL("image/png", 1.0), 'PNG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
                 currentY = currentY+ chartH + 6;
                 doc.text(margin, currentY, "Figure "+String(figNum)+". LCMS Change By Year");//fig1
                 figNum+=1
@@ -352,7 +354,7 @@ define([
                 
 
                 currentY = currentY+ chartH + 6;
-                doc.text(margin, currentY, "Figure "+String(figNum)+". Change in Area of Difference Land Use Types Over Time");
+                doc.text(margin, currentY, "Figure "+String(figNum)+". Change in Area of Different Land Use Types Over Time");
                 figNum+=1
 
                 

@@ -228,6 +228,8 @@ define([
                   responsive: true,
                   maintainAspectRatio: true,
                   aspectRatio: 1/0.6,
+                  devicePixelRatio:2, // improve resolution in output pdf
+
                    title: {
                         display: true,
                         position:'top',
