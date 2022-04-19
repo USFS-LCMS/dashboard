@@ -540,36 +540,7 @@ require([
           view: view
       });     
       
-      /////
-
-     
-
-
-      // view.ui.add("point-button", "top-left");
-      function zoomToAllResults(resultsDict){
-        // var fullExt=null;
-        var extent=null
-        
-        Object.values(resultsDict).forEach((featureSet) =>{
-          console.log(featureSet)
-          console.log('is feat set')     
-          if(featureSet.features.length > 0) {
-            extent = featureSet.features[0].geometry.getExtent();
-            featureSet.features.forEach(function(feature) {
-                extent = extent.union(feature.geometry.getExtent());
-            })
-    
-            // zoomTo(extent.expand(1.3));                                        
-    
-          } else{
-            extent = featureSet.features[0].geometry.getExtent();            
-          }
-          // fullExt = thisExt.union(res.Extent())
-        })
-
-        return extent
-      }
-
+      
       document.getElementById("point-button").onclick = drawPoint; //when user click the point button on RH side of screen..
       console.log("*NOTE* To select multiple items, user must hold 'CTRL' before the first click through the last click AND move mouse after final click to see highlight")
       // function zoomToLayer(layer) {
@@ -738,11 +709,7 @@ require([
 
               //zoom to selected (queried) features
               layer.queryExtent(query).then((response) => {
-                console.log('res extent x max!!!!!!!!')
-                console.log(response.extent.xmax)
-                console.log(Object.keys(resultsDict).length)
-                extentDict[r]=response.extent;
-
+                //zoom to query extent (or union of multiple query extents)
                 if (Object.keys(resultsDict).length ===1){
                   view.goTo(response.extent.expand(1.25)).catch((error) => {
                     console.error(error);
@@ -753,7 +720,6 @@ require([
                   
                   Object.keys(resultsDict).forEach((res)=>{
                     thisExt=extentDict[res];
-                    console.log(thisExt.xmin+' is xMIN for thsiExt');
                     if (outExt !=0){
                       outExt = outExt.union(thisExt);
                     }else{
@@ -763,7 +729,6 @@ require([
                     // console.log(outExt)
                   })
 
-                  console.log("mULTIPLET")
                   view.goTo(outExt).catch((error) => {
                     console.error(error);
                   })

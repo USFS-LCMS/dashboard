@@ -78,7 +78,7 @@ define([
 
         createImgLayerButtons: function() {            
             const button_template = `
-            <h1 class=collapsible title="Click to open/close dropdown containing image options to add to map" id="map-img-layer-selection">Image Layer Selection</h1>
+            <h1 class=collapsible title="Click to open/close dropdown containing image options to add to map" id="map-img-layer-selection">LCMS Reference Layer Selection</h1>
             <ul id="map-img-layer-selection-items">
 
               <div align="left" class="radio-button-wrapper" id="nolayer-button-wrapper">
