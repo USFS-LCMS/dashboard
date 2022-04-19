@@ -157,14 +157,21 @@ define([
                 return [start, ...range(start + 1, end)];
             }
 
-            var years = range(1985,2020).map(i => i.toString());
-            var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
+            const years = range(1985,2020).map(i => i.toString());
+            const colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
                           'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","808080","4780f3","1B1716"].map(c =>'#'+c),
                           'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
-            var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
+            const names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
                         'Land_Cover':["Trees",
             "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
                         'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
+            }
+
+            const color_name_dict = {
+              'Change': {'Slow Loss': '#f39268', 'Fast Loss': '#d54309', 'Gain': '#00a398', 'Non-Processing Area Mask': '#1B1716'},
+              'Land_Cover': {'Trees': '#005e00', 'Tall Shrubs & Trees Mix': '#008000', 'Shrubs & Trees Mix': '#00cc00', 'Grass/Forb/Herb & Trees Mix': '#b3ff1a', 'Barren & Trees Mix': '#99ff99', 'Tall Shrubs': '#b30088',  'Shrubs': '#e68a00', 'Grass/Forb/Herb & Shrubs Mix': '#ffad33',
+              'Barren & Shrubs Mix': '#ffe0b3', 'Grass/Forb/Herb': '#ffff00', 'Barren & Grass/Forb/Herb Mix': '#AA7700', 'Barren or Impervious': '#d3bf9b', 'Snow or Ice': '#808080', 'Water': '#4780f3', 'Non-Processing Area Mask': '#1B1716'},
+              'Land_Use': {'Agriculture': '#efff6b', 'Developed': '#ff2ff8', 'Forest': '#1b9d0c', 'Non-Forest Wetland': '#97ffff', 'Other': '#a1a1a1', 'Rangeland or Pasture': '#c2b34a', 'Non-Processing Area Mask': '#1B1716'}
             }
 
             // Print out the members of the dictionary that are true
@@ -176,6 +183,8 @@ define([
 
             // Create a list of toggled elements and allow that to be what feeds the chart function
             const fieldNames = Object.keys(toggled_elems);
+
+            console.log("Field Names: ", fieldNames);
 
             const stacked = false;
             const chartID = 'chart-canvas-'+which_one
