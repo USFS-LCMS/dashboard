@@ -60,12 +60,12 @@ define([
         
         createSliderLabels: function(analysis_years) {
           $('#year-slider-items').append(`
-          <div id="slider-start-year-label">
-            <h3 class="start-end-year-label">Start Year: </h3>
+          <div id="slider-start-year-label title="Move the slider to change the Start Year on the graphs">
+            <h3 title="Move the slider to change the Start Year on the graphs" class="start-end-year-label">Start Year: </h3>
             <h3 class="start-end-year-label" id="changing-start-year">${analysis_years['start_year']}</h3>
           </div>
-          <div id="slider-end-year-label">
-            <h3 class="start-end-year-label">End Year: </h3>
+          <div id="slider-end-year-label" title="Move the slider to change the End Year on the graphs">
+            <h3 title="Move the slider to change the End Year on the graphs" class="start-end-year-label">End Year: </h3>
             <h3 class="start-end-year-label" id="changing-end-year">${analysis_years['end_year']}</h3>
           </div>
           <div id='year-slider-container'></div>

@@ -323,8 +323,8 @@ define([
                     currentY = 5
                     addPageAfterChart2=true //whether to add page break bw charts 1/2 or 2/3 (false = add break between chart 2 and 3)
                 }
-                
-                //for some reason chaning this first one to a png (not jpeg) fixes issue with black chart background
+
+                //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
                 doc.addImage(canvas.toDataURL("image/png", 1.0), 'PNG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
                 currentY = currentY+ chartH + 6;
                 doc.text(margin, currentY, "Figure "+String(figNum)+". LCMS Change By Year");//fig1

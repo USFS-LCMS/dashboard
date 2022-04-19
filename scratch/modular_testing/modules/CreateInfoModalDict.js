@@ -40,91 +40,91 @@ define([
             const modal_html =`
             <div id="myModal1" class="modal">
             <div class="modal-content">
-              <span id="close1" class="close">&times;</span>
+              <span id="close1" class="close" title="Close">&times;</span>
               <p>${text1}</p>
                 </div>      
             </div>
 
             <div id="myModal2" class="modal">
             <div class="modal-content">
-              <span id="close2" class="close">&times;</span>
+              <span id="close2" class="close" title="Close">&times;</span>
               <p>${text2}</p>
                 </div>      
             </div>
 
             <div id="myModal3" class="modal">
             <div class="modal-content">
-              <span id="close3" class="close">&times;</span>
+              <span id="close3" class="close" title="Close">&times;</span>
               <p>${text3}</p>
                 </div>      
             </div>
 
             <div id="myModal4" class="modal">
             <div class="modal-content">
-              <span id="close4" class="close">&times;</span>
+              <span id="close4" class="close" title="Close">&times;</span>
               <p>${text4}</p>
                 </div>      
             </div>
 
             <div id="myModal5" class="modal">
             <div class="modal-content">
-              <span id="close5" class="close">&times;</span>
+              <span id="close5" class="close" title="Close">&times;</span>
               <p>${text5}</p>
                 </div>      
             </div>
 
             <div id="myModal6" class="modal">
             <div class="modal-content">
-              <span id="close6" class="close">&times;</span>
+              <span id="close6" class="close" title="Close">&times;</span>
               <p>${text6}</p>
                 </div>      
             </div>
 
             <div id="myModal7" class="modal">
             <div class="modal-content">
-              <span id="close7" class="close">&times;</span>
+              <span id="close7" class="close" title="Close">&times;</span>
               <p>${text7}</p>
                 </div>      
             </div>
 
             <div id="myModal8" class="modal">
             <div class="modal-content">
-              <span id="close8" class="close">&times;</span>
+              <span id="close8" class="close" title="Close">&times;</span>
               <p>${text8}</p>
                 </div>      
             </div>
 
             <div id="myModal9" class="modal">
             <div class="modal-content">
-              <span id="close9" class="close">&times;</span>
+              <span id="close9" class="close" title="Close">&times;</span>
               <p>${text9}</p>
                 </div>      
             </div>
 
             <div id="myModal10" class="modal">
             <div class="modal-content">
-              <span id="close10" class="close">&times;</span>
+              <span id="close10" class="close" title="Close">&times;</span>
               <p>${text10}</p>
                 </div>      
             </div>
 
             <div id="myModal11" class="modal">
             <div class="modal-content">
-              <span id="close11" class="close">&times;</span>
+              <span id="close11" class="close" title="Close">&times;</span>
               <p>${text11}</p>
                 </div>      
             </div>
 
             <div id="myModal12" class="modal">
             <div class="modal-content">
-              <span id="close12" class="close">&times;</span>
+              <span id="close12" class="close" title="Close">&times;</span>
               <p>${text12}</p>
                 </div>      
             </div>
 
             <div id="myModal_main" class="modal">
             <div class="modal-content">
-              <span id="close_main" class="close">&times;</span>
+              <span id="close_main" class="close" title="Close">&times;</span>
               <p>${text13}</p>
                 </div>      
             </div>

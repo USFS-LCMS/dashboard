@@ -106,6 +106,10 @@ require([
     let img_layer = img_layer_dict['landcover-button-wrapper'];
     
     /////////////////// modal
+
+    // var mainModal = new bootstrap.Modal(document.getElementById('myModal_main'),{});
+    // mainModal.toggle()
+
     // Get the modal
     // var modal = document.getElementById("myModal");
 
@@ -285,6 +289,7 @@ require([
     var storeResults = null;
     var resultsDict = {};
     var thisDict={};
+    var extentDict={};
 
 
     // Call the user selection listener for results dict
@@ -533,9 +538,37 @@ require([
 
       const draw = new Draw({
           view: view
-      });           
+      });     
+      
+      /////
+
+     
+
 
       // view.ui.add("point-button", "top-left");
+      function zoomToAllResults(resultsDict){
+        // var fullExt=null;
+        var extent=null
+        
+        Object.values(resultsDict).forEach((featureSet) =>{
+          console.log(featureSet)
+          console.log('is feat set')     
+          if(featureSet.features.length > 0) {
+            extent = featureSet.features[0].geometry.getExtent();
+            featureSet.features.forEach(function(feature) {
+                extent = extent.union(feature.geometry.getExtent());
+            })
+    
+            // zoomTo(extent.expand(1.3));                                        
+    
+          } else{
+            extent = featureSet.features[0].geometry.getExtent();            
+          }
+          // fullExt = thisExt.union(res.Extent())
+        })
+
+        return extent
+      }
 
       document.getElementById("point-button").onclick = drawPoint; //when user click the point button on RH side of screen..
       console.log("*NOTE* To select multiple items, user must hold 'CTRL' before the first click through the last click AND move mouse after final click to see highlight")
@@ -687,22 +720,14 @@ require([
           Object.keys(featureDict).forEach((r) =>{
             
             var layer =featureDict[r]
-            console.log("now...")
-            console.log(layer);
+            // console.log("now...")
+            // console.log(layer);
 
             layer.queryFeatures(query,{returnGeometry:true}).then(function(results){
 
-              //zoom to selected (queried) features
-              layer.queryExtent(query).then((response) => {
-                  view.goTo(response.extent.expand(1.25)).catch((error) => {
-                  console.error(error);
-                })});
-
               storeResults=results
-              console.log(r+"is R!!!")
               resultsDict[r] = results
               console.log(resultsDict)
-              // console.log("results "+storeResults.features[0])
               const graphics = results.features; 
               //view.goTo(graphics)
 
@@ -710,6 +735,51 @@ require([
               console.log(layerDict[r]+" is layer dict [r]")
               highlight = layerDict[r].highlight(graphics);
               highlights.push(highlight);
+
+              //zoom to selected (queried) features
+              layer.queryExtent(query).then((response) => {
+                console.log('res extent x max!!!!!!!!')
+                console.log(response.extent.xmax)
+                console.log(Object.keys(resultsDict).length)
+                extentDict[r]=response.extent;
+
+                if (Object.keys(resultsDict).length ===1){
+                  view.goTo(response.extent.expand(1.25)).catch((error) => {
+                    console.error(error);
+                    })
+
+                }else{
+                  outExt=0;//response.extent;
+                  
+                  Object.keys(resultsDict).forEach((res)=>{
+                    thisExt=extentDict[res];
+                    console.log(thisExt.xmin+' is xMIN for thsiExt');
+                    if (outExt !=0){
+                      outExt = outExt.union(thisExt);
+                    }else{
+                      outExt=thisExt;
+                    }
+                    
+                    // console.log(outExt)
+                  })
+
+                  console.log("mULTIPLET")
+                  view.goTo(outExt).catch((error) => {
+                    console.error(error);
+                  })
+
+                }
+
+                
+                //var newext= zoomToAllResults(resultsDict)//, response.extent);
+                //response.extent.union(resultsDict)
+                //zoomToAllResults(re)
+                // view.goTo(response.extent.expand(1.25)).catch((error) => {
+                  
+            });
+
+               // view.ui.add("point-button", "top-left");
+      
 
               
               // empty_chart = CreateChart({});
