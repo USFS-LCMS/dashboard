@@ -25,25 +25,7 @@ define([
             });
             console.log("target proxy");
             console.log(targetProxy);
-
-
-            // Proxy must be updated on user click - simpler solution now?
-
-            // $(`#${n}---${t_nospace}-checkbox-wrapper`).on('click', () => {
-            //     // console.log("somethin")
-            //     tfarray.push($(`#${n}-${t_nospace}-checkbox-select:checked`).attr("id")===undefined);
-            //     console.log(tfarray[0]);
-            //     if (tfarray.length > 1){
-            //         // tfarray2.push(tfarray[0])
-            //         on_off_dict[n][`${n}---${t}`] = tfarray[0]
-            //         // console.log($(`#${n}-${t_nospace}-checkbox-select`).attr("id"))
-            //         // console.log(tfarray[0])
-            //         // console.log(on_off_dict);
-
-            //         tfarray = [];
-            //         console.log(on_off_dict)
-            //     } 
-            // })
+            
 
             // Create checked elements updater function
             const checked_elems_update = () => {
