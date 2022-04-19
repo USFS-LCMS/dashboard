@@ -292,6 +292,19 @@ require([
     var extentDict={};
 
 
+    const refreshButton = document.getElementById('refresh_graphs');
+    refreshButton.addEventListener('click', () => {
+      if (Object.keys(resultsDict).length==0){
+        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+      }else{
+        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']); 
+      
+      }
+    })
+
+
     // Call the user selection listener for results dict
     // user_poly_selection_listener.listenToSelection(resultsDict);
 
