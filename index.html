@@ -10,10 +10,10 @@
 
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css"/>
-    <link rel="stylesheet" href="./css/module_template.css">
+    <link rel="stylesheet" href="/scratch/modular_testing/css/module_template.css">
 
     <!-- Relative paths to images -->
-    <link rel="icon" type="image/gif/png" href="../../images/usfslogo.png">
+    <link rel="icon" type="image/gif/png" href="/images/usfslogo.png">
 
     <!-- CDN References -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -389,7 +389,8 @@
         >
           <span class="esri-icon-erase"></span>
         </div>
-       -->        
+       -->      
+       <button id=refresh_graphs title="Refresh Graphs" class=" action-button refresh_button">Refresh Graphs</button>    
         <button
             id="pdf-button"
             class="action-button esri-widget"            
@@ -398,7 +399,7 @@
             Generate Report
         </button>
         <button id=span_popup_graph title="Click for information about graphs" class="infobutton">i</button>  
-        <button id=refresh_graphs title="Refresh Graphs" class="refresh_button">Refresh</button>  
+        
 
         </div>
         <div id="screenshotDiv" class="hide">

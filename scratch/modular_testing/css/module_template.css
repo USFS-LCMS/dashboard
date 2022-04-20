@@ -459,13 +459,14 @@ input[type="checkbox"]+label {
   display:none;
 }
 
+
+
 .infobutton {
   background-color: #7e7e7e; 
   border: none;
   color: white;
   padding: 2px;
-  text-align: center;
-  
+  text-align: center;  
   vertical-align: center;
   text-decoration: none;
   display: inline-block;
