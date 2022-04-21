@@ -349,12 +349,20 @@ require([
       Object.keys(img_layer_dict).map((r) => {
         const radio_button_div = document.getElementById(r);
         if (img_layer_dict[r] !=null){
-          radio_button_div.addEventListener('click', () => {
+          radio_button_div.addEventListener('change', (e) => {
+            console.log(e);
+            console.log("R is ", r);
+            llmm.showLoader(r.replace('-wrapper', '-spinner'));
             //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
             //highlight=null                    
               map.remove(img_layer);
               img_layer = img_layer_dict[r];            
               map.add(img_layer);        
+              img_layer.when(function() {
+                view.whenLayerView(img_layer).then(function(layerView){
+                  llmm.hideLoader(r.replace('-wrapper', '-spinner'))
+                })
+              })
             
           })
       }else{ //button to clear all
@@ -363,22 +371,6 @@ require([
         })
       }
       });
-
-      var myVar;
-      let isvisible = false;
-      
-      function myFunction() {
-        myVar = setTimeout(hideLoader, 3000);
-      }
-      
-      function hideLoader() {
-        $(".loader").css('display', 'none');
-      }
-
-      function showLoader(loader_div_id) {
-        console.log("Attempting to access : ", loader_div_id)
-        $(`#${loader_div_id}`).css('display', 'inline');
-      }
 
       // Map over the html hooks for each available layer in vector layer selection list. 
       Object.keys(radio_button_layer_dict).map((r) => {
@@ -390,17 +382,15 @@ require([
             featureDict[r]= layer;
             highlight=null;
             console.log("checkbox is checked")
-            console.log("R is ", r);
+            
 
             // Add in a spinner below
-            showLoader(r.replace('-wrapper', '-spinner'));
-            // myFunction();
-
+            llmm.showLoader(r.replace('-wrapper', '-spinner'));
 
             map.add(layer);
             layer.when(function(){
               view.whenLayerView(layer).then(function(layerView) {
-                hideLoader(r.replace('-wrapper', '-spinner'))
+                llmm.hideLoader(r.replace('-wrapper', '-spinner'))
                 statesLyrView = layerView;
                 layerDict[r] = layerView;
               });
@@ -410,7 +400,7 @@ require([
           else{
             delete featureDict[r]
             delete layerDict[r];
-            delete resultsDict[r]
+            delete resultsDict[r];
             delete extentDict[r];
             console.log("checkbox is NOT checked..");
             //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
