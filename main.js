@@ -376,6 +376,7 @@ require([
             delete featureDict[r]
             delete layerDict[r];
             delete resultsDict[r]
+            delete extentDict[r];
             console.log("checkbox is NOT checked..");
             //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
             highlight=null;
@@ -698,10 +699,11 @@ require([
             console.log("highlight [used to be] removed within selectStates function")
             //highlight.remove();//possible issue with removing highglights bc we don't reset highlights the list to []
             resultsDict={};
+            extentDict={};
           }
           
 
-          Object.keys(featureDict).forEach((r) =>{
+          Object.keys(featureDict).forEach((r) =>{ //iterate through each selected feature class
             
             var layer =featureDict[r]
             // console.log("now...")
@@ -711,6 +713,8 @@ require([
 
               storeResults=results
               resultsDict[r] = results
+              console.log(Object.keys(resultsDict).length+"is RESULTS DICT LEN")
+              
               console.log(resultsDict)
               const graphics = results.features; 
               //view.goTo(graphics)
@@ -722,6 +726,8 @@ require([
 
               //zoom to selected (queried) features
               layer.queryExtent(query).then((response) => {
+                console.log("added to extent dict:" + r)
+                extentDict[r]=response.extent;
                 //zoom to query extent (or union of multiple query extents)
                 if (Object.keys(resultsDict).length ===1){
                   view.goTo(response.extent.expand(1.25)).catch((error) => {
@@ -729,10 +735,14 @@ require([
                     })
 
                 }else{
-                  outExt=0;//response.extent;
+                  var outExt=0;//response.extent;
                   
                   Object.keys(resultsDict).forEach((res)=>{
+                    
                     thisExt=extentDict[res];
+                    console.log("zoomi g to mulitple fcs")
+                    console.log(thisExt.xmin+"is x min")
+                    console.log(res)
                     if (outExt !=0){
                       outExt = outExt.union(thisExt);
                     }else{
@@ -909,6 +919,7 @@ require([
                   console.log("len "+results.features.length)
                   if (results.features.length === 0) {
                     delete resultsDict[r]
+                    delete extentDict[r]
                     
                     //clearSelection();
 
