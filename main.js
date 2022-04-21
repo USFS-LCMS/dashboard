@@ -22,6 +22,7 @@ require([
     "modules/addInformationDropdown",
     "modules/ChartsForVisibleLayers",
     "modules/CreateSlider",
+    "modules/test_LayerLoadMessage",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -55,6 +56,7 @@ require([
       addInformationDropdown,
       ChartsForVisibleLayers,
       CreateSlider,
+      test_LayerLoadMessage,
       Map,
       MapView, 
       Query,
@@ -104,6 +106,10 @@ require([
     const img_layer_dict = ild.createImgLayerDict();
     // Set first (default) image layer
     let img_layer = img_layer_dict['landcover-button-wrapper'];
+
+
+
+
     
     /////////////////// modal
 
@@ -219,7 +225,12 @@ require([
     modalinfos.createModals();
     modalinfos.createInfoModalDict();
 
+        // Test Layer Loading message
 
+        const llmm = test_LayerLoadMessage({});
+        llmm.testMessage(layerDict);
+    
+        // test ends here
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
@@ -353,6 +364,22 @@ require([
       }
       });
 
+      var myVar;
+      let isvisible = false;
+      
+      function myFunction() {
+        myVar = setTimeout(hideLoader, 3000);
+      }
+      
+      function hideLoader() {
+        $(".loader").css('display', 'none');
+      }
+
+      function showLoader(loader_div_id) {
+        console.log("Attempting to access : ", loader_div_id)
+        $(`#${loader_div_id}`).css('display', 'inline');
+      }
+
       // Map over the html hooks for each available layer in vector layer selection list. 
       Object.keys(radio_button_layer_dict).map((r) => {
         // Add an event listener to each radio button
@@ -363,9 +390,17 @@ require([
             featureDict[r]= layer;
             highlight=null;
             console.log("checkbox is checked")
+            console.log("R is ", r);
+
+            // Add in a spinner below
+            showLoader(r.replace('-wrapper', '-spinner'));
+            // myFunction();
+
+
             map.add(layer);
             layer.when(function(){
               view.whenLayerView(layer).then(function(layerView) {
+                hideLoader(r.replace('-wrapper', '-spinner'))
                 statesLyrView = layerView;
                 layerDict[r] = layerView;
               });
