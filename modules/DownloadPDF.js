@@ -88,13 +88,13 @@ define([
             
             //header logo image
             var usdaLogo = new Image();
-            usdaLogo.src = "/images/usda-logo-color.png";
+            usdaLogo.src = "./images/usda-logo-color.png";
             doc.addImage(usdaLogo, 'PNG', 5,4, 18,13)//, 15);
             var fsLogo = new Image();
-            fsLogo.src = "/images/usfslogo.png";
+            fsLogo.src = "./images/usfslogo.png";
             doc.addImage(fsLogo, 'PNG', 27, 3, 14,15);//x,y,w,h            
             var lcmsLogo = new Image();
-            lcmsLogo.src = "/images/lcms-icon.png"
+            lcmsLogo.src = "./images/lcms-icon.png"
 
             //header text
             var currentY = 9;
