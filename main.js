@@ -216,6 +216,29 @@ require([
     update_charts_watcher = UpdateChartsOnSelection({});
     update_charts_watcher.updateChartOnMetricSelection(on_off_dict);
 
+    let area_type = 'Percentage'
+
+    $('#pct_area_wrapper').on('click', () => {
+        if ( $('#pct-area-radio-select').prop('checked') === true ) {
+            console.log("ITS TRUE - PCT AREA")
+            area_type = 'Percentage'
+        }
+    });
+
+    $('#acres_wrapper').on('click', () => {
+        if ( $('#acres-radio-select').prop('checked') === true ) {
+            console.log("ITS TRUE - ACRES")
+            area_type = 'Acres'
+        }
+    });
+
+    $('#hectares_wrapper').on('click', () => {
+        if ( $('#hectares-radio-select').prop('checked') === true ) {
+            console.log("ITS TRUE - HECTARES")
+            area_type = 'Hectares'
+        }
+    });
+
     const info_dropdown = addInformationDropdown({});
     info_dropdown.addInfo();
 
@@ -266,10 +289,10 @@ require([
 
           if (Object.keys(resultsDict).length==0){
             charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
           }else{
             charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+            charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
           
           }
           // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
@@ -307,10 +330,10 @@ require([
     refreshButton.addEventListener('click', () => {
       if (Object.keys(resultsDict).length==0){
         charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
       }else{
         charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']); 
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type); 
       
       }
     })
@@ -493,7 +516,7 @@ require([
                                 }
                               });
 
-                              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+                              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
                             }
                               // Call function below
                               // console.log(metric_button.on_off_dict)
@@ -813,7 +836,7 @@ require([
               //NOTE there is some error here
               charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
 
 
           
@@ -974,12 +997,11 @@ require([
 
                   // here we get to use queried features. chart here
                   $('#side-chart-canvas-container').innerHTML = ''; 
-                  console.log("resultsDict")
-                  console.log(resultsDict)
+
                   
                   charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
 
-                  charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
+                  charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year'], area_type);
 
 
                   // empty_chart = CreateChart({});

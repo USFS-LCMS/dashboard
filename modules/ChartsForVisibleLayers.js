@@ -106,7 +106,7 @@ define([
         },
 
         // Create a way to take the dictionary and iterate over, making divs and charts
-        makeVisibleLayerCharts: function(layers_dict, resultsDict, outer_chart_div_id, toggled_elems, startYear, endYear) {
+        makeVisibleLayerCharts: function(layers_dict, resultsDict, outer_chart_div_id, toggled_elems, startYear, endYear, area_type) {
             /*
             This function makes charts for each visible layer. 
             */
@@ -123,25 +123,14 @@ define([
             }
 
 
-            function setContentInfo(results,whichOne, out_div, in_layer, fieldNames){
-
-
-                var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
-                    'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
-                    'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
-
-                var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
-                'Land_Cover':["Trees",
-    "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
-                'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
-                }
+            function setContentInfo(results,whichOne, out_div, in_layer, fieldNames, area_type){
 
                 const color_name_dict = {
                     'Change': {'Slow Loss': '#f39268', 'Fast Loss': '#d54309', 'Gain': '#00a398', 'Non-Processing Area Mask': '#1B1716'},
                     'Land_Cover': {'Trees': '#005e00', 'Tall Shrubs & Trees Mix': '#008000', 'Shrubs & Trees Mix': '#00cc00', 'Grass/Forb/Herb & Trees Mix': '#b3ff1a', 'Barren & Trees Mix': '#99ff99', 'Tall Shrubs': '#b30088',  'Shrubs': '#e68a00', 'Grass/Forb/Herb & Shrubs Mix': '#ffad33',
                     'Barren & Shrubs Mix': '#ffe0b3', 'Grass/Forb/Herb': '#ffff00', 'Barren & Grass/Forb/Herb Mix': '#AA7700', 'Barren or Impervious': '#d3bf9b', 'Snow or Ice': '#808080', 'Water': '#4780f3', 'Non-Processing Area Mask': '#1B1716'},
                     'Land_Use': {'Agriculture': '#efff6b', 'Developed': '#ff2ff8', 'Forest': '#1b9d0c', 'Non-Forest Wetland': '#97ffff', 'Other': '#a1a1a1', 'Rangeland or Pasture': '#c2b34a', 'Non-Processing Area Mask': '#1B1716'}
-                  }
+                }
         
                 var stacked = true;
                 // var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
@@ -157,9 +146,14 @@ define([
                 ///////////////////////////////////////////////////////////////////////
                 //Iterate across each field name and add up totals 
                 //First get 2-d array of all areas for each then sum the columns and divide by total area
-                // var startYear = 2005;
-                // var endYear = 2015;
-                console.log("Field Names: ", fieldNames);
+                
+                const chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
+
+                
+                console.log("WWWWW", chartFormatDict[area_type])
+
+                const chartFormat = area_type;
+
                 var t = fieldNames.map(function(k){
                   var total_area = 0;
                   var total = [];
@@ -171,13 +165,15 @@ define([
                   results.features.map(function(f){
                     
                     try{
+
+                        const scale = f.attributes.scale;
                         
                       years = f.attributes.years.split(',');
                       var startI = years.indexOf(startYear.toString());
                       
                       var endI = years.indexOf((endYear+1).toString());
                       years = years.slice(startI,endI);
-                      total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)));
+                      total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n) * scale**2 ));
                       var total_areaF = parseFloat(f.attributes['total_area']);
                       total_area = total_area + total_areaF;
                     }catch(err){
@@ -185,10 +181,9 @@ define([
                     }
                     
                    })
-
                    
                   
-                   //some error here:
+                  //some error here:
                   var colSums = [];
                   for(var col = 0;col < total[0].length;col++){
                     var colSum = 0;
@@ -197,6 +192,13 @@ define([
                     }
                     colSums.push(colSum);
                   };
+
+                  //Convert from sq m to chosen area unit
+                if(chartFormat === 'Percentage'){
+                    colSums = colSums.map((n)=>n/total_area*100);
+                }else{
+                    colSums = colSums.map((n)=>n*chartFormatDict[chartFormat]['mult']);
+                }
 
                   //Convert back to pct
                   colSums = colSums.map((n)=>n/total_area*100);
@@ -259,13 +261,14 @@ define([
                         backgroundColor: '#D6D1CA'
                     },
                     scales: {
-                      yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'% Area'}}],
+                      yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString: chartFormatDict[chartFormat].label}}],
                       xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
                     }
                   }
                 });
-              // $(`#${chartID}`).height(350);
+
               };
+            
             
 
             const chart_one_metric = (which_one, in_layer, fieldNames, layers_dict, outer_chart_div_id) => {
@@ -331,7 +334,7 @@ define([
                                 console.log('more than one result: YES')
 
 
-                                setContentInfo(results, which_one, outer_chart_div_id, in_layer, class_fieldNames);
+                                setContentInfo(results, which_one, outer_chart_div_id, in_layer, class_fieldNames, area_type);
 
 
                                 // // append a chart - attempt new chart here.

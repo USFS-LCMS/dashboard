@@ -1,11 +1,13 @@
 define([
     "dojo/_base/declare",
     "modules/ToggleSidebar",
-    "modules/MetricToggleDict"
+    "modules/MetricToggleDict",
+    "modules/ChartsForVisibleLayers"
 ], function(
     declare,
     ToggleSidebar,
-    MetricToggleDict
+    MetricToggleDict,
+    ChartsForVisibleLayers
     ){
  
     return declare(null,{
@@ -20,6 +22,8 @@ define([
             mtd = MetricToggleDict({});
 
             ts = ToggleSidebar({});
+
+            charts_for_visible_layers = ChartsForVisibleLayers({});
 
 
             // create html block for header 
@@ -49,10 +53,21 @@ define([
             <div align="left" class="radio-button-wrapper" id="pct_area_wrapper">
                 <input type="radio" title="Set y-axis on graph to % area" class="layer-radio-button" id="pct-area-radio-select" name="area-button" value="pct-area-radio-select">
                 <label for="pct-area-radio-select" class="radio-button-label">Percent Area</label>
-            </div>      `
+            </div>      
+            
+            <div align="left" class="radio-button-wrapper" id="hectares_wrapper">
+                <input type="radio" title="Set y-axis on graph to hectares" class="layer-radio-button" id="hectares-radio-select" name="area-button" value="hectares-radio-select">
+               <label for="hectares-radio-select" class="radio-button-label">Hectares</label>
+            </div>
+            `
+
+
+            
+
+
 
             $("#graph-y-axis-items").append(graph_area_options);
-                
+            
 
             // // Text align sub headings
             $("#graph-y-axis").css("text-align", "left");
