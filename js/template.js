@@ -212,7 +212,7 @@ require([
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
       // url: './geojson/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
-      url:'https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-TongassNationalForestAdministrativeBoundary-outID_compressed.geojson',
+      url:'https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
       title:"Summary Areas",
       copyright: "USDA USFS GTAC",
       // popupTemplate: template,
@@ -395,7 +395,7 @@ require([
       // Function to tabulate results and create graphs
       function setContentInfo(results,whichOne){
         
-        var stacked = true;
+        var stacked= false;
         var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
         var chartID = 'chart-canvas-'+whichOne
         var colorsI = 0;
@@ -412,19 +412,24 @@ require([
         //First get 2-d array of all areas for each then sum the columns and divide by total area
         var startYear = 2005;
         var endYear = 2015;
+
+        var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
+        var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
+        var showPairwiseDiff = false;
         var t = fieldNames.map(function(k){
           var total_area = 0;
           var total = [];
           results.features.map(function(f){
             
             try{
+              var scale = f.attributes.scale;
               years = f.attributes.years.split(',');
               var startI = years.indexOf(startYear.toString());
               var endI = years.indexOf((endYear+1).toString());
               years = years.slice(startI,endI);
-              total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)));
+              total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)*scale**2));
               var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
-              total_area = total_area + total_areaF;
+              total_area = total_area + total_areaF*scale**2;
             }catch(err){
               console.log('No LCMS summary for: '+f.attributes['outID']);
               // console.log(err);
@@ -440,8 +445,24 @@ require([
             }
             colSums.push(colSum);
           };
-          //Convert back to pct
-          colSums = colSums.map((n)=>n/total_area*100);
+          //Convert from sq m to chosen area unit
+          if(chartFormat === 'Percentage'){
+            colSums = colSums.map((n)=>n/total_area*100);
+          }else{
+            colSums = colSums.map((n)=>n*chartFormatDict[chartFormat].mult);
+          }
+
+          if(showPairwiseDiff){
+            var pairwiseDiff = [];
+            for(var i=0;i<colSums.length-1;i++){
+              var left = colSums[i];
+              var right = colSums[i+1];
+              pairwiseDiff.push(right-left)
+            }
+            colSums = pairwiseDiff;
+            years = years.slice(1,years.length);
+          }
+          
           ///////////////////////////////////////////////////////////////////////
           //Set up chart object
             var out = {'borderColor':colors[whichOne][colorsI],
@@ -499,7 +520,7 @@ require([
                 backgroundColor: '#D6D1CA'
             },
             scales: {
-              yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'% Area'}}],
+              yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:chartFormatDict[chartFormat].label}}],
               xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
             }
           }
