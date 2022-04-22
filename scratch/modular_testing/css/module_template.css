@@ -245,6 +245,30 @@ canvas {
   position:relative;
   color:white;
 }
+
+
+.start-end-year-label {
+  font-size: 16px;
+  font-family: 'Roboto Condensed', 'sans-serif';
+  display: inline-block;
+  margin-bottom: 1em;
+  position: relative;
+  color: white;
+  /* margin-right: 2em; */
+}
+
+#slider-start-year-label {
+  margin-right: 2em;
+  /* margin-left: 1em; */
+  text-align: left;
+  display: inline;
+}
+
+#slider-end-year-label {
+  text-align: right;
+  display: inline;
+}
+
 .collapsible-label{  
   /* label for collapsible class (dropdown menu headings with +/-) */
   cursor: pointer;
@@ -327,6 +351,9 @@ canvas {
   max-height: 10px;
 }
 /* Flex parent */
+
+/* The label for the slider years */
+
 
 /* Flex parent */
 #fh-abbrev-1-checkmark {
@@ -432,13 +459,14 @@ input[type="checkbox"]+label {
   display:none;
 }
 
+
+
 .infobutton {
   background-color: #7e7e7e; 
   border: none;
   color: white;
   padding: 2px;
-  text-align: center;
-  
+  text-align: center;  
   vertical-align: center;
   text-decoration: none;
   display: inline-block;
@@ -489,6 +517,8 @@ input[type="checkbox"]+label {
   position: relative;
 
 }
+
+
 
 /* .infobutton .tooltiptext::after {
   content: "";
@@ -669,6 +699,29 @@ input[type="checkbox"]+label {
     font-size: 8px;
     float:right;
   } */
+  .loader {
+    border: 4px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 4px solid blue;
+    border-bottom: 4px solid blue;
+    width: 10px;
+    height: 10px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    display: none;
+    margin-left: 1em;
+    position: absolute;
+  }
+
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
   
 

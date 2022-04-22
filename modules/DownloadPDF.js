@@ -88,13 +88,13 @@ define([
             
             //header logo image
             var usdaLogo = new Image();
-            usdaLogo.src = "../../images/usda-logo-color.png";
+            usdaLogo.src = "./images/usda-logo-color.png";
             doc.addImage(usdaLogo, 'PNG', 5,4, 18,13)//, 15);
             var fsLogo = new Image();
-            fsLogo.src = "../../images/usfslogo.png";
+            fsLogo.src = "./images/usfslogo.png";
             doc.addImage(fsLogo, 'PNG', 27, 3, 14,15);//x,y,w,h            
             var lcmsLogo = new Image();
-            lcmsLogo.src = "../../images/lcms-icon.png"
+            lcmsLogo.src = "./images/lcms-icon.png"
 
             //header text
             var currentY = 9;
@@ -216,12 +216,27 @@ define([
 
             var figNum = 1;
             var tableNum = 1
+
+            //get list of checked questions
+            checkedQs=[];
+        
             
+            //checkedQs.forEach((thisQ)=>{ // enter rest of code here})
+
+            //dummy:
+            thisQ="Default Question example";
             Object.keys(results).map((thisFC)=>{
                 //iterate through different feature classes user has checked and add new pages for each
 
                 //new page
                 doc.addPage();
+
+                //add question to top of page
+                currentY=margin
+                doc.setFontSize(16);
+                doc.text(margin, currentY, thisQ);
+                                  
+
                 var objectID =results[thisFC].features[0].attributes["outID"];
                 var forestDict = {'1':'Tongass National Forest', '2':'Chugach National Forest'}
                 var forestName = forestDict[String(objectID)[0]] // ensure that fields are attributed with forest or just splice str(outID)[0]
@@ -229,7 +244,7 @@ define([
                 doc.setFontSize(16)
                 doc.setFont("Arial",'normal');       
                 doc.setTextColor(0,0,0);
-                currentY=margin
+                currentY+=20//set to heigh of text!!!!!??**
                 doc.text(margin, currentY, "The following feature class is included in this summary:");
                 doc.setFontSize(16)
                 doc.setFont(undefined,'bold');
@@ -287,14 +302,20 @@ define([
                 tableNum+=1
 
                 //add graph
+                //current error: background on whichever chart is first is black
                 currentY +=5;// currentY+ chartH + margin;
                 chartW = w - margin*2;
-                const canvas = document.getElementById("chart-canvas-Change");//chart-change-div");//"chart-canvas");
-                //console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
+                
+                const canvas = document.getElementById("chart-canvas-Change-"+thisFC); //should work if thisFC= something like: chugach-lrg-hex-radio-wrapper
+                // console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
+                // console.log(document.querySelector('*[chart-canvas*]'))
                 chartHeight = canvas.height;
                 chartWidth = canvas.width;
                 aspectRatio = chartHeight/chartWidth;
                 chartH = chartW*aspectRatio;
+
+                // doc.setFillColor(204,204,204,0);
+                // doc.rect(margin,currentY,chartW, chartH)
 
                 var addPageAfterChart2=false
                 if (currentY+chartH+margin >h){//threshold that should mean overflow of chart creates new page
@@ -303,7 +324,8 @@ define([
                     addPageAfterChart2=true //whether to add page break bw charts 1/2 or 2/3 (false = add break between chart 2 and 3)
                 }
 
-                doc.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+                //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
+                doc.addImage(canvas.toDataURL("image/png", 1.0), 'PNG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
                 currentY = currentY+ chartH + 6;
                 doc.text(margin, currentY, "Figure "+String(figNum)+". LCMS Change By Year");//fig1
                 figNum+=1
@@ -314,7 +336,7 @@ define([
                     currentY = margin;//currentY+ chartH + 6;
                 }
                
-                const canvas2 = document.getElementById("chart-canvas-Land_Cover");//chart-change-div");//"chart-canvas");
+                const canvas2 = document.getElementById("chart-canvas-Land_Cover-"+thisFC);//chart-change-div");//"chart-canvas");
                 doc.addImage(canvas2.toDataURL("image2/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
                 currentY = currentY+ chartH + 6;
                 doc.text(margin, currentY, "Figure "+String(figNum)+". Land Cover Distribution Change Over Time");//fig 2
@@ -327,12 +349,12 @@ define([
                 }else{
                     currentY +=6
                 }
-                const canvas3 = document.getElementById("chart-canvas-Land_Use");//chart-change-div");//"chart-canvas");
+                const canvas3 = document.getElementById("chart-canvas-Land_Use-"+thisFC);//chart-change-div");//"chart-canvas");
                 doc.addImage(canvas3.toDataURL("image3/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
                 
 
                 currentY = currentY+ chartH + 6;
-                doc.text(margin, currentY, "Figure "+String(figNum)+". Change in Area of Difference Land Use Types Over Time");
+                doc.text(margin, currentY, "Figure "+String(figNum)+". Change in Area of Different Land Use Types Over Time");
                 figNum+=1
 
                 

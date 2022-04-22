@@ -35,7 +35,7 @@ define([
             //////////// add radio buttons to toggle area //////////////////////////
 
             var graph_area_wrapper=` 
-                <h2 class=collapsible id="graph-y-axis">Area Metric (Graph Y-Axis)</h2>
+                <h2  title="Click to open/close dropdown to select area metric for graphs" class=collapsible id="graph-y-axis">Area Metric (Graph Y-Axis)</h2>
                 <ul id="graph-y-axis-items"></ul>                 
                 `
             $(`#${h1_id}-items`).append(graph_area_wrapper);
@@ -68,7 +68,7 @@ define([
             //time slide
             ///////////////////////////////////////////////////////////////////////////////
             var year_slider_wrapper=` 
-                <h2 class=collapsible id="year-slider">Years of Analysis (Graph X-Axis)</h2>
+                <h2 title="Click to open/close dropdown to select Years of Analysis for graphs"class=collapsible id="year-slider">Years of Analysis (Graph X-Axis)</h2>
                 <ul id="year-slider-items"></ul>                 
                 `
             $(`#${h1_id}-items`).append(year_slider_wrapper);

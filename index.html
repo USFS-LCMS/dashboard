@@ -10,10 +10,10 @@
 
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css"/>
-    <link rel="stylesheet" href="./css/module_template.css">
+    <link rel="stylesheet" href="scratch/modular_testing/css/module_template.css">
 
     <!-- Relative paths to images -->
-    <link rel="icon" type="image/gif/png" href="../../images/usfslogo.png">
+    <link rel="icon" type="image/gif/png" href="/images/usfslogo.png">
 
     <!-- CDN References -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -57,14 +57,14 @@
               </span>
 
               <!-- Insert the lcms logo into heading! -->
-              <img class="lcms-icon" alt="LCMS icon" src="../../images/lcms-icon.png">
+              <img class="lcms-icon" alt="LCMS icon" src="./images/lcms-icon.png">
               LCMS
 
               <!-- Insert emphasized bit! -->
               <span class="gray">
                 DATA 
               </span>
-              Explorer 
+              Digest 
             </h1>
 
           </header>
@@ -241,7 +241,7 @@
               </div>
               </ul>
 
-            <h1 class="collapsible" id="map-layer-selection">Layer Selection</h1>
+            <h1 class="collapsible" title="Click to open/close dropdown to select feature classes for analysis" id="map-layer-selection">Analysis Layer Selection</h1>
             <ul id="map-layer-selection-items">
 
               <div align="left" class="check-button-wrapper" id="chugach-huc10-radio-wrapper" name="Chugach HUC 10">
@@ -380,7 +380,7 @@
 
       <!-- Right side div, containing a chart and some buttons -->
       <div class="aside" id="side-chart">
-        <h3>LCMS Outputs</h3>
+        <h3>LCMS Data Summaries</h3>
         <div id="viewDiv" class="esri-widget">          
         <!-- <div
           id="clear-selection"
@@ -389,7 +389,8 @@
         >
           <span class="esri-icon-erase"></span>
         </div>
-       -->        
+       -->      
+       <button id=refresh_graphs title="Refresh Graphs" class=" action-button refresh_button">Refresh Graphs</button>    
         <button
             id="pdf-button"
             class="action-button esri-widget"            
@@ -398,6 +399,7 @@
             Generate Report
         </button>
         <button id=span_popup_graph title="Click for information about graphs" class="infobutton">i</button>  
+        
 
         </div>
         <div id="screenshotDiv" class="hide">
@@ -430,6 +432,11 @@
      
     
     </div>
+    <!-- <script type="text/javascript">
+      $(window).on('load', function() {
+          $('#myModal_main').modal('show');
+      });
+    </script> -->
     
     <!-- Scripts called into html body -->
     <script src="./config.js"></script>

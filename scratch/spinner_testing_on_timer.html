@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<style>
+.loader {
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid blue;
+  border-bottom: 4px solid blue;
+  width: 20px;
+  height: 20px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  display: none;
+  margin-left: 1em;
+  position: absolute;
+}
+
+h2{
+    display: inline;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<h2 id="clicker">Click me</h2>
+<div class="loader"></div>
+
+
+
+<script>
+    var myVar;
+    let isvisible = false;
+    
+    function myFunction() {
+      myVar = setTimeout(hideLoader, 3000);
+    }
+    
+    function hideLoader() {
+      $(".loader").css('display', 'none');
+    }
+
+    function showLoader() {
+        $(".loader").css('display', 'inline');
+    }
+
+    function swapLoader() {
+        if (isvisible === true) { 
+            
+            hideLoader()
+            isvisible = false; 
+        }
+        else if ( isvisible === false ) { 
+            showLoader()
+            isvisible = true;
+        }
+    }
+
+    clicker = $('#clicker');
+
+
+    clicker.on('click', function (event) {
+        showLoader();
+        myFunction();
+    })
+
+</script>
+
+</body>
+</html>

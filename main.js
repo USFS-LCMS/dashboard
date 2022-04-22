@@ -9,8 +9,6 @@ Description:
   It provides the user with a selection of questions and provides charts using LCMS data.
 */
 
-// Require is an AMD - Asynchronous Module Definition - staple.
-// AMD is useful when working with esri api and map views.
 require([
     "dojo/_base/array",
     "modules/CreateChart",
@@ -24,6 +22,7 @@ require([
     "modules/addInformationDropdown",
     "modules/ChartsForVisibleLayers",
     "modules/CreateSlider",
+    "modules/test_LayerLoadMessage",
     "esri/Map",
     "esri/views/MapView",
     "esri/rest/support/Query",
@@ -36,7 +35,8 @@ require([
     "esri/layers/GraphicsLayer",
     "esri/geometry/Extent",
     "esri/geometry/geometryEngineAsync",
-    "esri/widgets/FeatureTable",
+    "esri/widgets/Legend",
+    "esri/widgets/Expand",
     "esri/views/draw/Draw",
     "esri/geometry/Point",
     "esri/geometry/Polygon",
@@ -56,7 +56,8 @@ require([
       addInformationDropdown,
       ChartsForVisibleLayers,
       CreateSlider,
-      Map, 
+      test_LayerLoadMessage,
+      Map,
       MapView, 
       Query,
       Color,
@@ -68,15 +69,14 @@ require([
       GraphicsLayer,
       Extent,
       geometryEngineAsync,
-      FeatureTable,
+      Legend,
+      Expand,
       Draw,
       Point,
       Polygon,
       Multipoint
       ) => {
-    
-
-
+      
       //   $.ajax({
       //     type: 'GET',
       //     url: `https://storage.googleapis.com/lcms-dashboard/`,
@@ -106,8 +106,16 @@ require([
     const img_layer_dict = ild.createImgLayerDict();
     // Set first (default) image layer
     let img_layer = img_layer_dict['landcover-button-wrapper'];
+
+
+
+
     
     /////////////////// modal
+
+    // var mainModal = new bootstrap.Modal(document.getElementById('myModal_main'),{});
+    // mainModal.toggle()
+
     // Get the modal
     // var modal = document.getElementById("myModal");
 
@@ -133,6 +141,8 @@ require([
     //     modal.style.display = "none";
     //   }
     // }
+
+    ///////// graphs info modal
     
     var modal = document.getElementById("myModal_graph");
 
@@ -160,11 +170,35 @@ require([
     }
     }
 
+    //////////////////// main info modal
+    // var modal2 = document.getElementById("myModal_main");
+
+    // // Get the button that opens the modal for graphs
+    // var btn2 = document.getElementById('span_popup_main');
+
+    // // Get the <span> element that closes the modal
+    // // var span = document.getElementsByClassName("close")[0];
+    // var span2 = document.getElementById('close_main');
+
+    // // When the user clicks the button, open the modal 
+    // btn2.onclick = function() {
+    // modal2.style.display = "block";
+    // }
+
+    // // When the user clicks on <span> (x), close the modal
+    // span2.onclick = function() {
+    // modal2.style.display = "none";
+    // }
+
+    // // When the user clicks anywhere outside of the modal, close it
+    // window.onclick = function(event) {
+    // if (event.target == modal) {
+    //     modal2.style.display = "none";
+    // }
+    // }
+
 
     ///////// end of modal
-
-
-
 
 
     // Create metric selection buttons
@@ -191,7 +225,12 @@ require([
     modalinfos.createModals();
     modalinfos.createInfoModalDict();
 
+        // Test Layer Loading message
 
+        const llmm = test_LayerLoadMessage({});
+        llmm.testMessage(layerDict);
+    
+        // test ends here
 
     // LOAD IN LAYERS - look in template for layer list widget. 
 
@@ -210,11 +249,20 @@ require([
       'end_year' : 2020
     };
 
+    slider_create = CreateSlider({});
+
+    slider_create.createSliderLabels(analysis_years);
+    // console.log($('#changing-start-year').innerHTML)
     // var targetObj = {};
     var analysis_yr_prox = new Proxy(analysis_years, {
       set: function (target, key, value) {
           console.log(`${key} set to ${value}`);
           target[key] = value;
+
+          // Update analysis years
+          // $('#changing-start-year').innerHTML = ``;
+          // $('#changing-start-year').innerHTML = `${analysis_years['start_year']}`;
+          // console.log($('changing-start-year').innerHTML);
 
           if (Object.keys(resultsDict).length==0){
             charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
@@ -232,8 +280,9 @@ require([
     });
 
     // slider
-    slider_create = CreateSlider({});
+
     slider_create.createSlider(analysis_yr_prox);
+
    
     const map = new Map({
       basemap: "hybrid",
@@ -251,6 +300,20 @@ require([
     var storeResults = null;
     var resultsDict = {};
     var thisDict={};
+    var extentDict={};
+
+
+    const refreshButton = document.getElementById('refresh_graphs');
+    refreshButton.addEventListener('click', () => {
+      if (Object.keys(resultsDict).length==0){
+        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+      }else{
+        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']); 
+      
+      }
+    })
 
 
     // Call the user selection listener for results dict
@@ -263,18 +326,43 @@ require([
       
       map.add(img_layer);
 
+
+      // Create legend and an expand/contract widget so that user can get rid of it.
+      let legend = new Legend({
+        view: view,
+        container: document.createElement('div')
+      });
+      
+      
+
+      const legend_expand = new Expand({
+        view: view, 
+        content: legend
+      });
+      
+      view.ui.add(legend_expand, "bottom-right");
+      
+
       // map.add(radio_button_layer_dict['tongass-boundary-radio-wrapper']['layer_var'])
 
       // Add selection functionality to image layers
       Object.keys(img_layer_dict).map((r) => {
         const radio_button_div = document.getElementById(r);
         if (img_layer_dict[r] !=null){
-          radio_button_div.addEventListener('click', () => {
+          radio_button_div.addEventListener('change', (e) => {
+            console.log(e);
+            console.log("R is ", r);
+            llmm.showLoader(r.replace('-wrapper', '-spinner'));
             //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
             //highlight=null                    
               map.remove(img_layer);
               img_layer = img_layer_dict[r];            
               map.add(img_layer);        
+              img_layer.when(function() {
+                view.whenLayerView(img_layer).then(function(layerView){
+                  llmm.hideLoader(r.replace('-wrapper', '-spinner'))
+                })
+              })
             
           })
       }else{ //button to clear all
@@ -294,9 +382,15 @@ require([
             featureDict[r]= layer;
             highlight=null;
             console.log("checkbox is checked")
+            
+
+            // Add in a spinner below
+            llmm.showLoader(r.replace('-wrapper', '-spinner'));
+
             map.add(layer);
             layer.when(function(){
               view.whenLayerView(layer).then(function(layerView) {
+                llmm.hideLoader(r.replace('-wrapper', '-spinner'))
                 statesLyrView = layerView;
                 layerDict[r] = layerView;
               });
@@ -306,7 +400,8 @@ require([
           else{
             delete featureDict[r]
             delete layerDict[r];
-            delete resultsDict[r]
+            delete resultsDict[r];
+            delete extentDict[r];
             console.log("checkbox is NOT checked..");
             //set highlight to null or hightlight will reference removed layer and cause error "[esri.views.2d.layers.FeatureLayerView2D] Error: Connection closed" 
             highlight=null;
@@ -370,7 +465,7 @@ require([
                       thisDict={}
                                     
                       Object.values(featureDict).forEach((ft) =>{  
-                        console.log("another feature");
+                        // console.log("another feature");
                       ft.queryFeatures({
                           geometry: view.extent,
                           returnGeometry: true
@@ -482,10 +577,9 @@ require([
 
       const draw = new Draw({
           view: view
-      });           
-
-      // view.ui.add("point-button", "top-left");
-
+      });     
+      
+      
       document.getElementById("point-button").onclick = drawPoint; //when user click the point button on RH side of screen..
       console.log("*NOTE* To select multiple items, user must hold 'CTRL' before the first click through the last click AND move mouse after final click to see highlight")
       // function zoomToLayer(layer) {
@@ -630,25 +724,23 @@ require([
             console.log("highlight [used to be] removed within selectStates function")
             //highlight.remove();//possible issue with removing highglights bc we don't reset highlights the list to []
             resultsDict={};
+            extentDict={};
           }
           
 
-          Object.keys(featureDict).forEach((r) =>{
+          Object.keys(featureDict).forEach((r) =>{ //iterate through each selected feature class
             
             var layer =featureDict[r]
-            console.log("now..."+layer)
+            // console.log("now...")
+            // console.log(layer);
 
             layer.queryFeatures(query,{returnGeometry:true}).then(function(results){
 
-              //zoom to selected (queried) features
-              layer.queryExtent(query).then((response) => {
-                  view.goTo(response.extent.expand(1.25)).catch((error) => {
-                  console.error(error);
-                })});
-
               storeResults=results
               resultsDict[r] = results
-              // console.log("results "+storeResults.features[0])
+              console.log(Object.keys(resultsDict).length+"is RESULTS DICT LEN")
+              
+              console.log(resultsDict)
               const graphics = results.features; 
               //view.goTo(graphics)
 
@@ -657,16 +749,52 @@ require([
               highlight = layerDict[r].highlight(graphics);
               highlights.push(highlight);
 
-              console.log("setting chart from click")
+              //zoom to selected (queried) features
+              layer.queryExtent(query).then((response) => {
+                console.log("added to extent dict:" + r)
+                extentDict[r]=response.extent;
+                //zoom to query extent (or union of multiple query extents)
+                if (Object.keys(resultsDict).length ===1){
+                  view.goTo(response.extent.expand(1.25)).catch((error) => {
+                    console.error(error);
+                    })
 
-              $('#side-chart-canvas-container').innerHTML = ''; 
+                }else{
+                  var outExt=0;//response.extent;
+                  
+                  Object.keys(resultsDict).forEach((res)=>{
+                    
+                    thisExt=extentDict[res];
+                    console.log("zoomi g to mulitple fcs")
+                    console.log(thisExt.xmin+"is x min")
+                    console.log(res)
+                    if (outExt !=0){
+                      outExt = outExt.union(thisExt);
+                    }else{
+                      outExt=thisExt;
+                    }
+                    
+                    // console.log(outExt)
+                  })
+
+                  view.goTo(outExt).catch((error) => {
+                    console.error(error);
+                  })
+
+                }
+
+                
+                //var newext= zoomToAllResults(resultsDict)//, response.extent);
+                //response.extent.union(resultsDict)
+                //zoomToAllResults(re)
+                // view.goTo(response.extent.expand(1.25)).catch((error) => {
+                  
+            });
+
+               // view.ui.add("point-button", "top-left");
+      
+
               
-              //NOTE there is some error here
-              charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-
-              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict,analysis_years['start_year'], analysis_years['end_year']);
-
-
               // empty_chart = CreateChart({});
               // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
               // $('.checkbox-wrapper').on('click', (() => {
@@ -677,12 +805,24 @@ require([
               // if (highlight) {
               //     highlight.remove();
               // }
+              
+              console.log("setting chart from click")
+
+              $('#side-chart-canvas-container').innerHTML = ''; 
+              
+              //NOTE there is some error here
+              charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+
+              charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+
+
+          
 
               
               pntGraphics.removeAll();
               ////
               var totalArea=0;
-              // console.log("len "+results.features.length)
+              console.log("Number of features: "+results.features.length)
               var j=-1
               graphics.forEach(function (g) {         
                   j+=1                
@@ -700,8 +840,11 @@ require([
           }).catch(function(err){
           console.error(err);
           })
+          //tried here
 
-          })
+
+          });
+          //tried here
           
       }      
       /////////////////////// SELECT BY RECTANGLE ////////////////////////////////////////
@@ -800,7 +943,11 @@ require([
                   resultsDict[r] = results
                   console.log("len "+results.features.length)
                   if (results.features.length === 0) {
-                    clearSelection();
+                    delete resultsDict[r]
+                    delete extentDict[r]
+                    
+                    //clearSelection();
+
                   } else {
                   //zoom to selected (queried) features
                   layer.queryExtent(query).then((response) => {
@@ -943,7 +1090,8 @@ require([
         imageElement.src = screenshot.dataUrl;
         imageElement.height = screenshot.data.height;
         imageElement.width = screenshot.data.width;
-        console.log("dictionary of results: "+resultsDict)
+        // console.log("dictionary of results: "+resultsDict)
+        //console.log(document.querySelectorAll('*[id]'))
         d_pdf.downloadPDF(resultsDict); //wait 7 ms before running function to let charts load (does this work?)
 
       });
