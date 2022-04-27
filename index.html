@@ -37,7 +37,15 @@
 
       <!-- This is the main map div - pretty sure everything sits right in here -->
       <div class="main" id="main-map">
-               
+
+        <div id="instructions_modal" class="instructions_modal">
+          <div class="modal-content">
+            <span id="close_instructions" class="close" title="Close">&times;</span>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;'><strong><span style='font-family:"Roboto Condensed";'>Welcome to the LCMS Data Explorer for Region 10!</span></strong></p><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";color:#343A40;'>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download customized PDF reports.</span></p><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";color:#343A40;'>To use this website, click on the menu button to the left of the LCMS Data Explorer title and follow the items in the dropdown menu.</span></p><ol style="list-style-type: undefined;"> <li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select your question of interest</span></li><li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select your feature classes of interest (i.e., polygons used to summarize underlying LCMS data products)</span></li> <li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select the LCMS product you&rsquo;re interested in (information buttons next to each product will provide clarification)</span></li><li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select the metrics to display on the graphs in the right panel</span></li> <li><span style='font-family:"Roboto Condensed";color:#343A40;'>Using one of the selection tools under the Tools tab, pan around to select polygons. Two selection options are provided: select by rectangle and select by point. If using select by point, optionally hold down the CTRL key to select multiple polygons. *Note that you will need to move the cursor after unclicking the CTRL button in order to highlight the results.&nbsp;</span></li></ol><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";color:#343A40;'>NOTE: the graphs on the right will show statistics from the polygons visible in the view extent unless a selection is made.&nbsp;</span></p><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";'>&nbsp;</span></p>
+            <!-- note: the close btn etc are initialized in create info modal dicts script -->
+              </div>      
+          </div>
+        
 
         <!-- This is the top left sidebar containing our Accordion menu -->
         <nav id="sidebar-left-container">
@@ -414,7 +422,8 @@
               and presented in three separate categories - Change, Land Cover, and Land Use.</p>
           </div>
         </div>
-        
+
+               
         
         <!--<button id="pdf-button">Download PDF</button>-->
         

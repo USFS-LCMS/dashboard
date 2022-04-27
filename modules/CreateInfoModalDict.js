@@ -33,8 +33,7 @@ define([
             const text12="NON-PROCESSING AREA MASK: Where no cloud or cloud shadow-free data are available to produce an output. <br><br>This is different from 'No Data:' No data is generally any area outside the study area and has a value that is ignored for all statistics. Non processing area mask pixels are inside the study area, but had no valid observations for that year."
             //const text13="<p><h2>Welcome to the LCMS Data Explorer for Region 10!</h2></p>            <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download customized PDF reports.</p>      <p>To use this website, click on the menu button to the left of the LCMS Data Explorer title and follow the items in the dropdown menu. 1) Select your question of interest 2) Select your feature classes of interest (i.e., polygons used to summarize underlying LCMS data products) 3) Select the LCMS product you&rsquo;re interested in (information buttons next to each product will provide clarification) 4) Select the metrics to display on the graphs in the right panel 5) Using one of the selection tools under the Tools tab, pan around to select polygons. Two selection options are provided: select by rectangle and select by point. If using select by point, optionally hold down the CTRL key to select multiple polygons. *Note that you will need to move the cursor after unclicking the CTRL button in order to highlight the results.</p>   <p>NOTE: the graphs on the right will show statistics from the polygons visible in the view extent unless a selection is made. </p>"
             const text13=`<p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;'><strong><span style='font-family:"Roboto Condensed";'>Welcome to the LCMS Data Explorer for Region 10!</span></strong></p><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";color:#343A40;'>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download customized PDF reports.</span></p><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";color:#343A40;'>To use this website, click on the menu button to the left of the LCMS Data Explorer title and follow the items in the dropdown menu.</span></p><ol style="list-style-type: undefined;"> <li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select your question of interest</span></li><li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select your feature classes of interest (i.e., polygons used to summarize underlying LCMS data products)</span></li> <li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select the LCMS product you&rsquo;re interested in (information buttons next to each product will provide clarification)</span></li><li><span style='font-family:"Roboto Condensed";color:#343A40;'>Select the metrics to display on the graphs in the right panel</span></li> <li><span style='font-family:"Roboto Condensed";color:#343A40;'>Using one of the selection tools under the Tools tab, pan around to select polygons. Two selection options are provided: select by rectangle and select by point. If using select by point, optionally hold down the CTRL key to select multiple polygons. *Note that you will need to move the cursor after unclicking the CTRL button in order to highlight the results.&nbsp;</span></li></ol><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";color:#343A40;'>NOTE: the graphs on the right will show statistics from the polygons visible in the view extent unless a selection is made.&nbsp;</span></p><p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:107%;font-size:15px;font-family:"Calibri",sans-serif;'><span style='font-family:"Roboto Condensed";'>&nbsp;</span></p>`
-
-            
+           
 
 
             const modal_html =`
@@ -128,6 +127,8 @@ define([
               <p>${text13}</p>
                 </div>      
             </div>
+
+            
           `
 
           $('#mainwrapperid').append(modal_html);
@@ -165,6 +166,7 @@ define([
                 'span_popup_change3': "close11",
                 'span_popup_change4': "close12",
                 'span_popup_main': "close_main"
+
             };
 
             Object.keys(infoModalDict).forEach((k) => {
@@ -178,11 +180,11 @@ define([
                 // var span = document.getElementsByClassName("close")[0];
                 var span = document.getElementById(closeModalDict[k]);
 
-                // When the user clicks the button, open the modal 
+                // When the user clicks the button, open the modal                 
                 btn.onclick = function() {
-                modal.style.display = "block";
+                  modal.style.display = "block";
                 }
-
+                 
                 // When the user clicks on <span> (x), close the modal
                 span.onclick = function() {
                 modal.style.display = "none";
@@ -196,6 +198,33 @@ define([
                 }
 
             })
+
+
+            // add main instructions modal that will popup on page load 
+
+            var modal = document.getElementById('instructions_modal');  
+            
+            // Get the <span> element that closes the modal
+            // var span = document.getElementsByClassName("close")[0];
+            var span = document.getElementById("close_instructions");
+
+            // When page loads, open the modal             
+            modal.style.display="block";           
+            
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+            modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+            }
+
+
             // return infoModalDict;
         }
     })
