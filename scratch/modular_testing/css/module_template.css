@@ -428,7 +428,7 @@ input[type="checkbox"]+label {
 }
 
 .action-button {
-  padding: 0.6em;
+  padding: 0.3em;
   border: 1px solid  rgb(8,124,124);
   text-align: center;
   background-color: rgb(8,124,124);
@@ -451,7 +451,7 @@ input[type="checkbox"]+label {
 }
 
 #side-chart {
-  width: 30%;
+  width: 24%;
   overflow-y: auto;
 }
 
@@ -672,7 +672,7 @@ input[type="checkbox"]+label {
   left:190px; */
   float: right;
   position: relative;
-  bottom: -25px;
+  bottom: -48px;
   margin-right: 6px;
 
 }

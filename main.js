@@ -789,12 +789,19 @@ require([
                     
                     thisExt=extentDict[res];
                     console.log("zoomi g to mulitple fcs")
-                    console.log(thisExt.xmin+"is x min")
+                    // console.log(thisExt.xmin+"is x min")
                     console.log(res)
-                    if (outExt !=0){
-                      outExt = outExt.union(thisExt);
-                    }else{
-                      outExt=thisExt;
+                    try{
+                      if (outExt !=0){
+                        outExt = outExt.union(thisExt);
+                      }else{
+                        outExt=thisExt;
+                      }
+                      console.log("COMPLETED")
+                    }
+                    catch(err){
+                      console.log("cannot zoom")
+                      console.log("err"+err)
                     }
                     
                     // console.log(outExt)
