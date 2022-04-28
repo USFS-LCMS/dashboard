@@ -427,6 +427,16 @@ input[type="checkbox"]+label {
   color: white;
 }
 
+#span_popup_main{
+  cursor: pointer;
+  color:#00BFA5;
+}
+
+.infomodal_link{
+  color:black;
+}
+
+
 .action-button {
   padding: 0.3em;
   border: 1px solid  rgb(8,124,124);
@@ -676,6 +686,7 @@ input[type="checkbox"]+label {
   margin-right: 6px;
 
 }
+
   
 
   /* end of modal */

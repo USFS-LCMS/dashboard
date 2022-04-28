@@ -32,8 +32,8 @@ define([
             <h1 class=collapsible id="${h1_id}">${title}</h1>
             <ul id="${h1_id}-items">
 
-            <section align="left" class="info-panel" id="infoPanel0">
-            <button id=span_popup_main title="Click for website insturctions" class="infobutton">i</button>  
+            <section align="left" class="info-panel" title="Click for website instructions" id="span_popup_main">
+                <a>How to use the Data Digest</a>
             </section>
             <p></p>
 
