@@ -37,22 +37,22 @@ define([
             </section>
             <p></p>
 
-            <section align="left" class="info-panel" id="infoPanel1">
+            <section align="left" class="info-panel" title ="https://apps.fs.usda.gov/lcms-viewer/" id="infoPanel1">
                 <a href="https://apps.fs.usda.gov/lcms-viewer/">View the Full LCMS Data Explorer</a>
             </section>
             <p></p>
 
-            <section align="left" class="info-panel" id="infoPanel2">
+            <section align="left" class="info-panel" title="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Descriptions.html" id="infoPanel2">
                 <a href="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Descriptions.html">Description of LCMS Products</a>
             </section>
             <p></p>
 
-            <section align="left" class="info-panel" id="infoPanel3">
+            <section align="left" class="info-panel" title="https://usfs-lcms.github.io/lcms-viewer/tutorials/LCMS_v2021-7_Methods.pdf" id="infoPanel3">
                 <a href="https://usfs-lcms.github.io/lcms-viewer/tutorials/LCMS_v2021-7_Methods.pdf">LCMS Methods Document</a>
             </section>
             <p></p>
             
-            <section align="left" class="info-panel" id="infoPanel4">
+            <section align="left" class="info-panel" title="Email LCMS Support" id="infoPanel4">
             <address>
                 <a href="mailto:sm.fs.lcms@usda.gov">Contact LCMS Support: sm.fs.lcms@usda.gov</a>
             </address>                
