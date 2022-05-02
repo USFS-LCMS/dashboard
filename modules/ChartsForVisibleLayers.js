@@ -168,14 +168,14 @@ define([
 
                         const scale = f.attributes.scale;
                         
-                      years = f.attributes.years.split(',');
-                      var startI = years.indexOf(startYear.toString());
-                      
-                      var endI = years.indexOf((endYear+1).toString());
-                      years = years.slice(startI,endI);
-                      total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n) * scale**2 ));
-                      var total_areaF = parseFloat(f.attributes['total_area']);
-                      total_area = total_area + total_areaF;
+                        years = f.attributes.years.split(',');
+                        var startI = years.indexOf(startYear.toString());
+                        
+                        var endI = years.indexOf((endYear+1).toString());
+                        years = years.slice(startI,endI);
+                        total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n) * scale**2 ));
+                        var total_areaF = parseFloat(f.attributes['total_area']);
+                        total_area = total_area + total_areaF;
                     }catch(err){
                       console.log('No LCMS summary for: '+f.attributes['outID']);
                     }

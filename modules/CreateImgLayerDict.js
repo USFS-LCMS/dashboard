@@ -2,11 +2,16 @@
 define([
     "dojo/_base/declare",
     "esri/layers/ImageryLayer",
-    "modules/ToggleSidebar"
+    "modules/ToggleSidebar",
+
+    "esri/layers/support/DimensionalDefinition",
+    "esri/layers/support/MosaicRule"
 ], function(
     declare,
     ImageryLayer,
-    ToggleSidebar
+    ToggleSidebar,
+    DimensionalDefinition,
+    MosaicRule
     ){
  
     return declare(null,{
@@ -17,62 +22,208 @@ define([
        
 
         createImgLayerDict: function() {
-            // Get an assortment of raster layers from image server
-            const annual_landcover = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Annual_Landcover/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
 
-            const annual_landuse = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Annual_Landuse/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
+           
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+        function maskPixels(pixelData) {
+          if (pixelData == null || pixelData.pixelBlock == null) {
+            return;
+          }
 
-            const most_rec_year_fast_loss = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Most_Recent_Year_Of_Fast_Loss/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
+          // The pixelBlock stores the values of all pixels visible in the view
+          const pixelBlock = pixelData.pixelBlock;
+          // The pixels visible in the view
+          const pixels = pixelBlock.pixels;
+          let mask = pixelBlock.mask;
 
-            const most_rec_year_gain = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Most_Recent_Year_Of_Gain/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
+          // The number of pixels in the pixelBlock
+          const numPixels = pixelBlock.width * pixelBlock.height;
 
-            const most_rec_year_slow_loss = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Most_Recent_Year_Of_Slow_Loss/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
+          // Get the pixels containing temperature values in the only band of the data
+          const tempBand = pixels[0];
+          const p1 = pixels[0];
 
-            const highest_prob_fast_loss = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Year_Of_Highest_Prob_Fast_Loss/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
+          if (mask == null) {
+            mask = new Uint8Array(p1.length); //mask = new Uint8Array(p1.length);
+            mask.fill(1);
+            pixelBlock.mask = mask;
+          }
 
-            const highest_prob_gain = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Year_Of_Highest_Prob_Gain/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
+          // Loop through all the pixels in the view
+          for (let i = 0; i < numPixels; i++) {
+            // skip noData pixels
+            if (mask[i] ===0) {
+              continue;
+            }
+            const tempValue = tempBand[i];
+            const red = (tempValue - minVal) * factor;
+            mask[i] =
+              p1[i] >= Math.floor(currentMin) && p1[i] <= Math.floor(currentMax)
+                ? 1
+                : 0;
 
-            const highest_prob_slow_loss = new ImageryLayer({
-                url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Year_Of_Highest_Prob_Slow_Loss/ImageServer",
-                format: "jpgpng" // server exports in either jpg or png format
-            });
+            //apply color based on temperature value of each pixel
+            if (mask[i]) {
+              // p[i] = Math.floor((p1[i] - minVal) * factor);
+              rBand[i] = red;
+              gBand[i] = 0;
+              bBand[i] = 255 - red;
+            }
+          }
+
+          // Set the new pixel values on the pixelBlock
+          pixelData.pixelBlock.pixels = [rBand, gBand, bBand]; //assign rgb values to each pixel
+          pixelData.pixelBlock.statistics = null;
+          pixelData.pixelBlock.pixelType = "u8";
+        }
+
+          let mosaicRule = new MosaicRule({
+            operation: 'last', // pulling last image from feature collection
+            
+          });
+          // let multidimensionalDefinition = [];
+          // multidimensionalDefinition.push(
+          //   new DimensionalDefinition({
+          //     dimensionName: "StdTime",
+          //     // values: [starttime_unixmillis, endtime_unixmillis]
+          //     values: [new Date('2018-12-31').getTime(), new Date('2021-12-31').getTime()]
+          //   })
+          // )
+
+          
+
+          // Get an assortment of raster layers from image server
+          const annual_landcover = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Annual_Landcover/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
+
+          const annual_landuse = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Annual_Landuse/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
+
+          const most_rec_year_fast_loss = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Most_Recent_Year_Of_Fast_Loss/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
+
+          const most_rec_year_gain = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Most_Recent_Year_Of_Gain/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
+
+          const most_rec_year_slow_loss = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Most_Recent_Year_Of_Slow_Loss/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
+
+          const highest_prob_fast_loss = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Year_Of_Highest_Prob_Fast_Loss/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
+
+          const highest_prob_gain = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Year_Of_Highest_Prob_Gain/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
+
+          const highest_prob_slow_loss = new ImageryLayer({
+              url: "https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_Southeast_Alaska_Year_Of_Highest_Prob_Slow_Loss/ImageServer",
+              format: "jpgpng", // server exports in either jpg or png format
+              mosaicRule: mosaicRule
+          });
 
 
-            // Create a dictionary of imagery layers
-            const img_layer_dict = {
-                'nolayer-button-wrapper': null,
-                'landcover-button-wrapper': annual_landcover,
-                'landuse-button-wrapper': annual_landuse, 
-                'fastloss-button-wrapper': most_rec_year_fast_loss,
-                'gain-button-wrapper': most_rec_year_gain,
-                'slowloss-button-wrapper': most_rec_year_slow_loss,
-                'hi-prob-fastloss-button-wrapper': highest_prob_fast_loss,
-                'hi-prob-gain-button-wrapper': highest_prob_gain,
-                'hi-prob-slowloss-button-wrapper': highest_prob_slow_loss
-            };
+          // Create a dictionary of imagery layers
+          const img_layer_dict = {
+              'nolayer-button-wrapper': null,
+              'landcover-button-wrapper': annual_landcover,
+              'landuse-button-wrapper': annual_landuse, 
+              'fastloss-button-wrapper': most_rec_year_fast_loss,
+              'gain-button-wrapper': most_rec_year_gain,
+              'slowloss-button-wrapper': most_rec_year_slow_loss,
+              'hi-prob-fastloss-button-wrapper': highest_prob_fast_loss,
+              'hi-prob-gain-button-wrapper': highest_prob_gain,
+              'hi-prob-slowloss-button-wrapper': highest_prob_slow_loss
+          };
 
-            return img_layer_dict;
+          return img_layer_dict;
 
         }, 
 
