@@ -230,6 +230,7 @@ define([
         
               //Add new chart
               $(`#${out_div}`).append(`<canvas class = "chart" id="${chartID}"><canvas>`);
+             
               // $('#chartDiv').append('<hr>');
               //Set up chart object
               var chartJSChart = new Chart($(`#${chartID}`),{
@@ -239,9 +240,8 @@ define([
                 options:{
                   responsive: true,
                   maintainAspectRatio: true,
-                  aspectRatio: 1/0.6,
-                  devicePixelRatio:2, // improve resolution in output pdf
-
+                  aspectRatio: 1/0.5,
+                  devicePixelRatio:2, // improve resolution in output pdf                  
                    title: {
                         display: true,
                         position:'top',
@@ -249,9 +249,9 @@ define([
                         fontSize: 16
                     },
                     legend:{
-                      display:true,
+                      display:false,
                       position:'bottom',
-                      fontSize:6,
+                      fontSize:5,
                       labels : {
                         boxWidth:5,
                         usePointStyle: true
@@ -267,7 +267,21 @@ define([
                   }
                 });
 
-              };
+                $(`#${out_div}`).append(`<div class = "chart-legend" id="${chartID}-js-legend"><div>`);
+
+                document.getElementById(chartID+"-js-legend").innerHTML=chartJSChart.generateLegend();
+
+                
+                // $("#js-legend > ul > li").on("click",function(e){
+                //   var index = $(this).index();
+                //   $(this).toggleClass("strike")
+                //   var ci = e.view.chartJSChart;
+                //   var curr = ci.data.datasets[0]._meta[0].data[index];
+                //   curr.hidden = !curr.hidden
+                //   ci.update();
+                //   }) 
+
+              }; //NOTE: will need to add these to the PDF reports AND need to remove tick marks
             
             
 
@@ -284,6 +298,7 @@ define([
                     return;
                 }
                 ///////////////////////////////////////////////////////////////////////////////
+                
 
                 
 

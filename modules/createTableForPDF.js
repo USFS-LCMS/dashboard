@@ -22,6 +22,7 @@ define([
         for (let i=0; i<results[thisFC].features.length; i++){
 
             var years = results[thisFC].features[i].attributes["years"].split(",");
+            console.log(years)
             var fastLoss = results[thisFC].features[i].attributes["Change---Fast Loss"].split(",").map(f => parseFloat(f));
             var total = 0;
             for (var j=0; j<fastLoss.length; j++){
@@ -35,6 +36,9 @@ define([
             Area = String(Area).slice(0,9)
             body.push([objectID, forestName, Region, Area, meanFastLoss])
         }  
+
+
+        // edit this to iterate through the stats shown on the graphs and grab those dynamically..?
 
         return{
             head:head,
