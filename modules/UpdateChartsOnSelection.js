@@ -12,7 +12,7 @@ define([
 
         // Create a listener for the on-off dictionary to update charts on click.
         updateChartOnMetricSelection: function(on_off_dict) {
-            console.log("onoff: ")
+            console.log("oN-OFF DICT: ")
             console.log(on_off_dict);
             // Create a proxy object and listen for any change
             const targetProxy = new Proxy(on_off_dict, {
@@ -30,8 +30,7 @@ define([
             // Create checked elements updater function
             const checked_elems_update = () => {
                 // Create an array filled with the checked elements of the metric list
-                const checked_elements = $( ".layer-checkbox:checked" )
-                .map(function() {    
+                const checked_elements = $( ".layer-checkbox:checked" ).map(function() {    
                     // console.log(this.name+"is name");                                                                                                                                               
                     return this.name;
                 }).get()
@@ -42,25 +41,50 @@ define([
                 Object.keys(targetProxy).forEach((in_type) => { 
                     var selectAll=false;
                     // iterate through 3 chart types (change, land cover, land use)
-                    if (checked_elements.indexOf(`${in_type}---Select All`) != -1){                       
+                    if (checked_elements.indexOf(`${in_type}---Select All`) != -1){  
+                        //if selectALl is checked, set it to true so that all other boxes will get checked                     
                         selectAll=true;
                         
                     }
+                    
+                    
                     $.map($(`#${in_type}-lcms-metric-selection-items > div`), div => {
-                        // iterate through different metrics
-
                         // Get the subclass name 
                         const subtype_name = div.getAttribute('name');
-                        // Assign subtype name to checked elements. 
-                        if ( checked_elements.indexOf(subtype_name) === -1 && selectAll===false) {
-                            targetProxy[in_type][div.getAttribute('name')] = false
+                        if (subtype_name.includes("Select All")){
+                            console.log("skip select all")
+
+                        }else{
+                            // iterate through different metrics
+
+                            
+                            // Assign subtype name to checked elements. 
+                            if ( checked_elements.indexOf(subtype_name) === -1) {// && selectAll===false
+                                //if the checkbox of iterested (e.g. subtype_name) isn't checked and select all button isnt checked, then the item is false/unchecked
+                                targetProxy[in_type][div.getAttribute('name')] = false
+                                // console.log("THIS IS WHAT?????????:"+div.getAttribute('name'))
+                                
+                                // targetProxy[in_type][`${in_type}---Select All`] = false
+                                
+
+                            }
+                            // else if(checked_elements.indexOf(subtype_name) === -1 && selectAll===true){
+                            //     //if checkbox is unchecked and select all is checked=> need to uncheck both boxes
+                            //     selectAll=false
+                            //     targetProxy[in_type][`${in_type}---Select All`] = false
+                            //     targetProxy[in_type][div.getAttribute('name')] = false
+
+                            // }
+                            else {
+                                //else if the box of interest or select all is checked, then the elem is true
+                                //replace spaces in 
+                                var t_nospace = subtype_name.replace(/[^A-Z0-9]+/ig, "_").replace("Change_","").replace("Land_Cover_","").replace("Land_Use_","");
+                                document.getElementById(`${in_type}-${t_nospace}-checkbox-select`).checked=true;
+                                targetProxy[in_type][div.getAttribute('name')] = true
+                            }
+
                         }
-                        else {
-                            //replace spaces in 
-                            var t_nospace = subtype_name.replace(/[^A-Z0-9]+/ig, "_").replace("Change_","").replace("Land_Cover_","").replace("Land_Use_","");
-                            document.getElementById(`${in_type}-${t_nospace}-checkbox-select`).checked=true;
-                            targetProxy[in_type][div.getAttribute('name')] = true
-                        }
+                        
                         
                     })
                 });
@@ -81,8 +105,40 @@ define([
                 
                 checked_elems_update()
                 
-                console.log(on_off_dict);
+                // console.log(on_off_dict);
             }));
+
+            // Object.keys(targetProxy).forEach((in_type) => { 
+
+            // $(`${in_type}---Select All`).on('click', (()=>{
+            $(`Change---Select All-checkbox-wrapper`).on('click', (()=>{
+
+            
+            // click(function(event) {   
+                console.log("select all CLICKED!!!!!!!!!!!")
+                if (document.getElementById(`${in_type}---Select_All-checkbox-select`).checked){
+                    $.map($(`#${in_type}-lcms-metric-selection-items > div`), div => {
+                        document.getElementById(`${in_type}-${t_nospace}-checkbox-select`).checked=true;
+                    })
+                }else{
+                    $.map($(`#${in_type}-lcms-metric-selection-items > div`), div => {
+                        document.getElementById(`${in_type}-${t_nospace}-checkbox-select`).checked=false;    
+                    })
+                        
+                }
+                
+                // if(this.checked) {
+                //     // Iterate each checkbox
+                //     $(':checkbox').each(function() {
+                //         this.checked = true;                        
+                //     });
+                // } else {
+                //     $(':checkbox').each(function() {
+                //         this.checked = false;                       
+                //     });
+                // }
+            })); 
+        // });
 
 
         }

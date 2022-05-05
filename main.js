@@ -265,18 +265,48 @@ require([
     var thisDict={};
     var extentDict={};
 
-
-    const refreshButton = document.getElementById('refresh_graphs');
-    refreshButton.addEventListener('click', () => {
+    function refreshFunc() {
+      // $('#side-chart-canvas-container').innerHTML = '';    
       if (Object.keys(resultsDict).length==0){
-        charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-        charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
+        console.log('results_dict= length 0')
+        console.log(Object.keys(thisDict))
+
+        Object.keys(featureDict).forEach((ft) =>{  
+          console.log("FEATDICT FT:"+ft)
+          //for each feature that has been checked on(which happens when teh checkbox is clicked)
+        //query the feature class by the view extent
+        
+          featureDict[ft].queryFeatures({
+            geometry: view.extent,
+            returnGeometry:true
+          }).then((results =>{
+            console.log("HAS BEEN queried")
+            if(results.features.length>0){
+              if (radio_button_layer_dict[ft]['is_visible']  ===true){
+                console.log("(7) TRUEEE")                             
+                thisDict[ft]=results
+              }
+            }
+            // return 0
+          }))
+        })
+          charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+          charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
+      
       }else{
+        console.log('resultsdict length >0!!!!!!')
         charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
         charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, resultsDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type); 
       
       }
+    }
+    const refreshButton = document.getElementById('refresh_graphs');
+    refreshButton.addEventListener('click', () => {
+      refreshFunc();      
     })
+
+   
+
 
 
     // Call the user selection listener for results dict
@@ -345,6 +375,7 @@ require([
             featureDict[r]= layer;
             highlight=null;
             console.log("checkbox is checked")
+            console.log(Object.keys(featureDict));
             
 
             // Add in a spinner below
@@ -401,10 +432,70 @@ require([
       // Make sure chart updates when click event happens on layer selection buttons
 
       $('.check-button-wrapper').on('click', () => {
-        thisDict={}
-        // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
-        // charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+        
+        console.log("1.ANOTHER FEATURE SET HAS BEEN CLICKED")
+        refreshFunc();  
+        // thisDict={}
+        // if ( Object.keys(resultsDict).length !=0){
+        //   //if there are some selected objects, do nothing, but reset thisDict
+        //   console.log("results dict NOT 0 ")          
+        // }else{
+
+        // }
       })
+          // console.log("2.feature dict keus:")
+          // console.log(Object.keys(featureDict))
+          // Object.keys(featureDict).forEach((ft) =>{  
+          //   //seems to first iterate through this, 
+          //   console.log("4.And this ft:"+ft)
+          //   console.log(featureDict[ft]);
+          //   // console.log("another feature");
+          //   featureDict[ft].queryFeatures({
+          //       geometry: view.extent,
+          //       returnGeometry: true
+          //   }).then( (results) => {  
+          //     //then iterate through this            
+          //     console.log("5.How many feats in view:"+results.features.length);              
+          //     if(results.features.length>0){
+          //       if (Object.keys(resultsDict).length==0){
+          //         //i.e. if user hasnt selected any features
+          //         // Temporarily clear all side chart divs  
+          //         $('#side-chart-canvas-container').innerHTML = '';                                                         
+          //         charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);                  
+          //         // Object.keys(radio_button_layer_dict).forEach((k)=>{
+          //         //   //all the results are being set teh saem!!!!
+          //         //   if (radio_button_layer_dict[k]['is_visible']  ===true){
+          //         //     thisDict[k]=results
+          //         //   }
+          //         // });
+          //         console.log(ft+'is wrapper (6)')
+          //         if (radio_button_layer_dict[ft]['is_visible']  ===true){
+          //           console.log("(7) TRUEEE")
+          //           thisDict[ft]=results
+          //         }
+          //         console.log("8.thisDICT RESULTS:")
+          //         console.log(thisDict)
+          //         console.log(Object.keys(thisDict).length)
+          //         console.log("11.IS LENGTH")
+          //         console.log(radio_button_layer_dict)
+          //         charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
+
+      //           }
+      //             // Call function below
+      //             // console.log(metric_button.on_off_dict)
+      //             // ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+      //             // $('.checkbox-wrapper').on('click', (() => {
+      //             //   ['Change','Land_Cover','Land_Use'].map((w) => empty_chart.setContentInfo(results,w,"side-chart", on_off_dict));
+      //             // } ))
+                  
+      //         }
+      //     });
+      //   });
+
+      //   }      
+      //   // charts_for_vis_layers.toggleVisibleLayersDict('layer-check-button', radio_button_layer_dict);
+      //   // charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, view.extent, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year']);
+      // })
 
 
       // Below, watch for movement of map and update charts based on visible features.
@@ -427,9 +518,9 @@ require([
                       // console.log(on_off_dict)
                       thisDict={}
                                     
-                      Object.values(featureDict).forEach((ft) =>{  
+                      Object.keys(featureDict).forEach((ft) =>{  
                         // console.log("another feature");
-                      ft.queryFeatures({
+                        featureDict[ft].queryFeatures({
                           geometry: view.extent,
                           returnGeometry: true
                       }).then( (results) => {
@@ -450,11 +541,11 @@ require([
 
                               
                               console.log("results.features.len"+results.features.length)
-                              Object.keys(radio_button_layer_dict).forEach((k)=>{
-                                if (radio_button_layer_dict[k]['is_visible']  ===true){
-                                  thisDict[k]=results
+                              // Object.keys(radio_button_layer_dict).forEach((k)=>{
+                                if (radio_button_layer_dict[ft]['is_visible']  ===true){
+                                  thisDict[ft]=results
                                 }
-                              });
+                              // });
 
                               charts_for_vis_layers.makeVisibleLayerCharts(radio_button_layer_dict, thisDict, 'side-chart-canvas-container', on_off_dict, analysis_years['start_year'], analysis_years['end_year'], area_type);
                             }
