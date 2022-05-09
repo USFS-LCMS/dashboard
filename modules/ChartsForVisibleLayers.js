@@ -150,7 +150,7 @@ define([
                 const chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
 
                 
-                console.log("WWWWW", chartFormatDict[area_type])
+                // console.log("WWWWW", chartFormatDict[area_type])
 
                 const chartFormat = area_type;
 
@@ -293,8 +293,13 @@ define([
                 - fieldNames -> A list of field names in the format ["Change---Fast Loss", "Land_Cover---Trees", "Land_Use---Agriculture", ... , etc]
                 The function will create a new chart div, containing three charts, for each  layer visible (assuming that metrics are selected for each chart's metric class).
                 */
+            //    console.log("INDEX RE DICT" +resultsDict.(in_layer));
 
-                if (layers_dict[in_layer]['is_visible'] === false) {
+
+            // error is that somehow in_layer is not getting into the results dictionary properly
+
+                if (layers_dict[in_layer]['is_visible'] === false || !(in_layer in resultsDict) ){
+                    console.log(in_layer+" is not in resutlsdict")
                     return;
                 }
                 ///////////////////////////////////////////////////////////////////////////////
@@ -340,13 +345,17 @@ define([
                         // console.log(resultsDict)
                         //Object.keys(resultsDict).forEach((k) => {
 
-                            console.log(in_layer+" is now charting...")
+                            // console.log(in_layer+" is now charting...")
+                            // console.log(resultsDict)
+                            console.log("in_layer")
+                            console.log(in_layer);
                             console.log(resultsDict)
+                            console.log("IS RES DICT IN CHARTS")
                             var results = resultsDict[in_layer]//resultsDict[k]//curr_layer//layers_dict[in_layer];
-                            console.log(results);
+                            // console.log(results);
                            
                             if(results.features.length > 0) {
-                                console.log('more than one result: YES')
+                                // console.log('more than one result: YES')
 
 
                                 setContentInfo(results, which_one, outer_chart_div_id, in_layer, class_fieldNames, area_type);
