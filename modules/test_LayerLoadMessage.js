@@ -1,8 +1,7 @@
 define([
     "dojo/_base/declare"
 ], function(
-    declare,
-    ToggleSidebar
+    declare
     ){
  
     return declare(null,{

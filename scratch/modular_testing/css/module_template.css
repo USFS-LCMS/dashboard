@@ -427,8 +427,18 @@ input[type="checkbox"]+label {
   color: white;
 }
 
+#span_popup_main{
+  cursor: pointer;
+  color:#00BFA5;
+}
+
+.infomodal_link{
+  color:black;
+}
+
+
 .action-button {
-  padding: 0.6em;
+  padding: 0.3em;
   border: 1px solid  rgb(8,124,124);
   text-align: center;
   background-color: rgb(8,124,124);
@@ -451,7 +461,7 @@ input[type="checkbox"]+label {
 }
 
 #side-chart {
-  width: 30%;
+  width: 28%;
   overflow-y: auto;
 }
 
@@ -650,6 +660,21 @@ input[type="checkbox"]+label {
   cursor: pointer;
 }
 
+.instructions_modal{ 
+
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  
+}
+
 #span_popup_graph{  
   /* info button modal to explain graphs in right panel
   position: relative;
@@ -657,10 +682,11 @@ input[type="checkbox"]+label {
   left:190px; */
   float: right;
   position: relative;
-  bottom: -25px;
+  bottom: -48px;
   margin-right: 6px;
 
 }
+
   
 
   /* end of modal */
@@ -793,3 +819,55 @@ float:center;
   top: 200px;
   left: 15px;
 } */
+
+/* unordered list has no bullet points/markers in the chart legend*/
+.chart-legend ul{
+  list-style-type:none;
+}
+
+.chart-legend li span{
+  /* display: inline-block; */
+  display:inline-flex;
+  width: 12px;
+  height: 10px;
+  margin:0px 4px 0px 0px;
+/*  
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+   */
+}
+
+.chart-legend{
+  /* -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; */
+  font-family:Arial, Helvetica, sans-serif;
+  /* 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; */
+  font-size: 10px;
+  background-color: #e0e2d4;
+  /* #D6D1CA; */
+  color:#7e7e7e;
+  padding: 0px;
+  margin: 0px;
+  float:left;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  border-style: solid;
+  border-color: grey;
+  border-width: 0px 0px 1px 0px;
+  /* height:250px;
+overflow:auto;*/
+}
+
+/* #change-legend-canvas, #land_cover-legend-canvas, #land_use-legend-canvas */
+.legendCanvas{
+  display:none;
+  border-style: hidden;
+  border-width: 0;
+  background-color: white;
+}
+
+

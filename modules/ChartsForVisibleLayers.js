@@ -106,7 +106,7 @@ define([
         },
 
         // Create a way to take the dictionary and iterate over, making divs and charts
-        makeVisibleLayerCharts: function(layers_dict, resultsDict, outer_chart_div_id, toggled_elems, startYear, endYear) {
+        makeVisibleLayerCharts: function(layers_dict, resultsDict, outer_chart_div_id, toggled_elems, startYear, endYear, area_type) {
             /*
             This function makes charts for each visible layer. 
             */
@@ -123,25 +123,14 @@ define([
             }
 
 
-            function setContentInfo(results,whichOne, out_div, in_layer, fieldNames){
-
-
-                var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
-                    'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
-                    'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
-
-                var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
-                'Land_Cover':["Trees",
-    "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
-                'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
-                }
+            function setContentInfo(results,whichOne, out_div, in_layer, fieldNames, area_type){
 
                 const color_name_dict = {
                     'Change': {'Slow Loss': '#f39268', 'Fast Loss': '#d54309', 'Gain': '#00a398', 'Non-Processing Area Mask': '#1B1716'},
                     'Land_Cover': {'Trees': '#005e00', 'Tall Shrubs & Trees Mix': '#008000', 'Shrubs & Trees Mix': '#00cc00', 'Grass/Forb/Herb & Trees Mix': '#b3ff1a', 'Barren & Trees Mix': '#99ff99', 'Tall Shrubs': '#b30088',  'Shrubs': '#e68a00', 'Grass/Forb/Herb & Shrubs Mix': '#ffad33',
                     'Barren & Shrubs Mix': '#ffe0b3', 'Grass/Forb/Herb': '#ffff00', 'Barren & Grass/Forb/Herb Mix': '#AA7700', 'Barren or Impervious': '#d3bf9b', 'Snow or Ice': '#808080', 'Water': '#4780f3', 'Non-Processing Area Mask': '#1B1716'},
                     'Land_Use': {'Agriculture': '#efff6b', 'Developed': '#ff2ff8', 'Forest': '#1b9d0c', 'Non-Forest Wetland': '#97ffff', 'Other': '#a1a1a1', 'Rangeland or Pasture': '#c2b34a', 'Non-Processing Area Mask': '#1B1716'}
-                  }
+                }
         
                 var stacked = false;
                 // var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
@@ -157,9 +146,14 @@ define([
                 ///////////////////////////////////////////////////////////////////////
                 //Iterate across each field name and add up totals 
                 //First get 2-d array of all areas for each then sum the columns and divide by total area
-                // var startYear = 2005;
-                // var endYear = 2015;
-                console.log("Field Names: ", fieldNames);
+                
+                const chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
+
+                
+                // console.log("WWWWW", chartFormatDict[area_type])
+
+                const chartFormat = area_type;
+
                 var t = fieldNames.map(function(k){
                   var total_area = 0;
                   var total = [];
@@ -171,24 +165,25 @@ define([
                   results.features.map(function(f){
                     
                     try{
+
+                        const scale = f.attributes.scale;
                         
-                      years = f.attributes.years.split(',');
-                      var startI = years.indexOf(startYear.toString());
-                      
-                      var endI = years.indexOf((endYear+1).toString());
-                      years = years.slice(startI,endI);
-                      total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)));
-                      var total_areaF = parseFloat(f.attributes['total_area']);
-                      total_area = total_area + total_areaF;
+                        years = f.attributes.years.split(',');
+                        var startI = years.indexOf(startYear.toString());
+                        
+                        var endI = years.indexOf((endYear+1).toString());
+                        years = years.slice(startI,endI);
+                        total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n) * scale**2 ));
+                        var total_areaF = parseFloat(f.attributes['total_area']);
+                        total_area = total_area + total_areaF;
                     }catch(err){
                       console.log('No LCMS summary for: '+f.attributes['outID']);
                     }
                     
                    })
-
                    
                   
-                   //some error here:
+                  //some error here:
                   var colSums = [];
                   for(var col = 0;col < total[0].length;col++){
                     var colSum = 0;
@@ -197,6 +192,13 @@ define([
                     }
                     colSums.push(colSum);
                   };
+
+                  //Convert from sq m to chosen area unit
+                if(chartFormat === 'Percentage'){
+                    colSums = colSums.map((n)=>n/total_area*100);
+                }else{
+                    colSums = colSums.map((n)=>n*chartFormatDict[chartFormat]['mult']);
+                }
 
                   //Convert back to pct
                   colSums = colSums.map((n)=>n/total_area*100);
@@ -227,6 +229,7 @@ define([
         
               //Add new chart
               $(`#${out_div}`).append(`<canvas class = "chart" id="${chartID}"><canvas>`);
+             
               // $('#chartDiv').append('<hr>');
               //Set up chart object
               var chartJSChart = new Chart($(`#${chartID}`),{
@@ -236,9 +239,8 @@ define([
                 options:{
                   responsive: true,
                   maintainAspectRatio: true,
-                  aspectRatio: 1/0.6,
-                  devicePixelRatio:2, // improve resolution in output pdf
-
+                  aspectRatio: 1/0.5,
+                  devicePixelRatio:2, // improve resolution in output pdf                  
                    title: {
                         display: true,
                         position:'top',
@@ -246,9 +248,9 @@ define([
                         fontSize: 16
                     },
                     legend:{
-                      display:true,
+                      display:false,
                       position:'bottom',
-                      fontSize:6,
+                      fontSize:5,
                       labels : {
                         boxWidth:5,
                         usePointStyle: true
@@ -258,13 +260,38 @@ define([
                         backgroundColor: '#D6D1CA'
                     },
                     scales: {
-                      yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'% Area'}}],
+                      yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString: chartFormatDict[chartFormat].label}}],
                       xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
                     }
                   }
                 });
-              // $(`#${chartID}`).height(350);
-              };
+
+                $(`#${out_div}`).append(`<div class = "chart-legend" id="${chartID}-js-legend"><div>`);
+                
+
+                const legend_div2 = document.getElementById(chartID+"-js-legend");
+                legend_div2.innerHTML=chartJSChart.generateLegend();  
+                
+                // convert legend_div2 to canvas element and set id (only canvas elements can be added as image to pdf)
+                //note that this will be hidden ultimately
+                html2canvas(document.getElementById(`${chartID}-js-legend`)).then(canvas => {                
+                    legend_div2.appendChild(canvas);
+                    canvas.id=`${chartID}-legend-canvas`//"land_cover-legend-canvas";
+                    canvas.className += " legendCanvas";
+                });
+
+                
+                // $("#js-legend > ul > li").on("click",function(e){
+                //   var index = $(this).index();
+                //   $(this).toggleClass("strike")
+                //   var ci = e.view.chartJSChart;
+                //   var curr = ci.data.datasets[0]._meta[0].data[index];
+                //   curr.hidden = !curr.hidden
+                //   ci.update();
+                //   }) 
+
+              }; //NOTE: will need to add these to the PDF reports AND need to remove tick marks
+            
             
 
             const chart_one_metric = (which_one, in_layer, fieldNames, layers_dict, outer_chart_div_id) => {
@@ -275,11 +302,17 @@ define([
                 - fieldNames -> A list of field names in the format ["Change---Fast Loss", "Land_Cover---Trees", "Land_Use---Agriculture", ... , etc]
                 The function will create a new chart div, containing three charts, for each  layer visible (assuming that metrics are selected for each chart's metric class).
                 */
+            //    console.log("INDEX RE DICT" +resultsDict.(in_layer));
 
-                if (layers_dict[in_layer]['is_visible'] === false) {
+
+            // error is that somehow in_layer is not getting into the results dictionary properly
+
+                if (layers_dict[in_layer]['is_visible'] === false || !(in_layer in resultsDict) ){
+                    console.log(in_layer+" is not in resutlsdict")
                     return;
                 }
                 ///////////////////////////////////////////////////////////////////////////////
+                
 
                 
 
@@ -321,16 +354,20 @@ define([
                         // console.log(resultsDict)
                         //Object.keys(resultsDict).forEach((k) => {
 
-                            console.log(in_layer+" is now charting...")
+                            // console.log(in_layer+" is now charting...")
+                            // console.log(resultsDict)
+                            console.log("in_layer")
+                            console.log(in_layer);
                             console.log(resultsDict)
+                            console.log("IS RES DICT IN CHARTS")
                             var results = resultsDict[in_layer]//resultsDict[k]//curr_layer//layers_dict[in_layer];
-                            console.log(results);
+                            // console.log(results);
                            
                             if(results.features.length > 0) {
-                                console.log('more than one result: YES')
+                                // console.log('more than one result: YES')
 
 
-                                setContentInfo(results, which_one, outer_chart_div_id, in_layer, class_fieldNames);
+                                setContentInfo(results, which_one, outer_chart_div_id, in_layer, class_fieldNames, area_type);
 
 
                                 // // append a chart - attempt new chart here.
