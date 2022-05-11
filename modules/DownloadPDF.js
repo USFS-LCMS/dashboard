@@ -1,3 +1,13 @@
+var reportTemplate = {
+    'null':{
+        'executive_summary': ['Within the selected areas','a excecutive summary'],
+        'lcms-intro':['LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. LCMS provides a “best available” map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.','LCMS produces annual maps depicting change (vegetation loss and vegetation gain), land cover, and land use from 1985 to present that can be used to assist with a wide range of land management applications. With the help of Regional and National Forest staffs we have identified many applications of LCMS data, including forest planning and revision, updating existing vegetation maps, assessing landscape conditions, supporting post-fire recovery, and meeting some broad-scale monitoring requirements.'],
+        'lcms-data-product-descriptions':['Change is blah','Land Cover is blah','Land Use is blah'],
+        'appendix':['See this for more info: some link']
+    }
+
+
+}
 
 define([
     "dojo/_base/declare",
@@ -105,6 +115,7 @@ define([
             currentY+=7
             doc.text(margin+widthPng, currentY, "U.S. DEPARTMENT OF AGRICULTURE");
             currentY+=5
+
             
             doc.line(margin/2,currentY,w-margin/2,currentY)//x,y,w,h
             currentY+=5
@@ -175,13 +186,22 @@ define([
             Object.keys(results).map((fc)=>{
                 doc.text(margin*2, currentY, radio_button_layer_name_dict[fc]);//+ ' '+objectID+',') 
                 currentY+=5
-            });             
+            });         
+            
+            doc.line(margin,currentY,w-margin,currentY)    
+            currentY+=2;
+
+            doc.setFontSize(16)
+            doc.setTextColor(0,0,0);
+            currentY+= blockHeight
+            doc.text(margin, currentY, "Executive Summary:");
+
             // doc.text(margin*2, currentY,forestName )     
             doc.setFont("Times",'Roman');       
             doc.setFontSize(12);
             doc.setTextColor(0,0,0);
             currentY+=6//blockHeight+3;
-            var wrapParagraph = doc.splitTextToSize("This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc. This is a paragraph describing the question of interest. etc. etc.",180);
+            var wrapParagraph = doc.splitTextToSize(reportTemplate['null'].executive_summary.join('\n\n'),180);
             doc.text(margin, currentY, wrapParagraph);
             var lineHeight = doc.getLineHeight("The ") / doc.internal.scaleFactor
             var lines = wrapParagraph.length  // splitted text is a string array
@@ -369,7 +389,7 @@ define([
                 doc.text(pageCurrent,w-margin-pageCurrent.length, h-margin);
             }
             console.log(pageCount+" is pg cnt")
-            console.log(`output pdf ${doc}`)
+            console.log(`output pdf ${outFilename}`)
 
 
             doc.save(outFilename+'.pdf');//,{returnPromise:true}).then(alert('PDF render all done!'));

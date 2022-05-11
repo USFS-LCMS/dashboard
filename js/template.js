@@ -52,6 +52,7 @@ var downloadPDF;
 var viewWatched = false;
 var stillComputing = false;
 var pastExtent;
+$('.lcms-icon').addClass('fa-spin');
 ///////////////////////////////////////////////////////////////////////
 // Function to authenticate to GEE and run it when ready
  function initialize(){
@@ -154,8 +155,8 @@ require([
                  'ec7014', 'cc4c02'];
       var gainYearPalette = ['c5ee93', '00a398'];
       var startYear = 1985;
-      var endYear = 2020;
-      var lcms_output_collections = ['USFS/GTAC/LCMS/v2020-6','USFS/GTAC/LCMS/v2020-5'];//'projects/lcms-292214/assets/Final_Outputs/2021-7/LCMS'];
+      var endYear = 2021;
+      var lcms_output_collections = ['USFS/GTAC/LCMS/v2020-6','USFS/GTAC/LCMS/v2021-7'];//'projects/lcms-292214/assets/Final_Outputs/2021-7/LCMS'];
       var lcms_output = ee.ImageCollection(ee.FeatureCollection(lcms_output_collections.map((c)=>ee.ImageCollection(c))).flatten());
       var change = lcms_output.select(['Change']);
       // Convert to year collection for a given code.
@@ -184,9 +185,9 @@ require([
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
             color: [ 75, 75, 75, 0.3 ],
             outline: {  // autocasts as new SimpleLineSymbol()
-              width: 1.3,
-              // color: '#1B1716',
-              color:'#00897B'
+              width: 0.8,
+              // color:'#00897B'
+              color:[ 0, 137, 123, 0.8 ]
             }
           }
         };
@@ -209,22 +210,27 @@ require([
           }
         };
     ///////////////////////////////////////////////////////////////////////
+    const geojsonPath = 'https://storage.googleapis.com/lcms-dashboard/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojson';
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
-      // url: './geojson/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
-      url:'https://storage.googleapis.com/lcms-dashboard/LCMS-Summaries_Terrestrial-ChugachNationalForestHUC6-outID_compressed.geojson',
+      // url: './geojson/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson',
+      url:geojsonPath,
       title:"Summary Areas",
       copyright: "USDA USFS GTAC",
       // popupTemplate: template,
       legendEnabled:true,
       renderer: renderer, //optional
-      labelingInfo: [labelClass]
+      // labelingInfo: [labelClass]
     });
+
+    
     // Set up the map object
     var map = new Map({
       basemap: "hybrid",
       layers: [geojsonLayer]
     });
+
+    
     // Set up the view
     var view = new MapView({
       container: "viewDiv",
@@ -242,7 +248,14 @@ require([
     ///////////////////////////////////////////////////////////////////////
     // Once the view is loaded, do this
     view.when(()=>{
+
+
       resizeWindow();
+
+      if(localStorage.initView !== undefined && localStorage.initView !== null && localStorage.initView !== 'null'){
+          view.goTo(JSON.parse(localStorage.initView));
+        }
+
       // Range function taken from: https://dev.to/ycmjason/how-to-create-range-in-javascript-539i
       function range(start, end) {
           if(start === end) return [start];
@@ -284,6 +297,8 @@ require([
       }
       pastExtent = view.extent;
        view.watch('extent',function(evt){
+        localStorage.initView = JSON.stringify({center:[view.center.longitude,view.center.latitude],zoom:view.zoom})
+        
         if(!stillComputing){
           viewWatched = true;
           $('.lcms-icon').addClass('fa-spin');
@@ -301,7 +316,7 @@ require([
                   console.log(results.features.length);
                  stillComputing = true;
                 if(results.features.length>0){
-                    results.features = results.features.slice(0,800) // Limit total results possible
+                    results.features = results.features;//.slice(0,800) // Limit total results possible
                    updateSelectionList(results.features);
                    chartWhich.map((w) => setContentInfo(results,w));
                    $('.lcms-icon').removeClass('fa-spin');
@@ -314,15 +329,14 @@ require([
 
                 });
             }
-          },1000);
+          },1500);
         }
       })
       ///////////////////////////////////////////////////////////////////////
       // Listening for map clicks is easier
       view.on("click", (e) => {
         query.geometry = e.mapPoint;
-        console.log(e.mapPoint)
-        
+       
         geojsonLayer.queryFeatures(query).then((results) =>{
      
           console.log(results.features.length);
@@ -394,7 +408,6 @@ require([
       });
       // Function to tabulate results and create graphs
       function setContentInfo(results,whichOne){
-        
         var stacked= false;
         var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
         var chartID = 'chart-canvas-'+whichOne
@@ -405,28 +418,34 @@ require([
           var area_names = results.features.map((f)=>f.attributes[titleField]).join(', ');
         }
         
-        console.log(area_names)
+        
         var name =area_names + ' - '+whichOne.replace('_',' ');
         ///////////////////////////////////////////////////////////////////////
         //Iterate across each field name and add up totals 
         //First get 2-d array of all areas for each then sum the columns and divide by total area
-        var startYear = 2005;
-        var endYear = 2015;
+        var startYear = 1985;
+        var endYear = 2021;
 
         var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
         var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
         var showPairwiseDiff = false;
+
+        var t1 = new Date();
+        var years = results.features[0].attributes.years.split(',');
+        var startI = years.indexOf(startYear.toString());
+        var endI = years.indexOf((endYear).toString())+1;
+        years = years.slice(startI,endI);
+
         var t = fieldNames.map(function(k){
           var total_area = 0;
           var total = [];
+
+
           results.features.map(function(f){
-            
+            // console.log(f.attributes)
             try{
               var scale = f.attributes.scale;
-              years = f.attributes.years.split(',');
-              var startI = years.indexOf(startYear.toString());
-              var endI = years.indexOf((endYear+1).toString());
-              years = years.slice(startI,endI);
+              
               total.push(f.attributes[k].split(',').slice(startI,endI).map(n => parseFloat(n)*scale**2));
               var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
               total_area = total_area + total_areaF*scale**2;
@@ -525,8 +544,11 @@ require([
             }
           }
         });
+      var t2 = new Date();
+      console.log(whichOne);console.log((t2-t1)/1000)
       // $(`#${chartID}`).height(350);
       };
+
     })
     ///////////////////////////////////////////////////////////////////////
     //Set up map widgets
@@ -648,7 +670,11 @@ require([
       // Zoom map to the extent of the geojson layer
       geojsonLayer.when(()=>{
         console.log('setting extent');
-        view.extent = geojsonLayer.fullExtent;
+        if(localStorage.initView === undefined || localStorage.initView === null || localStorage.initView === 'null'){
+          view.extent = geojsonLayer.fullExtent;
+        }
+        
+        
       });
 });
 

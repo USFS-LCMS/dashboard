@@ -143,7 +143,7 @@ define([
                     'Land_Use': {'Agriculture': '#efff6b', 'Developed': '#ff2ff8', 'Forest': '#1b9d0c', 'Non-Forest Wetland': '#97ffff', 'Other': '#a1a1a1', 'Rangeland or Pasture': '#c2b34a', 'Non-Processing Area Mask': '#1B1716'}
                   }
         
-                var stacked = true;
+                var stacked = false;
                 // var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
                 var chartID = 'chart-canvas-'+whichOne+'-'+in_layer
                 var colorsI = 0;
@@ -203,7 +203,6 @@ define([
                   ///////////////////////////////////////////////////////////////////////
                   //Set up chart object
                     var out = {'borderColor': metric_color,
-                    'fill':false,
                     'data':colSums,
                     'label':k.split('---')[1],
                     pointStyle: 'line',
