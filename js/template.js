@@ -216,8 +216,8 @@ require([
           }
         };
     ///////////////////////////////////////////////////////////////////////
-    // const geojsonPath = 'https://staging-data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojsonn';
-    const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson';
+    const geojsonPath = 'https://storage.googleapis.com/lcms-dashboard/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojson';
+    // const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson';
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
      
