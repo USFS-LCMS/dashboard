@@ -276,43 +276,105 @@ define([
                 //current error: background on whichever chart is first is black
                 currentY +=5;// currentY+ chartH + margin;
                 chartW = w - margin*2;
+
+                ////////////////////////////////////// Add 1st Figure /////////////////////////////////
                 
-                const canvas = document.getElementById("chart-canvas-Change-"+thisFC); //should work if thisFC= something like: chugach-lrg-hex-radio-wrapper
-                // console.log(document.querySelectorAll('*[id]')) //print all ids that you could possibly get within html
-                // console.log(document.querySelector('*[chart-canvas*]'))
-                chartHeight = canvas.height;
-                chartWidth = canvas.width;
+                
+                const canvas0 = document.getElementById("chart-canvas-Change-"+thisFC); //should work if thisFC= something like: chugach-lrg-hex-radio-wrapper
+                const legend_div= document.getElementById("chart-canvas-Change-"+thisFC+"-js-legend");
+                
+                chartHeight = canvas0.height;
+                chartWidth = canvas0.width;
                 aspectRatio = chartHeight/chartWidth;
                 chartH = chartW*aspectRatio;
 
                 // doc.setFillColor(204,204,204,0);
                 // doc.rect(margin,currentY,chartW, chartH)
 
+                //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
+                doc.addImage(canvas0.toDataURL("image/png", 1.0), 'PNG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+                
+                // doc.addImage(legend_div.toDataURL("image1/png", 1.0), 'PNG', margin, currentY, chartW, legendH ,{compresion:'NONE'});
+                // doc.addHTML($('#js-legend')[0], currentY,chartW,legendH)
+                // html2canvas(document.querySelector(`#chart-canvas-Change-${thisFC}-js-legend`)).then(canvas => {
+                //     // document.body.appendChild(canvas)
+                //     // document.createElement("test_legend");
+                //     legend_div.appendChild(canvas)
+                //     canvas.id="change-legend-canvas";
+                //     // legendHeight=canvas.height;
+                //     // legendWidth = canvas.width;
+                //     // console.log("LEGNED heihgt:"+legendHeight);
+                // });
+                currentY = currentY+ chartH ;//+ 6;
+                
+
+                var legendAspectRatio = legendHeight/legendWidth;
+                var legendH = chartW*legendAspectRatio;
+
+                // get legend CANVAS element
+                const legend_canvas_1 = document.getElementById("chart-canvas-Change-"+thisFC+"-legend-canvas");
+                // get legend height and width of legend div
+                var legendHeight = legend_canvas_1.height;
+                var legendWidth = legend_canvas_1.width;
+                var legendAspectRatio = legendHeight/legendWidth;
+                var legendH = chartW*legendAspectRatio;
+                console.log(legend_canvas_1);
+                //add legend canvas to document
+                doc.addImage(legend_canvas_1.toDataURL("image1/jpeg", 1.0), 'JPEG', margin, currentY, chartW, legendH,{compresion:'NONE'});
+                
+
+                currentY+=legendH +6;
+                console.log(currentY+" is currnt")
+                doc.text(margin, currentY, "Figure "+String(figNum)+". LCMS Change By Year");//fig1
+
+                ////////////////////////////////////// Add 2nd Figure /////////////////////////////////                
+
                 var addPageAfterChart2=false
-                if (currentY+chartH+margin >h){//threshold that should mean overflow of chart creates new page
+                if (currentY+margin >h){//threshold that should mean overflow of chart creates new page
                     doc.addPage();
                     currentY = 5
                     addPageAfterChart2=true //whether to add page break bw charts 1/2 or 2/3 (false = add break between chart 2 and 3)
                 }
 
-                //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
-                doc.addImage(canvas.toDataURL("image/png", 1.0), 'PNG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
-                currentY = currentY+ chartH + 6;
-                doc.text(margin, currentY, "Figure "+String(figNum)+". LCMS Change By Year");//fig1
-                figNum+=1
+                figNum+=1 //add figure number
                 if (addPageAfterChart2){
                     currentY+=6
                 }else{
-                    doc.addPage();
+                    doc.addPage(); //if page isn't added after first chart, add it after next chart
                     currentY = margin;//currentY+ chartH + 6;
                 }
-               
-                const canvas2 = document.getElementById("chart-canvas-Land_Cover-"+thisFC);//chart-change-div");//"chart-canvas");
+                // get canvas element of 2nd chart
+                const canvas2 = document.getElementById("chart-canvas-Land_Cover-"+thisFC);
+                //add canvas of graph to pdf doc
                 doc.addImage(canvas2.toDataURL("image2/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
-                currentY = currentY+ chartH + 6;
-                doc.text(margin, currentY, "Figure "+String(figNum)+". Land Cover Distribution Change Over Time");//fig 2
-                figNum+=1
+                
+                // get legend div 
+                const legend_div2= document.getElementById("chart-canvas-Land_Cover-"+thisFC+"-js-legend");
+                
+                // // convert legend_div2 to canvas element and set id (only canvas elements can be added as image to pdf)
+                // html2canvas(document.querySelector(`#chart-canvas-Land_Cover-${thisFC}-js-legend`)).then(canvas => {                    
+                //     legend_div2.appendChild(canvas);
+                //     canvas.id="land_cover-legend-canvas";
+                // });
 
+                
+                // track Y position on document (add height of chart and additional 6 to provide buffer)
+                currentY = currentY+ chartH// + 6;
+                // get legend CANVAS element
+                const legend_canvas_2 = document.getElementById("chart-canvas-Land_Cover-"+thisFC+"-legend-canvas");
+                // get legend height and width of legend div
+                var legendHeight2 = legend_canvas_2.height;
+                var legendAspectRatio2 = legendHeight2/legendWidth;
+                var legendH2 = chartW*legendAspectRatio2;
+                console.log(legend_canvas_2);
+                //add legend canvas to document
+                doc.addImage(legend_canvas_2.toDataURL("image3/jpeg", 1.0), 'JPEG', margin, currentY, chartW, legendH2 ,{compresion:'NONE'});
+                // add height of legend to Y tracking of page
+                currentY+=legendH2+6;
+                
+                doc.text(margin, currentY, "Figure "+String(figNum)+". Land Cover Distribution Change Over Time");//fig 2
+                figNum+=1;
+                ////////////////////////////////////// Add 3rd Figure /////////////////////////////////
                 
                  if (addPageAfterChart2){
                     doc.addPage();
@@ -321,12 +383,29 @@ define([
                     currentY +=6
                 }
                 const canvas3 = document.getElementById("chart-canvas-Land_Use-"+thisFC);//chart-change-div");//"chart-canvas");
-                doc.addImage(canvas3.toDataURL("image3/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
-                
+                doc.addImage(canvas3.toDataURL("image4/jpeg", 1.0), 'JPEG', margin, currentY, chartW, chartH ,{compresion:'NONE'});
+                const legend_div3 = document.getElementById("chart-canvas-Land_Use-"+thisFC+"-js-legend");
+                const legend_canvas_3 = document.getElementById("chart-canvas-Land_Use-"+thisFC+"-legend-canvas");
+               
+                var legendHeight3 = legend_canvas_3.height;
 
-                currentY = currentY+ chartH + 6;
+                // html2canvas(document.querySelector(`#chart-canvas-Land_Use-${thisFC}-js-legend`)).then(canvas => {                    
+                //     legend_div3.appendChild(canvas);
+                //     canvas.id="land_use-legend-canvas";
+                // });
+                var legendAspectRatio3 = legendHeight3/legendWidth;
+                var legendH3 = chartW*legendAspectRatio3;
+                currentY = currentY+ chartH;// + 6;
+                 doc.addImage(legend_canvas_3.toDataURL("image5/jpeg", 1.0), 'JPEG', margin, currentY, chartW, legendH3 ,{compresion:'NONE'});
+                
+                currentY+=legendH3+6;
+               
                 doc.text(margin, currentY, "Figure "+String(figNum)+". Change in Area of Different Land Use Types Over Time");
-                figNum+=1
+               
+
+                figNum+=1;
+                
+                
 
                 
             });

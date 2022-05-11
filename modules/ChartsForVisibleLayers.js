@@ -268,8 +268,18 @@ define([
                 });
 
                 $(`#${out_div}`).append(`<div class = "chart-legend" id="${chartID}-js-legend"><div>`);
+                
 
-                document.getElementById(chartID+"-js-legend").innerHTML=chartJSChart.generateLegend();
+                const legend_div2 = document.getElementById(chartID+"-js-legend");
+                legend_div2.innerHTML=chartJSChart.generateLegend();  
+                
+                // convert legend_div2 to canvas element and set id (only canvas elements can be added as image to pdf)
+                //note that this will be hidden ultimately
+                html2canvas(document.getElementById(`${chartID}-js-legend`)).then(canvas => {                
+                    legend_div2.appendChild(canvas);
+                    canvas.id=`${chartID}-legend-canvas`//"land_cover-legend-canvas";
+                    canvas.className += " legendCanvas";
+                });
 
                 
                 // $("#js-legend > ul > li").on("click",function(e){

@@ -862,4 +862,12 @@ float:center;
 overflow:auto;*/
 }
 
+/* #change-legend-canvas, #land_cover-legend-canvas, #land_use-legend-canvas */
+.legendCanvas{
+  display:none;
+  border-style: hidden;
+  border-width: 0;
+  background-color: white;
+}
+
 
