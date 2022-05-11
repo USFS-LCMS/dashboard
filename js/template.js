@@ -78,13 +78,19 @@ require([
     "esri/widgets/Popup",
     "esri/core/watchUtils",
     "esri/tasks/support/Query",
+    "esri/Color",
+    "esri/Graphic",
+    "esri/symbols/SimpleLineSymbol",
+    "esri/symbols/SimpleFillSymbol",
     "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js",
     "dojo/domReady!",
   ],
   function (esriConfig,Map, MapView, PopupTemplate, FeatureLayer, GeoJSONLayer,Expand,
         BasemapGallery,
         LayerList,
-        WebTileLayer,Popup,watchUtils, Query, Chart) {
+        WebTileLayer,Popup,watchUtils, Query, 
+        Color,Graphic,SimpleLineSymbol,SimpleFillSymbol,
+        Chart) {
     esriConfig.request.trustedServers.push("*");
     //Add in GEE support
     addLayer = function(eeImage,vizParams,name,visible){
@@ -183,11 +189,11 @@ require([
           type: "simple",  // autocasts as new SimpleRenderer()
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: [ 75, 75, 75, 0.3 ],
+            color: [ 75, 75, 75, 0.2 ],
             outline: {  // autocasts as new SimpleLineSymbol()
-              width: 0.8,
+              width: 0.5,
               // color:'#00897B'
-              color:[ 0, 137, 123, 0.8 ]
+              color:[ 0, 137, 123, 0.5 ]
             }
           }
         };
@@ -210,15 +216,17 @@ require([
           }
         };
     ///////////////////////////////////////////////////////////////////////
-    const geojsonPath = 'https://storage.googleapis.com/lcms-dashboard/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojson';
+    // const geojsonPath = 'https://staging-data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojsonn';
+    const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson';
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
-      // url: './geojson/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson',
+     
       url:geojsonPath,
       title:"Summary Areas",
       copyright: "USDA USFS GTAC",
       // popupTemplate: template,
       legendEnabled:true,
+      visible:true,
       renderer: renderer, //optional
       // labelingInfo: [labelClass]
     });
@@ -295,10 +303,15 @@ require([
           i++});
         
       }
+
+      // watchUtils.whenTrue(view, "stationary", () => {
+      //   console.log('its stationary');
+      // })
       pastExtent = view.extent;
-       view.watch('extent',function(evt){
+       // view.watch('extent',function(evt){
+        watchUtils.whenTrue(view, "stationary",function(evt){
         localStorage.initView = JSON.stringify({center:[view.center.longitude,view.center.latitude],zoom:view.zoom})
-        
+     
         if(!stillComputing){
           viewWatched = true;
           $('.lcms-icon').addClass('fa-spin');
@@ -317,6 +330,7 @@ require([
                  stillComputing = true;
                 if(results.features.length>0){
                     results.features = results.features;//.slice(0,800) // Limit total results possible
+                    highlightSelectedFeatures(results)
                    updateSelectionList(results.features);
                    chartWhich.map((w) => setContentInfo(results,w));
                    $('.lcms-icon').removeClass('fa-spin');
@@ -329,21 +343,39 @@ require([
 
                 });
             }
-          },1500);
+          },1000);
         }
       })
       ///////////////////////////////////////////////////////////////////////
+      function highlightSelectedFeatures(results){
+        view.graphics.removeAll(); // make sure to remmove previous highlighted feature
+            results.features.map(function(f){
+              var graphic = new Graphic(f.geometry, {
+                          type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+                          color: [ 75, 75, 75, 0.3 ],
+                          outline: {  // autocasts as new SimpleLineSymbol()
+                            width: 1.8,
+                            color:[ 0, 137, 123, 1 ]
+                          }
+                        });
+              view.graphics.add(graphic);
+            })
+      }
       // Listening for map clicks is easier
       view.on("click", (e) => {
         query.geometry = e.mapPoint;
        
         geojsonLayer.queryFeatures(query).then((results) =>{
-     
+    
           console.log(results.features.length);
           if(results.features.length>0){
             $('.lcms-icon').addClass('fa-spin');
+            
+            
+            console.log(results.features[0].geometry.type);
             updateSelectionList(results.features);
             chartWhich.map((w) => setContentInfo(results,w));
+            highlightSelectedFeatures(results);
             $('.lcms-icon').removeClass('fa-spin');
           }
          });
