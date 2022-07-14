@@ -10,7 +10,7 @@ html, body{
 button,input{color:#242424;background-color:#ACA199;}
 .entire{float:left;width:100%;height:70%;}
 .top{left:5%;top:15px;position:absolute;z-index:99;padding:2px;background-color:#242424;opacity:0.8;}
-.bottom{right:5px;bottom:5px;z-index:99;position:absolute;background-color: #242424}
+.bottom{left:5px;bottom:5px;z-index:99;position:absolute;background-color: #242424}
  
 .left,.right{
       width:10%;
@@ -28,7 +28,7 @@ img {
   vertical-align: baseline;
 }
 .chart{
-  height:400!important;
+  height:25rem!important;
 }
 #chartDiv{
   overflow-y: auto

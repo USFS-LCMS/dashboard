@@ -39,7 +39,7 @@ $(document).ready(function() {
 
 ///////////////////////////////////////////////////////////////////////
 //Set up GEE objects and variables
-var authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
+var authProxyAPIURL = "https://rcr-ee-proxy-3.herokuapp.com";
 var geeAPIURL = "https://earthengine.googleapis.com";
 var addLayer;var map;var view;
 var mapper = new Object();
@@ -53,6 +53,35 @@ var viewWatched = false;
 var stillComputing = false;
 var pastExtent;
 $('.lcms-icon').addClass('fa-spin');
+var startYear = 1985;
+var endYear = 2021;
+// var class_dict = {'Land_Cover':{
+//   {1:{'name':'Trees','color':'005e00'},
+//   2:{'name':'Tall Shrubs'},
+//   3:'Shrubs',4:'Grass/Forb/Herb',5:'Barren or Impervious',6:'Snow or Ice',7:'Water'}
+// },'Land_Use':{1:'Agriculture', 2:'Developed', 3:'Forest', 4:'Non-Forest Wetland', 5:'Other', 6:'Rangeland or Pasture'}
+
+
+var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
+var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
+var showPairwiseDiff = false;
+var annualOrTransition = 'transition';
+
+var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
+                    'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
+                    'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
+var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
+            'Land_Cover':["Trees",
+"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
+            'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
+            }
+var titleField = 'outID';
+var chartWhich = ['Change','Land_Cover','Land_Use'];
+if(annualOrTransition === 'transition'){
+  chartWhich = ['Land_Cover','Land_Use'];
+  names['Land_Cover'] = ['Trees','Tall Shrubs','Shrubs','Grass/Forb/Herb','Barren or Impervious','Snow or Ice','Water'];
+  colors['Land_Cover'] = ['#005e00','#b30088','#e68a00','#ffff00','#d3bf9b',"#ffffff","#4780f3"]
+}
 ///////////////////////////////////////////////////////////////////////
 // Function to authenticate to GEE and run it when ready
  function initialize(){
@@ -165,6 +194,7 @@ require([
       var lcms_output_collections = ['USFS/GTAC/LCMS/v2020-6','USFS/GTAC/LCMS/v2021-7'];//'projects/lcms-292214/assets/Final_Outputs/2021-7/LCMS'];
       var lcms_output = ee.ImageCollection(ee.FeatureCollection(lcms_output_collections.map((c)=>ee.ImageCollection(c))).flatten());
       var change = lcms_output.select(['Change']);
+      console.log(lcms_output.first().toDictionary().getInfo());
       // Convert to year collection for a given code.
       var slowLossYears = getMostRecentChange(change, 2);
       var fastLossYears = getMostRecentChange(change, 3);
@@ -216,8 +246,9 @@ require([
           }
         };
     ///////////////////////////////////////////////////////////////////////
-    const geojsonPath = 'https://storage.googleapis.com/lcms-dashboard/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojson';
-    // const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson';
+    // const geojsonPath = 'https://storage.googleapis.com/lcms-dashboard/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson';
+    const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.json';
+    // const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojson';
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
      
@@ -271,16 +302,7 @@ require([
       }
       // Set up everything to handle the LCMS data
       // var years = range(1985,2021).map(i => i.toString());
-      var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
-                    'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
-                    'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
-      var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
-                  'Land_Cover':["Trees",
-      "Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
-                  'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
-                  }
-      var titleField = 'outID';
-      var chartWhich = ['Change','Land_Cover','Land_Use'];
+      
       var query = new Query();
       query.returnGeometry = true;
       query.outFields = null;//['DISTRICTNA','Change---Slow Loss','Change---Fast Loss','Change---Gain'];
@@ -442,7 +464,7 @@ require([
       function setContentInfo(results,whichOne){
         var stacked= false;
         var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
-        var chartID = 'chart-canvas-'+whichOne
+        var chartID = 'chart-canvas-'+whichOne;
         var colorsI = 0;
         if(results.features.length>3){
           var area_names = 'LCMS Summary for '+results.features.length.toString()+ ' areas'
@@ -455,15 +477,145 @@ require([
         ///////////////////////////////////////////////////////////////////////
         //Iterate across each field name and add up totals 
         //First get 2-d array of all areas for each then sum the columns and divide by total area
-        var startYear = 1985;
-        var endYear = 2021;
-
-        var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
-        var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
-        var showPairwiseDiff = false;
-
+        
         var t1 = new Date();
-        var years = results.features[0].attributes.years.split(',');
+        var years = results.features[0].attributes.years.split(',').sort();
+        console.log(years)
+        if(annualOrTransition === 'transition'){
+          var tableDict = {};
+          var fieldNames = Object.keys(results.features[0].attributes).filter(v=>v.indexOf(whichOne)>-1).sort();
+          fieldNames.map((fn)=>{
+            var total_area = 0;
+            var total = [];
+            results.features.map((f)=>{
+              var t = f.attributes[fn].split(',');
+              var scale = f.attributes.scale;
+              
+              total.push(f.attributes[fn].split(',').map(n => parseFloat(n)*scale**2));
+              var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
+              total_area = total_area + total_areaF*scale**2;
+            });
+            
+
+            var colSums = [];
+            for(var col = 0;col < total[0].length;col++){
+              var colSum = 0;
+              for(var row = 0;row < total.length;row++){
+                colSum = colSum + total[row][col];
+              }
+              colSums.push(colSum);
+            };
+            //Convert from sq m to chosen area unit
+            if(chartFormat === 'Percentage'){
+              colSums = colSums.map((n)=>n/total_area*100);
+            }else{
+              colSums = colSums.map((n)=>n*chartFormatDict[chartFormat].mult);
+            }
+            if(Math.max(...colSums)>-1){tableDict[fn]=colSums}
+          });
+          console.log(tableDict);
+          
+          console.log(whichOne);console.log(fieldNames)
+          //Clean out existing chart  
+         
+          $(`#${chartID}`).remove();  
+          //Add new chart
+          $('#chartDiv').append(`<div class = "chart" id="${chartID}"><div>`);
+          // $('#chartDiv').append('<hr>');
+          //Set up chart object
+          // var chartJSChart = new Chart($(`#${chartID}`),{
+          // add data
+          var yri = 0;
+          var data = [];
+          var sankey_dict = {source:[],target:[],value:[]};
+          var sankeyPalette = [];
+          var labels = [];
+          var label_code_dict = {};
+          var label_code_i = 0;
+          var allYears = years.map((yr)=>{return yr.split('_')[0]});
+          allYears.push(years[years.length-1].split('_')[1]);
+          console.log(allYears)
+          allYears.map((yr)=>{
+            
+            names[whichOne].map((nm)=>{
+              var outNm = yr+' '+nm;
+              labels.push(outNm);
+              label_code_dict[outNm] = label_code_i;
+              label_code_i++;
+            });
+            colors[whichOne].map((nm)=>{sankeyPalette.push(nm)});
+             
+          });
+          
+          years.map((yr)=>{
+            var startRange = yr.split('_')[0];
+            var endRange = yr.split('_')[1];
+            
+            Object.keys(tableDict).map((k)=>{
+              var transitionClass = k.split('---')[1];
+              var transitionFromClassI = parseInt(transitionClass.split('-')[0])-1;
+              var transitionFromClassName = names[whichOne][transitionFromClassI];
+              var transitionToClassName = names[whichOne][parseInt(transitionClass.split('-')[1])-1];
+              var v = tableDict[k][yri];
+              var fromLabel = startRange+' '+transitionFromClassName;
+              var toLabel = endRange+' '+transitionToClassName
+              
+             
+              sankey_dict.source.push(label_code_dict[fromLabel]);
+              sankey_dict.target.push(label_code_dict[toLabel]);
+              sankey_dict.value.push(v);
+              
+          
+              
+              
+
+            })
+            yri++;
+          })
+
+
+          console.log(sankey_dict)
+       
+
+          var data = {
+            type: "sankey",
+            orientation: "h",
+            node: {
+              pad: 25,
+              thickness: 20,
+              line: {
+                color: "black",
+                width: 0.5
+              },
+             label: labels,
+             color: sankeyPalette
+                },
+
+            link: sankey_dict
+          }
+
+          var data = [data]
+
+          var layout = {
+            title: name,
+            font: {
+              size: 10
+            },
+            margin: {
+              l: 25,
+              r: 25,
+              b: 25,
+              t: 50,
+              pad: 4
+            },
+            paper_bgcolor: '#D6D1CA',
+            plot_bgcolor: '#D6D1CA'
+          }
+
+          Plotly.react(`${chartID}`, data, layout)
+     
+
+        }else if(annualOrTransition === 'annual'){
         var startI = years.indexOf(startYear.toString());
         var endI = years.indexOf((endYear).toString())+1;
         years = years.slice(startI,endI);
@@ -579,7 +731,7 @@ require([
       var t2 = new Date();
       console.log(whichOne);console.log((t2-t1)/1000)
       // $(`#${chartID}`).height(350);
-      };
+      }}
 
     })
     ///////////////////////////////////////////////////////////////////////
