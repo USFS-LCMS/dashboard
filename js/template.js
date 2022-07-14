@@ -62,7 +62,7 @@ var endYear = 2021;
 // },'Land_Use':{1:'Agriculture', 2:'Developed', 3:'Forest', 4:'Non-Forest Wetland', 5:'Other', 6:'Rangeland or Pasture'}
 
 
-var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
+var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
 var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
 var showPairwiseDiff = false;
 var annualOrTransition = 'transition';
@@ -575,7 +575,7 @@ require([
 
 
           console.log(sankey_dict)
-       
+          sankey_dict.hovertemplate='%{value}'+chartFormatDict[chartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
 
           var data = {
             type: "sankey",
@@ -588,10 +588,12 @@ require([
                 width: 0.5
               },
              label: labels,
-             color: sankeyPalette
+             color: sankeyPalette,
+             hovertemplate:'%{value}'+chartFormatDict[chartFormat].label+' %{label}<extra></extra>'
                 },
 
-            link: sankey_dict
+            link: sankey_dict,
+
           }
 
           var data = [data]
