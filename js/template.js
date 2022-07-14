@@ -61,7 +61,7 @@ var endYear = 2021;
 //   3:'Shrubs',4:'Grass/Forb/Herb',5:'Barren or Impervious',6:'Snow or Ice',7:'Water'}
 // },'Land_Use':{1:'Agriculture', 2:'Developed', 3:'Forest', 4:'Non-Forest Wetland', 5:'Other', 6:'Rangeland or Pasture'}
 
-
+//
 var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
 var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
 var showPairwiseDiff = false;
