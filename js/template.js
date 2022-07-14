@@ -79,8 +79,8 @@ var titleField = 'outID';
 var chartWhich = ['Change','Land_Cover','Land_Use'];
 if(annualOrTransition === 'transition'){
   chartWhich = ['Land_Cover','Land_Use'];
-  names['Land_Cover'] = ['Trees','Tall Shrubs','Shrubs','Grass/Forb/Herb','Barren or Impervious','Snow or Ice','Water'];
-  colors['Land_Cover'] = ['#005e00','#b30088','#e68a00','#ffff00','#d3bf9b',"#ffffff","#4780f3"]
+  names['Land_Cover'] = ['Trees','Tall Shrubs','Shrubs','Grass/Forb/Herb','Barren or Impervious','Snow or Ice','Water','Non-Processing Area Mask'];
+  colors['Land_Cover'] = ['#005e00','#b30088','#e68a00','#ffff00','#d3bf9b',"#ffffff","#4780f3","#1B1716"]
 }
 ///////////////////////////////////////////////////////////////////////
 // Function to authenticate to GEE and run it when ready
@@ -194,7 +194,7 @@ require([
       var lcms_output_collections = ['USFS/GTAC/LCMS/v2020-6','USFS/GTAC/LCMS/v2021-7'];//'projects/lcms-292214/assets/Final_Outputs/2021-7/LCMS'];
       var lcms_output = ee.ImageCollection(ee.FeatureCollection(lcms_output_collections.map((c)=>ee.ImageCollection(c))).flatten());
       var change = lcms_output.select(['Change']);
-      console.log(lcms_output.first().toDictionary().getInfo());
+      // console.log(lcms_output.first().toDictionary().getInfo());
       // Convert to year collection for a given code.
       var slowLossYears = getMostRecentChange(change, 2);
       var fastLossYears = getMostRecentChange(change, 3);
@@ -352,9 +352,12 @@ require([
                  stillComputing = true;
                 if(results.features.length>0){
                     results.features = results.features;//.slice(0,800) // Limit total results possible
-                    highlightSelectedFeatures(results)
-                   updateSelectionList(results.features);
-                   chartWhich.map((w) => setContentInfo(results,w));
+                    setTimeout(()=>{highlightSelectedFeatures(results);
+                                    updateSelectionList(results.features);
+                    },1)
+                   setTimeout(()=>{
+                    chartWhich.map((w) => setContentInfo(results,w));
+                    },1)
                    $('.lcms-icon').removeClass('fa-spin');
                    stillComputing = false;
                    viewWatched = false;
@@ -365,7 +368,7 @@ require([
 
                 });
             }
-          },1000);
+          },1);
         }
       })
       ///////////////////////////////////////////////////////////////////////
@@ -480,7 +483,7 @@ require([
         
         var t1 = new Date();
         var years = results.features[0].attributes.years.split(',').sort();
-        console.log(years)
+        // console.log(years)
         if(annualOrTransition === 'transition'){
           var tableDict = {};
           var fieldNames = Object.keys(results.features[0].attributes).filter(v=>v.indexOf(whichOne)>-1).sort();
@@ -513,9 +516,9 @@ require([
             }
             if(Math.max(...colSums)>-1){tableDict[fn]=colSums}
           });
-          console.log(tableDict);
+          // console.log(tableDict);
           
-          console.log(whichOne);console.log(fieldNames)
+          // console.log(whichOne);console.log(fieldNames)
           //Clean out existing chart  
          
           $(`#${chartID}`).remove();  
@@ -534,7 +537,7 @@ require([
           var label_code_i = 0;
           var allYears = years.map((yr)=>{return yr.split('_')[0]});
           allYears.push(years[years.length-1].split('_')[1]);
-          console.log(allYears)
+          // console.log(allYears)
           allYears.map((yr)=>{
             
             names[whichOne].map((nm)=>{
@@ -546,7 +549,8 @@ require([
             colors[whichOne].map((nm)=>{sankeyPalette.push(nm)});
              
           });
-          
+          console.log(tableDict)
+          console.log(label_code_dict);
           years.map((yr)=>{
             var startRange = yr.split('_')[0];
             var endRange = yr.split('_')[1];
@@ -574,7 +578,7 @@ require([
           })
 
 
-          console.log(sankey_dict)
+          // console.log(sankey_dict)
           sankey_dict.hovertemplate='%{value}'+chartFormatDict[chartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
 
           var data = {
@@ -730,10 +734,12 @@ require([
             }
           }
         });
-      var t2 = new Date();
-      console.log(whichOne);console.log((t2-t1)/1000)
+     
       // $(`#${chartID}`).height(350);
-      }}
+      }
+       var t2 = new Date();
+      console.log(whichOne);console.log((t2-t1)/1000)
+    }
 
     })
     ///////////////////////////////////////////////////////////////////////
