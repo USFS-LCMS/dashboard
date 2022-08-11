@@ -248,7 +248,7 @@ require([
     //////////////////////////////////////////////////////////////////////
     // const geojsonPath = 'https://storage.googleapis.com/lcms-dashboard/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson';
     // const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.json';
-    const geojsonPath = './geojson/Counties_compressed.geojson';
+    const geojsonPath = './geojson/Counties_compressed.json';
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
      
