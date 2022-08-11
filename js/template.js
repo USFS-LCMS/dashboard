@@ -213,7 +213,7 @@ require([
     ///////////////////////////////////////////////////////////////////////
     //Set up the template and renderer for the geojson areas
     const template = {
-          title: "{outID}"
+          title: `{${titleField}}`
         };
     var renderer = {
           type: "simple",  // autocasts as new SimpleRenderer()
@@ -242,13 +242,13 @@ require([
           },
           // labelPlacement: "above-right",
           labelExpressionInfo: {
-            expression: "$feature.outID"
+            expression: `$feature.${titleField}`
           }
         };
     //////////////////////////////////////////////////////////////////////
     // const geojsonPath = 'https://storage.googleapis.com/lcms-dashboard/LCMS_CONUS_2021-7_Grid_21000m_Summaries.geojson';
-    const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.json';
-    // const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_30000m_Summaries.geojson';
+    // const geojsonPath = './geojson/LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.json';
+    const geojsonPath = './geojson/Counties_compressed.geojson';
     // Bring in the geojson areas
     const geojsonLayer = new GeoJSONLayer({
      
@@ -351,6 +351,7 @@ require([
                   console.log(results.features.length);
                  stillComputing = true;
                 if(results.features.length>0){
+                  // console.log(results.features.slice([0,3]))
                     results.features = results.features;//.slice(0,800) // Limit total results possible
                     setTimeout(()=>{highlightSelectedFeatures(results);
                                     updateSelectionList(results.features);
@@ -549,8 +550,8 @@ require([
             colors[whichOne].map((nm)=>{sankeyPalette.push(nm)});
              
           });
-          console.log(tableDict)
-          console.log(label_code_dict);
+          // console.log(tableDict)
+          // console.log(label_code_dict);
           years.map((yr)=>{
             var startRange = yr.split('_')[0];
             var endRange = yr.split('_')[1];
@@ -640,7 +641,7 @@ require([
               var total_areaF = parseFloat(f.attributes[total_area_fieldname]);
               total_area = total_area + total_areaF*scale**2;
             }catch(err){
-              console.log('No LCMS summary for: '+f.attributes['outID']);
+              console.log('No LCMS summary for: '+f.attributes[titleField]);
               // console.log(err);
             }
             
